@@ -10,7 +10,7 @@ PlotUtils::PlotUtils(HistManager* hstMngr, SampleAttributesMap& attrbt_map, Vari
   m_var_map(var_map),
   m_style_dict(style_dict){ 
 
-  m_hstMngr = new HistManager(*hstMngr, true);
+  m_hstMngr = new HistManager(*hstMngr);
 
 }
 
