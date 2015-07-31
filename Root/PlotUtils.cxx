@@ -1,7 +1,11 @@
 #include "IFAEPlotter/PlotUtils.h"
 #include "THStack.h"
 #include "TCanvas.h"
+#include "TPad.h"
 #include "TLegend.h"
+#include "TLegendEntry.h"
+//#include "TIter.h"
+#include "TLatex.h"
 #include "IFAETopFramework/HistManager.h"
 #include "IFAEPlotter/StyleDictionary.h"
 
@@ -10,8 +14,9 @@ PlotUtils::PlotUtils(HistManager* hstMngr, SampleAttributesMap& attrbt_map, Vari
   m_var_map(var_map),
   m_style_dict(style_dict){ 
 
-  m_hstMngr = new HistManager(*hstMngr);
-
+  m_drawSum = (m_attrbt_map.find("SUM") != m_attrbt_map.end());
+  //m_hstMngr = new HistManager(*hstMngr);
+  m_hstMngr = hstMngr;
 }
 
 
@@ -22,9 +27,7 @@ void PlotUtils::OverlayHists(){
 
   bool var_draw_stack = 0;
   bool var_isLog = false;
-  int var_rebin = 0;
   
-  float ds_scale = 0.;
   bool ds_draw_stack = false;
   bool ds_is_baseline = false;
 
@@ -48,7 +51,9 @@ void PlotUtils::OverlayHists(){
     const std::string& var_draw_res = va_it->second->DrawRes();
     var_draw_stack = va_it->second->DrawStack();
     var_isLog = va_it->second->IsLog();
-    var_rebin = va_it->second->Rebin();
+
+    std::string hname_sum = m_drawSum ? var_name + "_" + m_attrbt_map["SUM"]->Suffix() : "";
+
     bool drawRes = (var_draw_res != "");
     if(drawRes && (s_base_name == "") ){std::cout<<"No reference sample specified for residual calculation"<<std::endl;}
     //NOTE:
@@ -62,16 +67,22 @@ void PlotUtils::OverlayHists(){
     TCanvas* canv_a = new TCanvas(canv_name.c_str(), "", 800, 800);
     SetStyleCanvas( *canv_a, drawRes );
 
+    THStack* hs_res_a = drawRes ? new THStack(hs_res_name.c_str(), "") : NULL;
+    std::string hbasename = var_name + "_" + s_base_suffix;
+    TH1D* h_base = drawRes ? m_hstMngr->GetTH1D(hbasename) : NULL;
+
     THStack* hs_nostack_a = new THStack(hs_nostack_name.c_str(), "");
     THStack* hs_stack_a = var_draw_stack ? new THStack(hs_stack_name.c_str(), "") : NULL;
-    THStack* hs_res_a = drawRes ? new THStack(hs_res_name.c_str(), "") : NULL;
-    TH1D* h_base = drawRes ? m_hstMngr->GetTH1D(var_name + s_base_suffix) : NULL;
 
-    TLegend* leg_a = new TLegend(0.2,0.7,0.4,0.9);
+    TLegend* leg_a = new TLegend();
+    TLegend* leg_yield = new TLegend();
     double textsize=0.03;
-    if(drawRes){textsize=0.05;}
+    if(drawRes){textsize=0.03;}
     SetStyleLegend(*leg_a, textsize);
+    SetStyleLegend(*leg_yield, textsize, 42, 0.05);
+    //leg_a->SetNColumns(2);
     leg_a->Clear();
+    leg_yield->Clear();
 
     //Decide on the rules for drawing stack and for drawing residuals or ratios
     //This means decide how many pads the canvas will have
@@ -85,84 +96,138 @@ void PlotUtils::OverlayHists(){
       const std::string& ds_leglabel = at_it->second->LegLabel();
       const std::string& ds_stylekey = at_it->second->StyleKey();
       const std::string& ds_drawopt = at_it->second->DrawOpt();
-      ds_scale = at_it->second->Scale();
       ds_draw_stack = at_it->second->DrawStack();
       ds_is_baseline = at_it->second->IsBaseline();
 
-      std::string hist_name = var_name + ds_suffix;
+      std::string hist_name = var_name + "_" + ds_suffix;
       SetStyleHist(hist_name, ds_stylekey);
       TH1D* hist_a = m_hstMngr->GetTH1D(hist_name);
-      if(ds_scale < 0.){
-	double intgl_a = hist_a->Integral();
-	double sc_a = (intgl_a > 0.) ? 1./intgl_a : 1.;
-	hist_a->Scale(sc_a);
+      std::cout<<" ds_name = "<<ds_name<<" s_base_name = "<<s_base_name<<" isBaseline = "<<ds_is_baseline
+	       <<" BaselineComp = "<<(ds_name == s_base_name)<<" h_base_name = "<<h_base->GetName()<<" h_base = "<<h_base
+	       <<" hist_name = "<<hist_name<<" hist_intgl = "<<hist_a->Integral()<<std::endl;
+
+      if(var_draw_stack && ds_draw_stack){ hs_stack_a->Add(hist_a, "hist"); }
+      else{ 
+	hs_nostack_a->Add(hist_a, ds_drawopt.c_str()); 
+
+	if(drawRes && (ds_name != s_base_name) && (ds_name != "SUM") ){
+	  std::string resname_a = var_name + "_" + ds_suffix + "_res_" + s_base_suffix;
+	  std::cout<<"makeResidual = "<<hist_name<<" versus "<<hbasename<<std::endl;
+	  TH1D* hist_res_a = makeResidual(resname_a, hist_name, hbasename, var_draw_res);
+	  hs_res_a->Add(hist_res_a);
+	  resname_a.clear();
+	} 
+
       }
-      else if(ds_scale > 0.){hist_a->Scale(ds_scale);}
-      if(drawRes && (ds_name != s_base_name) ){
-	std::string resname_a = var_name + ds_suffix + "_res_" + s_base_suffix;
-	TH1D* hist_res_a = makeResidual(resname_a, hist_a, h_base, var_draw_res);
-	hs_res_a->Add(hist_res_a);
-	resname_a.clear();
-      } 
-      if(var_draw_stack && ds_draw_stack){ hs_stack_a->Add(hist_a, ds_drawopt.c_str()); }
-      else{ hs_nostack_a->Add(hist_a, ds_drawopt.c_str()); }
       leg_a->AddEntry(hist_a, ds_leglabel.c_str(), "lpf");
+      //leg_a->AddEntry(hist_a, Form("%.1f",hist_a->Integral()), "lpf");
+      leg_yield->AddEntry(hist_a, Form("%.4g",hist_a->Integral()), "");
 
       //Clear strings
       hist_name.clear();
     }//sample loop
 
+    if(drawRes && var_draw_stack){
+      std::string resname_sum_a = var_name + "_sum_" + "_res_" + s_base_suffix;
+      std::cout<<"makeResidual = "<<hname_sum<<" versus "<<hbasename<<std::endl;
+      TH1D* hsum_res_a = makeResidual(resname_sum_a, hname_sum, hbasename, var_draw_res);
+      hs_res_a->Add(hsum_res_a);
+      resname_sum_a.clear();
+    }
+    //int size_res = hs_res_a ? hs_res_a->GetNhists() : 0;
+    //std::cout<<" var_draw_stack = "<<var_draw_stack<<" drawRes = "<<drawRes<<" hs_res_a->size() = "<<size_res<<std::endl; 
+
     //Draw the THStack in the top panel, set the x and y axis labels
     double c_min = 1.e-10;
     double c_max = 1.; 
+    double stretch_max = var_isLog ? 1.E3 : 1.3;
+    double stretch_min = var_isLog ? 1.E-2 : 0.5;
 
-    canv_a->cd(1);
+    TPad* curpad = (TPad*)(canv_a->cd(1));
+    if(var_isLog){curpad->SetLogy();}
+
     if(var_draw_stack){
       hs_stack_a->Draw();
-      if(hs_nostack_a->GetNhists() > 0){hs_nostack_a->Draw("samenostack");}
+      c_max = hs_stack_a->GetHistogram()->GetMaximum();
+      c_min = hs_stack_a->GetHistogram()->GetMinimum();
+
+      if(hs_nostack_a->GetNhists() > 0){
+	hs_nostack_a->Draw("samenostack");
+	c_max = max(c_max, hs_nostack_a->GetHistogram()->GetMaximum());
+	c_min = max(c_min, hs_nostack_a->GetHistogram()->GetMinimum());
+      }
+      //hsum_stack ->Draw("sameE2");
       hs_stack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str());
       hs_stack_a->GetHistogram()->GetYaxis()->SetTitle("Arbitrary Units");
-
-      c_max = 1.3*max(hs_stack_a->GetHistogram()->GetMaximum(), hs_nostack_a->GetHistogram()->GetMaximum()); 
+      c_max *= stretch_max;
+      c_min *= stretch_min;
       hs_stack_a->SetMinimum(c_min);
       hs_stack_a->SetMaximum(c_max);
+
     }
-    else{ 
+    else{
       hs_nostack_a->Draw("nostack"); 
+      c_max = max(c_max, hs_nostack_a->GetHistogram()->GetMaximum());
+      c_min = max(c_min, hs_nostack_a->GetHistogram()->GetMinimum());
       hs_nostack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str());
       hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle("Arbitrary Units");
-
-      c_max = hs_nostack_a->GetHistogram()->GetMaximum(); 
+      c_max *= stretch_max;
+      c_min *= stretch_min;
       hs_nostack_a->SetMinimum(c_min);
       hs_nostack_a->SetMaximum(c_max);
     }
 
+    if(var_isLog && c_min <= 1.e-10){ c_min = 1.e-10; }
+
+    ResizeLegend(*leg_yield, 0.89, 0.89);
+    ResizeLegend(*leg_a, leg_yield->GetX1NDC(), leg_yield->GetY2NDC() );
+
+    leg_a->Draw();
+    leg_yield->Draw();
+    curpad->Update();
+    curpad->Modified();
+
     if(drawRes){
       canv_a->cd(2);
-      double r_min = 1.1*hs_res_a->GetHistogram()->GetMinimum();
-      double r_max = 1.1*hs_res_a->GetHistogram()->GetMinimum();
-
+      //if(var_isLog){canv_a->cd(2)->SetLogy();}
       hs_res_a->Draw("nostack");
+
+      double r_min = 0.9*hs_res_a->GetHistogram()->GetMinimum();
+      double r_max = 1.1*hs_res_a->GetHistogram()->GetMaximum();
+
       hs_res_a->GetXaxis()->SetTitle(var_label.c_str());
       hs_res_a->GetYaxis()->SetTitle("Ratio");
-      hs_res_a->GetYaxis()->SetRangeUser(r_min, r_max);
+      hs_res_a->SetMinimum(r_min);
+      hs_res_a->SetMinimum(r_max);
       //lnref->Draw("same");
 
-      hs_res_a->GetXaxis()->SetTitleOffset(0.9);
-      hs_res_a->GetYaxis()->SetTitleOffset(0.5);
+      hs_res_a->GetHistogram()->GetXaxis()->SetTitleOffset(0.9);
+      hs_res_a->GetHistogram()->GetYaxis()->SetTitleOffset(0.5);
       
-      hs_res_a->GetXaxis()->SetTitleSize(0.09);
-      hs_res_a->GetXaxis()->SetTitleSize(0.07);
+      hs_res_a->GetHistogram()->GetXaxis()->SetTitleSize(0.09);
+      hs_res_a->GetHistogram()->GetYaxis()->SetTitleSize(0.07);
+
+      hs_res_a->GetHistogram()->GetXaxis()->SetLabelSize(0.09);
+      hs_res_a->GetHistogram()->GetYaxis()->SetLabelSize(0.07);
+      
+      hs_res_a->GetHistogram()->GetYaxis()->CenterTitle();
+
+      canv_a->cd(2)->Update();
+      canv_a->cd(2)->Modified();
+
     }
 
+    //Write to output file/ print to a png
+    canv_a->SaveAs(Form("%s.png",canv_a->GetName()));
 
     //Delete objects
     delete canv_a;
     delete hs_stack_a;
     delete hs_nostack_a;
     delete hs_res_a;
+    //delete hsum_stack;
     delete leg_a;
-
+    delete leg_yield;
     //Clear strings
     //var_name.clear();
     //var_label.clear();
@@ -171,10 +236,17 @@ void PlotUtils::OverlayHists(){
     hs_stack_name.clear();
     hs_nostack_name.clear();
     hs_res_name.clear();
-
+    hname_sum.clear();
+    hbasename.clear();
   }//variables loop
 
   return;
+
+}
+
+TH1D* PlotUtils::makeResidual(const std::string& resname, const std::string& s_hnum, const std::string& s_href, const std::string& opt){
+
+  return makeResidual(resname, m_hstMngr->GetTH1D(s_hnum), m_hstMngr->GetTH1D(s_href), opt);
 
 }
 
@@ -187,7 +259,7 @@ TH1D* PlotUtils::makeResidual(const std::string& resname, TH1D* hist, TH1D* href
   hist_res->SetTitle("");
   if(opt == "RATIO"){ hist_res->Divide(href); }
   else if(opt == "RESIDUAL"){ hist_res->Add(href, -1);}
-  else{ std::cout<<"Unknown option for residual calculation"<<std::endl;}
+  else{ std::cout<<"Unknown option for residual calculation : "<<opt<<std::endl;}
   m_hstMngr->SetTH1D(resname, hist_res);
   return hist_res;
 
@@ -221,16 +293,62 @@ int PlotUtils::SetStyleHist(std::string hname, std::string style_key){
   return 0;
 }
 
-int PlotUtils::SetStyleLegend(TLegend &leg, double textsize, int textfont){
-  leg.SetFillColor(kWhite);
-  leg.SetLineColor(kWhite);
-  leg.SetMargin(0.3);
+int PlotUtils::SetStyleLegend(TLegend &leg, double textsize, int textfont, double margin){
+  leg.SetFillColor(0);
+  leg.SetLineColor(0);
+  leg.SetMargin(margin);
   leg.SetTextSize(textsize);
   leg.SetTextFont(textfont);
   leg.SetShadowColor(0);
+
   return 0;
 }
 
+int PlotUtils::ResizeLegend(TLegend& leg, double xpt, double ypt, const std::string& justify){
+
+  float textsize = leg.GetTextSize();
+  float nrows = (float)leg.GetNRows();
+  float margin = leg.GetMargin();
+  TIter liter(leg.GetListOfPrimitives());
+  float maxlsize = 0.;
+  int nrow = 0;
+  TCanvas* canv_test = new TCanvas("canv_test", "canv_test", 800, 800); canv_test->cd();
+
+  while( TLegendEntry* lentry = (TLegendEntry*)( liter() ) ){
+    TLatex entrytex(0., 0., lentry->GetLabel());
+    entrytex.SetNDC(kTRUE);
+    entrytex.SetTextSize(textsize);
+    entrytex.Draw();
+    if( entrytex.GetXsize() > maxlsize ){maxlsize = entrytex.GetXsize();}
+    nrow++;
+  }
+  delete canv_test;
+
+  float X1 = 0., X2 = 0., Y1 = 0., Y2 = 0.;
+  float delX = maxlsize*(1.+margin+0.1);//*textsize;
+  float delY = nrows * textsize;
+
+  if(justify == "r"){
+    X2 = (xpt > 0.) ? xpt : 0.89; 
+    Y2 = (ypt > 0.) ? ypt : 0.89;
+    X1 = X2 - delX;
+    Y1 = Y2 - delY;
+  }
+  else if(justify == "l"){
+    X1 = (xpt > 0.) ? xpt : 0.01; 
+    Y1 = (ypt > 0.) ? ypt : 0.01;
+    X2 = X1 + delX; 
+    Y2 = Y1 + delY;
+  }
+  else{std::cout<<"Error : UNknown option for legend justification"<<std::endl;}
+
+  leg.SetX1NDC(X1);
+  leg.SetX2NDC(X2);
+  leg.SetY1NDC(Y1);
+  leg.SetY2NDC(Y2);
+
+  return 0;
+}
 
 //void PlotUtils::SetStyleHist(std::string hname, int i_linecolour, int i_fillcolour, int i_linestyle, int i_fillstyle){return;}
 //EDIT THIS

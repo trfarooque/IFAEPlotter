@@ -1,0 +1,16 @@
+Some comments before we begin this text
+
+Trailing spaces 
+
+BEGIN
+NAME : LABEL : DRAWSTACK : DRAWRES : ISLOG : REBIN : 
+electrons_n_signal : Number of electrons : 1 : RATIO : 0 : 0 : 
+#muons_n_signal : N_{#mu} : 1 : NONE : 0 : 0 : 
+c1lmu_jetsPt : Jet p_{T} [GeV] : 0 : RATIO : 1 : 0 : 
+c1lmu_fatjets_m : Fat Jet Mass [GeV] : 1 : RATIO : 0 : 0 : 
+npvtx : #DeltaR(b, b) : 0 : RATIO : 1 : 0 : 
+END
+
+Now we have some more lines that will never see the light of day
+muons_n_signal : N_{#mu} : 1 : 0 : 0 : 0 : 
+#muons_n_signal : N_{#mu} : 1 : NONE : 0 : 0 : 

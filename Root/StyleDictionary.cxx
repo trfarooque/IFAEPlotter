@@ -96,7 +96,7 @@ void StyleDictionary::SetLineWidth(const std::string &key, Width_t width){
 
 Color_t StyleDictionary::LineColour(const std::string& key){
   if(m_style_map.find(key) == m_style_map.end() ){
-    std::cout<<"Key not found in dictionary"<<std::endl; 
+    std::cout<<"Key "<<key<<" not found in dictionary"<<std::endl; 
     return kBlack;
   }
   return m_style_map[key].lineColour;
@@ -104,7 +104,7 @@ Color_t StyleDictionary::LineColour(const std::string& key){
 
 Width_t StyleDictionary::LineWidth(const std::string& key){
   if(m_style_map.find(key) == m_style_map.end() ){
-    std::cout<<"Key not found in dictionary"<<std::endl; 
+    std::cout<<"Key "<<key<<" not found in dictionary"<<std::endl; 
     return 0;
   }
   return m_style_map[key].lineWidth;
@@ -112,7 +112,7 @@ Width_t StyleDictionary::LineWidth(const std::string& key){
 
 Style_t StyleDictionary::LineStyle(const std::string& key){
   if(m_style_map.find(key) == m_style_map.end() ){
-    std::cout<<"Key not found in dictionary"<<std::endl; 
+    std::cout<<"Key "<<key<<" not found in dictionary"<<std::endl; 
     return 0;
   }
   return m_style_map[key].lineStyle;
@@ -120,7 +120,7 @@ Style_t StyleDictionary::LineStyle(const std::string& key){
 
 Color_t StyleDictionary::FillColour(const std::string& key){
   if(m_style_map.find(key) == m_style_map.end() ){
-    std::cout<<"Key not found in dictionary"<<std::endl; 
+    std::cout<<"Key "<<key<<" not found in dictionary"<<std::endl; 
     return kBlack;
   }
   return m_style_map[key].fillColour;
@@ -128,7 +128,7 @@ Color_t StyleDictionary::FillColour(const std::string& key){
 
 Style_t StyleDictionary::FillStyle(const std::string& key){
   if(m_style_map.find(key) == m_style_map.end() ){
-    std::cout<<"Key not found in dictionary"<<std::endl; 
+    std::cout<<"Key "<<key<<" not found in dictionary"<<std::endl; 
     return 0;
   }
   return m_style_map[key].fillStyle;

@@ -1,0 +1,8 @@
+BEGIN
+KEY : LINECOLOUR : FILLCOLOUR : LINEWIDTH : LINESTYLE : FILLSTYLE : 
+1 : kBlack : 0 : 2 : 1 : 0 : 
+2 : kBlue : kBlue-9 : 3 : 2 : 3004 : 
+3 : kGreen+3 : kYellow+4 : 2 : 4 : 3005 : 
+4 : kOrange+6 : kOrange-2 : 2 : 6 : 3001 : 
+5 : kRed+1 : kPink-9 : 2 : 1 : 3005 : 
+END
