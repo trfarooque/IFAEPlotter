@@ -49,10 +49,11 @@ void PlotUtils::OverlayHists(){
     const std::string& var_name = va_it->second->Name();
     const std::string& var_label = va_it->second->Label();
     const std::string& var_draw_res = va_it->second->DrawRes();
+    bool var_isShape = (va_it->second->DoScale() == "SHAPE"); 
     var_draw_stack = va_it->second->DrawStack();
     var_isLog = va_it->second->IsLog();
 
-    std::string hname_sum = m_drawSum ? var_name + "_" + m_attrbt_map["SUM"]->Suffix() : "";
+    std::string hname_sum = ( !var_isShape && m_drawSum ) ? var_name + "_" + m_attrbt_map["SUM"]->Suffix() : "";
 
     bool drawRes = (var_draw_res != "");
     if(drawRes && (s_base_name == "") ){std::cout<<"No reference sample specified for residual calculation"<<std::endl;}
@@ -75,15 +76,15 @@ void PlotUtils::OverlayHists(){
     THStack* hs_stack_a = var_draw_stack ? new THStack(hs_stack_name.c_str(), "") : NULL;
 
     TLegend* leg_a = new TLegend();
-    TLegend* leg_yield = new TLegend();
+    TLegend* leg_yield = var_isShape ? NULL : new TLegend();
     double textsize=0.03;
     if(drawRes){textsize=0.03;}
     SetStyleLegend(*leg_a, textsize);
-    SetStyleLegend(*leg_yield, textsize, 42, 0.05);
-    //leg_a->SetNColumns(2);
     leg_a->Clear();
-    leg_yield->Clear();
-
+    if(leg_yield){
+      SetStyleLegend(*leg_yield, textsize, 42, 0.05);
+      leg_yield->Clear();
+    }
     //Decide on the rules for drawing stack and for drawing residuals or ratios
     //This means decide how many pads the canvas will have
     //Make a new THStack
@@ -91,11 +92,14 @@ void PlotUtils::OverlayHists(){
 
     for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
 
+      if(var_isShape && at_it->first == "SUM"){continue;}
+
       const std::string& ds_name = at_it->second->Name();
       const std::string& ds_suffix = at_it->second->Suffix();
       const std::string& ds_leglabel = at_it->second->LegLabel();
       const std::string& ds_stylekey = at_it->second->StyleKey();
       const std::string& ds_drawopt = at_it->second->DrawOpt();
+      bool ds_isShape = (at_it->second->DrawScale() == "SHAPE"); 
       ds_draw_stack = at_it->second->DrawStack();
       ds_is_baseline = at_it->second->IsBaseline();
 
@@ -121,13 +125,15 @@ void PlotUtils::OverlayHists(){
       }
       leg_a->AddEntry(hist_a, ds_leglabel.c_str(), "lpf");
       //leg_a->AddEntry(hist_a, Form("%.1f",hist_a->Integral()), "lpf");
-      leg_yield->AddEntry(hist_a, Form("%.4g",hist_a->Integral()), "");
-
+      if(leg_yield){ 
+	if(!ds_isShape){leg_yield->AddEntry(hist_a, Form("%.4g",hist_a->Integral()), ""); }
+	else{ leg_yield->AddEntry(hist_a, " ", ""); }
+      }
       //Clear strings
       hist_name.clear();
     }//sample loop
 
-    if(drawRes && var_draw_stack){
+    if( drawRes && var_draw_stack && !var_isShape ){
       std::string resname_sum_a = var_name + "_sum_" + "_res_" + s_base_suffix;
       std::cout<<"makeResidual = "<<hname_sum<<" versus "<<hbasename<<std::endl;
       TH1D* hsum_res_a = makeResidual(resname_sum_a, hname_sum, hbasename, var_draw_res);
@@ -156,8 +162,9 @@ void PlotUtils::OverlayHists(){
 	c_max = max(c_max, hs_nostack_a->GetHistogram()->GetMaximum());
 	c_min = max(c_min, hs_nostack_a->GetHistogram()->GetMinimum());
       }
-      //hsum_stack ->Draw("sameE2");
-      hs_stack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str());
+
+      if(var_label != ""){ hs_stack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
+      else{ hs_stack_a->GetXaxis()->SetTitle( ((TH1D*)(hs_stack_a->GetStack()->First()))->GetXaxis()->GetTitle() ) ; }
       hs_stack_a->GetHistogram()->GetYaxis()->SetTitle("Arbitrary Units");
       c_max *= stretch_max;
       c_min *= stretch_min;
@@ -178,12 +185,13 @@ void PlotUtils::OverlayHists(){
     }
 
     if(var_isLog && c_min <= 1.e-10){ c_min = 1.e-10; }
-
-    ResizeLegend(*leg_yield, 0.89, 0.89);
-    ResizeLegend(*leg_a, leg_yield->GetX1NDC(), leg_yield->GetY2NDC() );
-
+    if(leg_yield){
+      ResizeLegend(*leg_yield, 0.89, 0.89);
+      ResizeLegend(*leg_a, leg_yield->GetX1NDC(), leg_yield->GetY2NDC() );
+    }
+    else{ ResizeLegend(*leg_a, 0.89, 0.89 );}
     leg_a->Draw();
-    leg_yield->Draw();
+    if(leg_yield){ leg_yield->Draw(); }
     curpad->Update();
     curpad->Modified();
 
@@ -225,7 +233,6 @@ void PlotUtils::OverlayHists(){
     delete hs_stack_a;
     delete hs_nostack_a;
     delete hs_res_a;
-    //delete hsum_stack;
     delete leg_a;
     delete leg_yield;
     //Clear strings

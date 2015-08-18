@@ -28,9 +28,12 @@ class PlotManager{
   VariableAttributesMap m_var_map;
   StyleDictionary* m_styleDict;
   std::map<std::string, std::vector<std::string> > m_filename_map;
+  std::map<std::string, bool > m_filekey_multi_map;
+  std::map<std::string, std::vector<std::string> > m_filekey_samples;
   std::map<std::string, std::vector<double> > m_filescale_map;
 
-  int ParseConfigFile(const std::string config_file, std::vector<std::map<std::string, std::string> >& ret_map, const std::string& delim=" : ");
+  std::string::size_type ParseString(std::string& base, std::string& piece, const std::string& delim); 
+  int ParseConfigFile(const std::string& config_file, std::vector<std::map<std::string, std::string> >& ret_map, const std::string& delim=" : ");
   int ParseSampleConfig(const std::string& config_sample, const std::string& delim=" : ");
   int ParseVariableConfig(const std::string& config_variable, const std::string& delim=" : ");
   int ParseStyleConfig(const std::string& config_style, const std::string& delim=" : ");
