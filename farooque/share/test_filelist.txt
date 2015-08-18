@@ -1,0 +1,33 @@
+Some comments before we begin this text
+
+Trailing spaces 
+#5.427819E-3 - ttbar normalisation after hadding
+
+BEGIN
+KEY : FILE : SCALE
+0_data : ~lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.00267638.__0.root : 1
+0_data : ~lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.00267638.__1.root : 1
+0_data : ~lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.00267638.__2.root : 1 
+0_data : ~lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.00267638.__3.root : 1 
+1_ttbar,5_ttbar_shape : ~lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.410000.__0.root : 1.35697242e-03
+1_ttbar,5_ttbar_shape : ~lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.410000.__1.root : 1.35697242e-03 
+1_ttbar,5_ttbar_shape : ~lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.410000.__2.root : 1.35697242e-03 
+1_ttbar,5_ttbar_shape : ~lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.410000.__3.root : 1.35697242e-03 
+3_dijet : /afs/cern.ch/user/l/lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.361022.__0.root : 8.126438e-01 
+3_dijet : /afs/cern.ch/user/l/lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.361023.__0.root : 6.85915e-03 
+3_dijet : /afs/cern.ch/user/l/lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.361024.__0.root : 1.594266e-04 
+3_dijet : /afs/cern.ch/user/l/lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.361025.__0.root : 7.905830e-06 
+3_dijet : /afs/cern.ch/user/l/lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.361026.__0.root : 7.221542e-07 
+2_Wj : /afs/cern.ch/user/l/lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.361100.__0.root : 2.03445193e-06 
+2_Wj : /afs/cern.ch/user/l/lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.361100.__1.root : 2.03445193e-06 
+2_Wj : /afs/cern.ch/user/l/lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.361101.__0.root : 2.03454368e-06 
+2_Wj : /afs/cern.ch/user/l/lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.361101.__1.root : 2.03454368e-06 
+2_Wj : /afs/cern.ch/user/l/lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.361102.__0.root : 2.03480300e-06 
+2_Wj : /afs/cern.ch/user/l/lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.361102.__1.root : 2.03480300e-06 
+2_Wj : /afs/cern.ch/user/l/lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.361103.__0.root : 3.11045254e-06 
+2_Wj : /afs/cern.ch/user/l/lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.361104.__0.root : 3.10706103e-06 
+2_Wj : /afs/cern.ch/user/l/lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.361104.__1.root : 3.10706103e-06 
+2_Wj : /afs/cern.ch/user/l/lvalery/public/allData_week1_newSUSYTools_withPURW_test1_BoostedTops/outSUSYConfAnalysis_.361105.__0.root : 3.10770842e-06 
+END
+
+Now we have some more lines that will never see the light of day
