@@ -1,3 +1,4 @@
+#include "IFAEPlotter/Plotter_Options.h"
 #include "IFAEPlotter/PlotManager.h"
 #include "IFAETopFramework/HistManager.h"
 #include "IFAEPlotter/PlotUtils.h"
@@ -6,13 +7,15 @@
 //#include "TString.h"
 
 #include <fstream>
-
+#include <algorithm>
 //#include <vector>
 
 
-PlotManager::PlotManager(const std::string& config_sample, const std::string& filelist, const std::string& config_variables, const std::string& config_style){
+PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
 
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager constructor start"<<std::endl; 
   m_hstMngr = new HistManager();
+
 
   m_attr_map.clear();
   m_var_map.clear();
@@ -20,40 +23,75 @@ PlotManager::PlotManager(const std::string& config_sample, const std::string& fi
   m_filekey_multi_map.clear();
   m_filekey_samples.clear();
   m_filescale_map.clear();
+  m_multi_extra.clear();
 
-  ParseSampleConfig(config_sample);
-  ParseVariableConfig(config_variables);
-  ParseFileList(filelist);
+  ParseSampleConfig( m_opt->ConfigSample() );
+  ParseVariableConfig( m_opt->ConfigVariable() );
+  ParseFileList( m_opt->FileList() );
 
   m_styleDict = new StyleDictionary("test");
-  ParseStyleConfig(config_style);
+  ParseStyleConfig( m_opt->StyleLib() );
 
-  m_plotUtils = new PlotUtils(m_hstMngr, m_attr_map, m_var_map, m_styleDict);
+  std::vector<std::string>* ptr_extra = (m_multi_extra.size() > 0) ? &m_multi_extra : NULL; 
+
+  m_plotUtils = new PlotUtils(m_opt, m_hstMngr, m_attr_map, m_var_map, m_styleDict, ptr_extra);
+
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager constructor end"<<std::endl; 
 
 }
 
+PlotManager::~PlotManager(){
 
-void PlotManager::Initialize(){
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager destructor start"<<std::endl; 
 
-  return;
+  delete m_hstMngr;
+  delete m_plotUtils;
+  delete m_styleDict;
+
+  for(SampleAttributesMap::iterator samit = m_attr_map.begin(); samit != m_attr_map.end(); ++samit){
+    delete samit->second;
+    m_attr_map.erase(samit);
+  }
+
+  for(VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
+    delete varit->second;
+    m_var_map.erase(varit);
+  }
+
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager destructor start"<<std::endl; 
+
 }
+
+void PlotManager::Initialize(){ return; }
 
 void PlotManager::Execute(){
 
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::Execute start"<<std::endl; 
+
   FillHistManager();
-  vector<string> hlist = m_hstMngr->GetTH1KeyList();
-  //for(string hname : hlist){ std::cout<<hname<<std::endl; }
-  //std::cout<<"End PlotManager m_hstMngr"<<std::endl;
   m_plotUtils->OverlayHists();
+
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::Execute end"<<std::endl; 
 
   return;
 
 }
 void PlotManager::Terminate(){
 
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::Terminate start"<<std::endl; 
+
   m_hstMngr->ClearAllTH1();
   m_hstMngr->ClearAllTH2();
   m_hstMngr->ClearAllTH3();
+  m_plotUtils->Terminate();
+
+  m_filename_map.clear();
+  m_filekey_multi_map.clear();
+  m_filekey_samples.clear();
+  m_filescale_map.clear();
+  m_multi_extra.clear();
+
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::Terminate end"<<std::endl; 
 
   return;
 }
@@ -142,7 +180,7 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
   std::string stylekey = "";
   std::string drawscale = "";
   bool draw_stack_sample = false;
-  bool is_baseline = false;
+  int res_opt = -1;
   int linestyle = -1;
   int fillstyle = -1;
   int linecolour = -1;
@@ -164,18 +202,18 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
 
     map<string, string> keymap = parsed_map.at(l);
 
-    if( keymap.find("NAME") != keymap.end() ){ name = keymap["NAME"];}
+    if( keymap.find("NAME") != keymap.end() ){ name = keymap["NAME"]; }
     else{std::cout<<"Error : No name found for sample"<<std::endl;}
-    if( keymap.find("SUFFIX") != keymap.end() ){ suffix = keymap["SUFFIX"];}
+    if( keymap.find("SUFFIX") != keymap.end() ){ suffix = keymap["SUFFIX"]; }
     else{std::cout<<"Error : No suffix found for sample"<<std::endl;}
-    if( keymap.find("LEGLABEL") != keymap.end() ){ leglabel = keymap["LEGLABEL"];}
+    if( keymap.find("LEGLABEL") != keymap.end() ){ leglabel = keymap["LEGLABEL"]; }
     else{std::cout<<"Error : No legend label for sample"<<std::endl;}
 
-    if( keymap.find("STYLEKEY") != keymap.end() ){ stylekey = keymap["STYLEKEY"];}
-    if( keymap.find("DRAWOPT") != keymap.end() ){ drawopt = keymap["DRAWOPT"];}
-    if( keymap.find("DRAWSCALE") != keymap.end() ){ drawscale = keymap["DRAWSCALE"];}
-    if( keymap.find("DRAWSTACK") != keymap.end() ){ draw_stack_sample = (atoi(keymap["DRAWSTACK"].c_str()) > 0);}
-    if( keymap.find("ISBASELINE") != keymap.end() ){ is_baseline = (atoi(keymap["ISBASELINE"].c_str()) > 0);}
+    if( keymap.find("STYLEKEY") != keymap.end() ){ stylekey = keymap["STYLEKEY"]; }
+    if( keymap.find("DRAWOPT") != keymap.end() ){ drawopt = keymap["DRAWOPT"]; }
+    if( keymap.find("DRAWSCALE") != keymap.end() ){ drawscale = keymap["DRAWSCALE"]; }
+    if( keymap.find("DRAWSTACK") != keymap.end() ){ draw_stack_sample = (atoi(keymap["DRAWSTACK"].c_str()) > 0); }
+    if( keymap.find("RESOPT") != keymap.end() ){ res_opt = atoi(keymap["RESOPT"].c_str()); }
     if( keymap.find("LINESTYLE") != keymap.end() ){ linestyle = atoi(keymap["LINESTYLE"].c_str());}
     if( keymap.find("FILLSTYLE") != keymap.end() ){ fillstyle = atoi(keymap["FILLSTYLE"].c_str());}
     if( keymap.find("LINECOLOUR") != keymap.end() ){ linecolour = atoi(keymap["LINECOLOUR"].c_str());}
@@ -187,7 +225,7 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
 	     <<" linecolour = "<<linecolour<<" fillcolour = "<<fillcolour<<std::endl;  
     //---------- read all parameters------
     //Make a SampleAttribute object and add it to the map
-    SampleAttributes* sampleObj = new SampleAttributes(name, suffix, leglabel, stylekey, drawopt, drawscale, draw_stack_sample, is_baseline
+    SampleAttributes* sampleObj = new SampleAttributes(name, suffix, leglabel, stylekey, drawopt, drawscale, draw_stack_sample, res_opt
 						       , linecolour, fillcolour, linestyle, fillstyle);
     m_attr_map[name] = sampleObj;
     keymap.clear();
@@ -206,19 +244,25 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
 
   std::string name = "";
   std::string label = "";
+  std::string ylabel = "";
+  std::string reslabel = "";
   bool draw_stack = 0;
   std::string draw_res = "";
   std::string do_scale = "NONE";
   bool isLog = false;
   int rebin = 0;
+  bool do_width = false;
 
   for(int l = 0; l < nline; l++){
 
     name = "";
     label = "";
+    ylabel = "";
+    reslabel = "";
     draw_stack = 0;
     draw_res = "";
     do_scale = "NONE";
+    do_width = false;
     isLog = false;
     rebin = 0;
     std::map<std::string, std::string> keymap = parsed_map.at(l);
@@ -228,15 +272,22 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
     if( keymap.find("LABEL") != keymap.end() ){ label = keymap["LABEL"];}
     else{std::cout<<"Error : No axis label for variable"<<std::endl;}
 
+    if( keymap.find("YLABEL") != keymap.end() ){ ylabel = keymap["YLABEL"];}
+    if( keymap.find("RESLABEL") != keymap.end() ){ reslabel = keymap["RESLABEL"];}
     if( keymap.find("DRAWSTACK") != keymap.end() ){ draw_stack = (atoi(keymap["DRAWSTACK"].c_str()) >0);}
     if( keymap.find("DRAWRES") != keymap.end() ){ draw_res = keymap["DRAWRES"].c_str();}
     if( keymap.find("ISLOG") != keymap.end() ){ isLog = (atoi(keymap["ISLOG"].c_str()) > 0) ;}
     if( keymap.find("REBIN") != keymap.end() ){ rebin = atoi(keymap["REBIN"].c_str());}
     if( keymap.find("DOSCALE") != keymap.end() ){ do_scale = keymap["DOSCALE"].c_str();}
+    if( keymap.find("DOWIDTH") != keymap.end() ){ do_width = keymap["DOWIDTH"].c_str();}
 
-    std::cout<<"nline = "<<l<<" name = "<<name<<" label = "<<label<<" draw_stack = "<<draw_stack<<" draw_res = "<<draw_res<<" isLog = "<<isLog<<" rebin = "<<rebin<<std::endl;  
+    std::cout<<"nline = "<<l<<" name = "<<name<<" label = "<<label
+	     <<" ylabel = "<<ylabel<<" reslabel = "<<reslabel
+	     <<" draw_stack = "<<draw_stack<<" draw_res = "<<draw_res
+	     <<" isLog = "<<isLog<<" rebin = "<<rebin
+	     <<" do_scale = "<<do_scale<<" do_width = "<<do_width<<std::endl;  
 
-    VariableAttributes* varObj = new VariableAttributes(name, label, do_scale, draw_stack, draw_res, isLog, rebin);
+    VariableAttributes* varObj = new VariableAttributes(name, label, do_scale, do_width, draw_stack, draw_res, isLog, ylabel, reslabel, rebin);
     m_var_map[name] = varObj;
     keymap.clear();
   }
@@ -337,13 +388,15 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
 	std::string parseString = keybase;
 	std::string sparse = "";
 	int pos = 0;
+	bool firstsample = true;
 	vector<std::string> v_samp; v_samp.clear();
 	do{
 	  pos = ParseString(parseString, sparse, delim_in);
 	  v_samp.push_back(sparse);
-	  
+	  if(!firstsample){m_multi_extra.push_back(sparse);}
 	  std::vector<double> vscale; vscale.clear();
 	  m_filescale_map[ sparse ] = vscale; 
+	  firstsample = false;
 	} while(pos != std::string::npos); //subsamples
 	m_filekey_samples[keybase] = v_samp;
       }//if multi
@@ -378,6 +431,8 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
 
 void PlotManager::FillHistManager(){
 
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::FillHistManager start"<<std::endl; 
+
   //Loop over m_filename_map
   //For every dataset, loop over the list of files 
   //read in the list of histograms specified in the variable map
@@ -387,10 +442,10 @@ void PlotManager::FillHistManager(){
   //std::map<std::string, std::vector<std::string> >::iterator mit = m_filename_map.begin();
   //for( ; mit != m_filename_map.end(); ++mit){
 
-  vector<TFile*> infile_map; infile_map.clear();
-  //TFile* infile = NULL;
+  //vector<TFile*> infile_map; infile_map.clear();
+  TFile* infile = NULL;
   int fnum = 0;
-  //double fscale = 1.;
+  bool makeSum = m_attr_map.find("SUM") != m_attr_map.end();
 
   std::map<std::string, std::vector<std::string> >::iterator fn_it = m_filename_map.begin();
   for( ; fn_it != m_filename_map.end(); ++fn_it){
@@ -399,17 +454,31 @@ void PlotManager::FillHistManager(){
     std::vector<std::string>::iterator v_it = (fn_it->second).begin();
     int fnum_int = 0;
     for( ; v_it != (fn_it->second).end(); ++v_it){
-      bool b_firstfile = (v_it == (fn_it->second).begin());
-      infile_map.push_back( TFile::Open( (*v_it).c_str(), "READ" ) );
+      //bool b_firstfile = (v_it == (fn_it->second).begin());
+      //infile_map.push_back( TFile::Open( (*v_it).c_str(), "READ" ) );
+      infile = TFile::Open( (*v_it).c_str(), "READ" );
 
       for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
 	
 	const std::string& var_name = varit->second->Name();
 	const std::string& var_doScale = varit->second->DoScale();
+	bool b_var_scale = (var_doScale != "NONE");
+	bool b_var_isShape = (var_doScale == "SHAPE");
+	bool var_draw_stack = varit->second->DrawStack();
+
 	//std::string key = var_name + "_TEMP";
 	std::string key_seq = Form("%s_%i", var_name.c_str(), fnum);
-	m_hstMngr->ReadTH1D(var_name, infile_map.at(fnum), key_seq);
+	//m_hstMngr->ReadTH1D(var_name, infile_map.at(fnum), key_seq);
+	m_hstMngr->ReadTH1D(var_name, infile, key_seq);
 	TH1D* hkey_seq = m_hstMngr->GetTH1D(key_seq);
+
+	TH1D* hsum = NULL;
+	if(makeSum || (b_var_isShape && var_draw_stack)){
+	  std::string keysum = makeSum ? var_name + "_" + m_attr_map["SUM"]->Suffix() : var_name + "_sum";
+	  hsum = m_hstMngr->GetTH1D(keysum);
+	  if(hsum == NULL){hsum = m_hstMngr->CloneTH1D(keysum, hkey_seq, true); }
+	  keysum.clear();
+	}//Sum histogram created
 
 	TH1D* hkey = NULL;
 	if(b_multi){
@@ -423,12 +492,21 @@ void PlotManager::FillHistManager(){
 	    //const std::string& ds_drawScale = m_attr_map[samp]->DrawScale();
 
 	    std::string key = var_name + "_" + m_attr_map[samp]->Suffix();
-	    if(b_firstfile){ hkey = m_hstMngr->CloneTH1D(key, hkey_seq, true); }//if first file
-	    else{ hkey = m_hstMngr->GetTH1D(key); }
+	    hkey = m_hstMngr->GetTH1D(key);
+	    if(hkey == NULL){hkey = m_hstMngr->CloneTH1D(key, hkey_seq, true); }
 
+	    /*
+	    if(makeSum || (b_var_isShape && var_draw_stack) ){
+	      std::string keybeg = var_name + "_" + samit->second->Suffix();
+	      std::string keysum = var_name + "_" + m_attr_map["SUM"]->Suffix();
+	      hsum = m_hstMngr->CloneTH1D(keysum, m_hstMngr->GetTH1D(keybeg), true);
+	      keysum.clear();
+	      keybeg.clear();
+	    }
+	    */
 	    std::string key_seq_samp = Form("%s_%i_%i", var_name.c_str(), fnum, js);
 	    TH1D* hkey_seq_samp = m_hstMngr->CloneTH1D(key_seq_samp, hkey_seq);
-	    if(var_doScale != "NONE"){ 
+	    if(b_var_scale){ 
 	      double sc = 1.;
 	      if( (m_filescale_map.find(samp) != m_filescale_map.end()) 
 		  && (m_filescale_map[samp].size() > fnum_int) ) 
@@ -439,6 +517,10 @@ void PlotManager::FillHistManager(){
 	      hkey_seq_samp->Scale(sc); 
 	    }
 	    hkey->Add(hkey_seq_samp);
+
+	    //Add hkey to the sum if it is to be stacked
+
+	    if(hsum && m_attr_map[samp]->DrawStack()){ hsum->Add(hkey_seq_samp); }
 	    m_hstMngr->ClearTH1(key_seq_samp);
 	    key_seq_samp.clear(); key.clear();
 
@@ -448,11 +530,13 @@ void PlotManager::FillHistManager(){
 	else{
 	  const std::string& samp = fn_it->first;
 	  std::string key = var_name + "_" + m_attr_map[samp]->Suffix();
-	  if(b_firstfile){ hkey = m_hstMngr->CloneTH1D(key, hkey_seq, true); }//if first file
-	  else{ hkey = m_hstMngr->GetTH1D(key); }
+	  hkey = m_hstMngr->GetTH1D(key);
+	  if(hkey == NULL){hkey = m_hstMngr->CloneTH1D(key, hkey_seq, true); }
 
-	  if(var_doScale != "NONE"){ hkey_seq->Scale(m_filescale_map[samp].at(fnum_int)); }
+	  if(b_var_scale){ hkey_seq->Scale(m_filescale_map[samp].at(fnum_int)); }
 	  hkey->Add(hkey_seq);
+	  if(hsum && m_attr_map[samp]->DrawStack()){ hsum->Add(hkey_seq); }
+
 	  key.clear();
 	}
 
@@ -460,49 +544,55 @@ void PlotManager::FillHistManager(){
 	key_seq.clear();
 
       }//Variables
-      infile_map[fnum]->Close();
-      delete infile_map[fnum]; //infile_map.erase(infile_map.begin() + fnum);
+      //infile_map[fnum]->Close();
+      //delete infile_map[fnum]; //infile_map.erase(infile_map.begin() + fnum);
+
+      infile->Close();
+      delete infile; //infile_map.erase(infile_map.begin() + fnum);
 
       fnum++; fnum_int++;
     }//File loop
 
   }//Key loop
 
-  bool makeSum = m_attr_map.find("SUM") != m_attr_map.end();
   for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
     const std::string& var_name = varit->second->Name();
     int var_rebin = varit->second->Rebin();
     const std::string& var_doScale = varit->second->DoScale(); 
-    SampleAttributesMap::iterator samit = m_attr_map.begin();
+    bool b_var_isShape = (var_doScale == "SHAPE");
+    bool var_draw_stack = varit->second->DrawStack();
+
     //Make the sum of histograms if needed
     TH1D* hsum = NULL;
-    if( (var_doScale != "SHAPE") && makeSum){
-      std::string keybeg = var_name + "_" + samit->second->Suffix();
-      std::string keysum = var_name + "_" + m_attr_map["SUM"]->Suffix();
-      hsum = m_hstMngr->CloneTH1D(keysum, m_hstMngr->GetTH1D(keybeg), true);
+    if(makeSum || (b_var_isShape && var_draw_stack)){
+      std::string keysum = makeSum ? var_name + "_" + m_attr_map["SUM"]->Suffix() : var_name + "_sum";
+      hsum = m_hstMngr->GetTH1D(keysum);
       keysum.clear();
-      keybeg.clear();
     }
-
-    for(; samit != m_attr_map.end(); ++samit){
-      if( (var_doScale == "SHAPE") && (samit->first == "SUM") ){continue;}
+    double intgl_sum = (hsum) ? hsum->Integral() : 1.;
+    
+    for(SampleAttributesMap::iterator samit = m_attr_map.begin(); samit != m_attr_map.end(); ++samit){
+      if( b_var_isShape && (std::find(m_multi_extra.begin(), m_multi_extra.end(), samit->first) != m_multi_extra.end()) ){continue;}
       const std::string& ds_suffix = samit->second->Suffix();
       const std::string& ds_drawScale = samit->second->DrawScale(); 
       std::string key = var_name + "_" + ds_suffix;
       TH1D* hsample = m_hstMngr->GetTH1D( key ); 
       if(var_rebin > 0){hsample->Rebin(var_rebin);}
-      if( (var_doScale == "SHAPE") || (ds_drawScale == "SHAPE") ){
+      if( b_var_isShape || (ds_drawScale == "SHAPE") ){
 	double intgl = hsample->Integral();
-	double sc = (intgl > 0) ? 1./intgl : 1.;
+	double sc = 1.; 
+	if(intgl > 0.){
+	  sc = ( b_var_isShape && var_draw_stack && (samit->first != "SUM") ) ? 1./intgl_sum : 1./intgl;
+	}
 	hsample->Scale(sc);
       }
-      if( (!samit->second->DrawStack()) || (samit->first == "SUM") ){continue;}
-      if(hsum){hsum->Add(hsample);}
-
       key.clear();
     }//sample loop
+
   
   }//variable loop
 
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::FillHistManager end"<<std::endl; 
 
+  return;
 }

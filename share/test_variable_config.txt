@@ -3,15 +3,15 @@ Some comments before we begin this text
 Trailing spaces 
 
 BEGIN
-NAME : LABEL : DRAWSTACK : DRAWRES : ISLOG : REBIN : DOSCALE
-electrons_n_signal : Number of electrons : 1 : RATIO : 1 : 0 : NORM 
-muons_n_signal : N_{#mu} : 1 : NONE : 1 : 0 : NONE
-c1lmu_jetsPt : Jet p_{T} [GeV] : 1 : RATIO : 1 : 0 : NORM
-c1lmu_fatjets_m : Fat Jet Mass [GeV] : 1 : RATIO : 0 : 0 : NORM
-c0_LeadFJ_d12 : Leading FJ #sqrt{d_{12}} [GeV] : 0 : RATIO : 0 : 0 : SHAPE
-c1l1b_meff :  : 1 : RATIO : 0 : 0 : NORM
-c1l1b_jetsPt :  : 1 : NONE : 1 : 0 : NORM
-npvtx : #DeltaR(b, b) : 0 : RATIO : 0 : 0 : SHAPE
+NAME : LABEL : YLABEL : RESLABEL : DRAWSTACK : DRAWRES : ISLOG : REBIN : DOSCALE : DOWIDTH
+electrons_n_signal : Number of electrons :  :  : 1 : RATIO : 1 : 0 : NORM : 0
+muons_n_signal : N_{#mu} :  :  : 1 : NONE : 1 : 0 : NONE : 0
+c1lmu_jetsPt : Jet p_{T} [GeV] : Events/GeV :  : 1 : RATIO : 1 : 0 : NORM : 1
+c1lmu_fatjets_m : Fat Jet Mass [GeV] :  : Test Label : 1 : RATIO : 0 : 0 : NORM : 0
+c0_LeadFJ_d12 : Leading FJ #sqrt{d_{12}} [GeV] :  :  : 0 : RATIO : 0 : 0 : SHAPE : 0
+c1l1b_meff :  : Events/GeV : Test2 : 1 : RATIO : 0 : 0 : SHAPE : 1
+c1l1b_jetsPt :  :  :  : 1 : NONE : 1 : 0 : NORM : 0
+npvtx : #DeltaR(b, b) :  :  : 0 : RATIO : 0 : 0 : SHAPE : 0
 END
 
 Now we have some more lines that will never see the light of day

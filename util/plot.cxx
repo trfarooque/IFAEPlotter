@@ -1,19 +1,23 @@
+#include "IFAEPlotter/Plotter_Options.h"
 #include "IFAEPlotter/PlotManager.h"
-
-#include <stdlib.h>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <iostream>
-#include <TFile.h>
-#include <TChain.h>
 
 int main(int argc, char** argv){
 
   //run as:
   //plot --samples sample_config.txt --variables variable_config.txt --style stylelib.txt --files filelist.txt 
   //global flags --outputfile --outputformat 
+  Plotter_Options* opt = new Plotter_Options();
+  opt->ParseUserOpts(argc, argv);
+  PlotManager* plotMngr = new PlotManager(opt); 
+  plotMngr->Execute();
+  plotMngr->Terminate();
 
+  delete opt;
+  delete plotMngr;
+
+  return 0;
+
+  /*
   int optind = 1;
 
   std::stringstream ss; std::string sw = "";
@@ -40,10 +44,8 @@ int main(int argc, char** argv){
     else std::cout<<"Unknown switch "<<argv[optind]<<" sw = "<<sw<<std::endl;
     optind++; ss.str(""); ss.clear(); sw.clear();  
   }
-  
+
   PlotManager* plotMngr = new PlotManager(samplefile, filelist, varfile, stylefile); 
-  plotMngr->Execute();
-  plotMngr->Terminate();
-  return 0;
+  */
   
 }

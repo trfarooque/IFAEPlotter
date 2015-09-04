@@ -9,7 +9,7 @@ class SampleAttributes{
  public:
   SampleAttributes();
   SampleAttributes(const std::string& name, const std::string& suffix, const std::string& leglabel, const std::string& stylekey
-		   , const std::string& drawopt="hist", const std::string& drawscale="NORM", bool draw_stack=false, bool is_baseline=false
+		   , const std::string& drawopt="hist", const std::string& drawscale="NORM", bool draw_stack=false, int res_opt=-1
 		   , int linecolour=-1, int fillcolour=-1, int linestyle=-1, int fillstyle=-1);
   ~SampleAttributes(){}
 
@@ -22,7 +22,7 @@ class SampleAttributes{
   std::string m_drawscale;
 
   bool m_draw_stack;
-  bool m_is_baseline;
+  int m_res_opt;
   int m_linecolour;
   int m_fillcolour;
   int m_linestyle;
@@ -40,7 +40,7 @@ class SampleAttributes{
   void SetFillColour(int fillcolour){ m_fillcolour = fillcolour; }
   void SetLegLabel(const std::string& leglabel){ m_leglabel = leglabel; }
   void SetDrawStack(bool draw_stack){ m_draw_stack = draw_stack; }
-  void SetIsBaseline(bool is_baseline){ m_is_baseline = is_baseline; }
+  void SetResOpt(int res_opt){ m_res_opt = res_opt; }
 
   const std::string& Name(){ return m_name; }
   const std::string& Suffix(){ return m_suffix; }
@@ -49,7 +49,7 @@ class SampleAttributes{
   const std::string& DrawOpt(){ return m_drawopt; }
   const std::string& DrawScale(){ return m_drawscale; }
   bool DrawStack(){ return m_draw_stack; }
-  bool IsBaseline(){ return m_is_baseline; }
+  int ResOpt(){ return m_res_opt; }
   int LineColour(){ return m_linecolour; }
   int FillColour(){ return m_fillcolour; }
   int LineStyle(){ return m_linestyle; }
