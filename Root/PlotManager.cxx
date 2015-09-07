@@ -181,10 +181,6 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
   std::string drawscale = "";
   bool draw_stack_sample = false;
   int res_opt = -1;
-  int linestyle = -1;
-  int fillstyle = -1;
-  int linecolour = -1;
-  int fillcolour = -1;
 
   for(int l = 0; l < nline; l++){
 
@@ -195,17 +191,12 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
     drawscale = "NORM";
 
     stylekey = "";
-    linestyle = l;
-    fillstyle = l;
-    linecolour = l;
-    fillcolour = l;
 
     map<string, string> keymap = parsed_map.at(l);
 
     if( keymap.find("NAME") != keymap.end() ){ name = keymap["NAME"]; }
     else{std::cout<<"Error : No name found for sample"<<std::endl;}
     if( keymap.find("SUFFIX") != keymap.end() ){ suffix = keymap["SUFFIX"]; }
-    else{std::cout<<"Error : No suffix found for sample"<<std::endl;}
     if( keymap.find("LEGLABEL") != keymap.end() ){ leglabel = keymap["LEGLABEL"]; }
     else{std::cout<<"Error : No legend label for sample"<<std::endl;}
 
@@ -214,19 +205,14 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
     if( keymap.find("DRAWSCALE") != keymap.end() ){ drawscale = keymap["DRAWSCALE"]; }
     if( keymap.find("DRAWSTACK") != keymap.end() ){ draw_stack_sample = (atoi(keymap["DRAWSTACK"].c_str()) > 0); }
     if( keymap.find("RESOPT") != keymap.end() ){ res_opt = atoi(keymap["RESOPT"].c_str()); }
-    if( keymap.find("LINESTYLE") != keymap.end() ){ linestyle = atoi(keymap["LINESTYLE"].c_str());}
-    if( keymap.find("FILLSTYLE") != keymap.end() ){ fillstyle = atoi(keymap["FILLSTYLE"].c_str());}
-    if( keymap.find("LINECOLOUR") != keymap.end() ){ linecolour = atoi(keymap["LINECOLOUR"].c_str());}
-    if( keymap.find("FILLCOLOUR") != keymap.end() ){ fillcolour = atoi(keymap["FILLCOLOUR"].c_str());}
 
+    if(suffix == ""){suffix = name;}
     std::cout<<"nline = "<<l<<" name = "<<name<<" suffix = "<<suffix<<" leglabel = "<<leglabel
 	     <<" drawopt = "<<drawopt<<" stylekey = "<<stylekey<<" drawscale = "<<drawscale
-	     <<" linestyle = "<<linestyle<<" fillstyle = "<<fillstyle
-	     <<" linecolour = "<<linecolour<<" fillcolour = "<<fillcolour<<std::endl;  
+	     <<std::endl;  
     //---------- read all parameters------
     //Make a SampleAttribute object and add it to the map
-    SampleAttributes* sampleObj = new SampleAttributes(name, suffix, leglabel, stylekey, drawopt, drawscale, draw_stack_sample, res_opt
-						       , linecolour, fillcolour, linestyle, fillstyle);
+    SampleAttributes* sampleObj = new SampleAttributes(name, suffix, leglabel, stylekey, drawopt, drawscale, draw_stack_sample, res_opt);
     m_attr_map[name] = sampleObj;
     keymap.clear();
   }
@@ -252,6 +238,11 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
   bool isLog = false;
   int rebin = 0;
   bool do_width = false;
+  double resmin = 0.5;
+  double resmax = 1.5;
+  std::string resdrawopt = "";
+  bool has_resmin = false;
+  bool has_resmax = false;
 
   for(int l = 0; l < nline; l++){
 
@@ -265,6 +256,12 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
     do_width = false;
     isLog = false;
     rebin = 0;
+    resmin = 0.5;
+    resmax = 1.5;
+    resdrawopt = "";
+    has_resmin = false;
+    has_resmax = false;
+
     std::map<std::string, std::string> keymap = parsed_map.at(l);
 
     if( keymap.find("NAME") != keymap.end() ){ name = keymap["NAME"];}
@@ -280,14 +277,25 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
     if( keymap.find("REBIN") != keymap.end() ){ rebin = atoi(keymap["REBIN"].c_str());}
     if( keymap.find("DOSCALE") != keymap.end() ){ do_scale = keymap["DOSCALE"].c_str();}
     if( keymap.find("DOWIDTH") != keymap.end() ){ do_width = keymap["DOWIDTH"].c_str();}
+    if( keymap.find("RESMIN") != keymap.end() ){ resmin = atof(keymap["RESMIN"].c_str()); }
+    if( keymap.find("RESMAX") != keymap.end() ){ resmax = atof(keymap["RESMAX"].c_str());}
+    if( keymap.find("RESDRAWOPT") != keymap.end() ){ resdrawopt = keymap["RESDRAWOPT"].c_str();}
+
+    has_resmin = (keymap.find("RESMIN") != keymap.end()) && (keymap["RESMIN"] != "");
+    has_resmax = (keymap.find("RESMAX") != keymap.end()) && (keymap["RESMAX"] != "");
 
     std::cout<<"nline = "<<l<<" name = "<<name<<" label = "<<label
 	     <<" ylabel = "<<ylabel<<" reslabel = "<<reslabel
 	     <<" draw_stack = "<<draw_stack<<" draw_res = "<<draw_res
 	     <<" isLog = "<<isLog<<" rebin = "<<rebin
-	     <<" do_scale = "<<do_scale<<" do_width = "<<do_width<<std::endl;  
+	     <<" do_scale = "<<do_scale<<" do_width = "<<do_width
+	     <<" has_resmin = "<<has_resmin<<" has_resmax = "<<has_resmax
+	     <<" resmin = "<<resmin<<" resmax = "<<resmax<<" resdrawopt = "<<resdrawopt 
+	     <<std::endl;  
 
-    VariableAttributes* varObj = new VariableAttributes(name, label, do_scale, do_width, draw_stack, draw_res, isLog, ylabel, reslabel, rebin);
+    VariableAttributes* varObj = new VariableAttributes(name, label, do_scale, do_width, draw_stack, draw_res, isLog
+							, ylabel, reslabel, has_resmin, has_resmax, resmin, resmax
+							, resdrawopt, rebin);
     m_var_map[name] = varObj;
     keymap.clear();
   }
@@ -311,6 +319,9 @@ int PlotManager::ParseStyleConfig(const std::string& config_style, const std::st
   int linewidth = 2;
   std::string fillcolour = "";
   int fillstyle = 0;
+  std::string markercolour = "";
+  int markerstyle = 1;
+  int markersize = 1;
 
   for(int l = 0; l < nline; l++){
 
@@ -320,11 +331,15 @@ int PlotManager::ParseStyleConfig(const std::string& config_style, const std::st
     linewidth = 2;
     fillcolour = "";
     fillstyle = 0;
+    markercolour = "";
+    markerstyle = 1;
+    markersize = 1;
+
     std::map<std::string, std::string> keymap = parsed_map.at(l);
 
     if( keymap.find("KEY") != keymap.end() ){ key = keymap["KEY"];}
     else{std::cout<<"Error : No key found for style"<<std::endl;}
-    if( ( keymap.find("LINECOLOUR") == keymap.end() ) && ( keymap.find("FILLCOLOUR") == keymap.end() ) 
+    if( ( keymap.find("LINECOLOUR") == keymap.end() ) && ( keymap.find("FILLCOLOUR") == keymap.end() )  && ( keymap.find("MARKERCOLOUR") == keymap.end() ) 
 	&& ( keymap.find("COLOUR") == keymap.end() ) ){
       std::cout<<"Error: No colours found for style"<<std::endl;
     }
@@ -336,15 +351,22 @@ int PlotManager::ParseStyleConfig(const std::string& config_style, const std::st
     if( keymap.find("FILLCOLOUR") != keymap.end() ){ fillcolour = keymap["FILLCOLOUR"]; }
     else if( keymap.find("FILLCOLOUR") != keymap.end() ){ fillcolour = keymap["COLOUR"]; } 
     if( keymap.find("FILLSTYLE") != keymap.end() ){ fillstyle = atoi(keymap["FILLSTYLE"].c_str());}
+    if( keymap.find("MARKERCOLOUR") != keymap.end() ){ markercolour = keymap["MARKERCOLOUR"]; }
+    else if( keymap.find("MARKERCOLOUR") != keymap.end() ){ markercolour = keymap["COLOUR"]; } 
+    if( keymap.find("MARKERSTYLE") != keymap.end() ){ markerstyle = atoi(keymap["MARKERSTYLE"].c_str());}
+    if( keymap.find("MARKERSIZE") != keymap.end() ){ markersize = atoi(keymap["MARKERSIZE"].c_str());}
 
-    if( keymap.find("LINECOLOR") != keymap.end() ){ std::cout<<"Field LINECOLOR not recognised. Did you mean LINECOLOUR? #godsavethequeen"<<std::endl; }
-    if( keymap.find("FILLCOLOR") != keymap.end() ){ std::cout<<"Field FILLCOLOR not recognised. Did you mean FILLCOLOUR? #godsavethequeen"<<std::endl; }
-    if( keymap.find("COLOR") != keymap.end() ){ std::cout<<"Field COLOR not recognised. Did you mean COLOUR? #godsavethequeen"<<std::endl; }
+
+    if( keymap.find("LINECOLOR") != keymap.end() ){ std::cout<<"Field LINECOLOR not recognised. Did you mean LINECOLOUR? #GODSAVETHEQUEEN"<<std::endl; }
+    if( keymap.find("FILLCOLOR") != keymap.end() ){ std::cout<<"Field FILLCOLOR not recognised. Did you mean FILLCOLOUR? #GODSAVETHEQUEEN"<<std::endl; }
+    if( keymap.find("MARKERCOLOR") != keymap.end() ){ std::cout<<"Field MARKERCOLOR not recognised. Did you mean MARKERCOLOUR? #GODSAVETHEQUEEN"<<std::endl; }
+    if( keymap.find("COLOR") != keymap.end() ){ std::cout<<"Field COLOR not recognised. Did you mean COLOUR? #GODSAVETHEQUEEEN"<<std::endl; }
 
     std::cout<<"nline = "<<l<<" key = "<<key<<" linecolour = "<<linecolour<<" linestyle = "<<linestyle<<" linewidth = "<<linewidth
-	     <<" fillcolour = "<<fillcolour<<" fillstyle = "<<fillstyle<<std::endl;
+	     <<" fillcolour = "<<fillcolour<<" fillstyle = "<<fillstyle
+	     <<" markercolour = "<<markercolour<<" markerstyle = "<<markerstyle<<" markersize = "<<markersize<<std::endl;
 
-    m_styleDict->AddStyle(key, linecolour, linestyle, linewidth, fillcolour, fillstyle); 
+    m_styleDict->AddStyle(key, linecolour, linestyle, linewidth, markercolour, markerstyle, markersize, fillcolour, fillstyle); 
     keymap.clear();
   }
 
@@ -582,7 +604,7 @@ void PlotManager::FillHistManager(){
 	double intgl = hsample->Integral();
 	double sc = 1.; 
 	if(intgl > 0.){
-	  sc = ( b_var_isShape && var_draw_stack && (samit->first != "SUM") ) ? 1./intgl_sum : 1./intgl;
+	  sc = ( b_var_isShape && var_draw_stack && (samit->first != "SUM") && (ds_drawScale == "NORM") ) ? 1./intgl_sum : 1./intgl;
 	}
 	hsample->Scale(sc);
       }

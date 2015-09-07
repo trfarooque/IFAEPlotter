@@ -20,6 +20,9 @@ public:
     inline const std::string& OutputFormat() const { return m_output_format; }
     inline const std::string& YLabel(){ return m_ylabel; }
     inline const std::string& ResLabel(){ return m_reslabel; }
+    inline const std::string& ResDrawOpt(){ return m_resdrawopt; }
+    inline double ResMin(){ return m_resmin; }
+    inline double ResMax(){ return m_resmax; }
     inline bool ShowYields(){ return m_show_yields; }
 
 protected:
@@ -34,6 +37,9 @@ private:
     std::string m_output_format;
     std::string m_ylabel;
     std::string m_reslabel;
+    std::string m_resdrawopt;
+    double m_resmin;
+    double m_resmax;
     bool m_show_yields;
 
 };

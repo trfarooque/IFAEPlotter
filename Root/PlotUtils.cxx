@@ -47,8 +47,8 @@ void PlotUtils::OverlayHists(){
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists start"<<std::endl; 
 
-  int nsample = m_attrbt_map.size();
-  int ndist = m_var_map.size();
+  // int nsample = m_attrbt_map.size();
+  //int ndist = m_var_map.size();
 
   bool var_draw_stack = 0;
   bool var_isLog = false;
@@ -73,17 +73,17 @@ void PlotUtils::OverlayHists(){
 
   for(VariableAttributesMap::iterator va_it = m_var_map.begin(); va_it != m_var_map.end(); ++va_it){
 
-    const std::string& var_name     = va_it->second->Name();
-    const std::string& var_label    = va_it->second->Label();
-    const std::string& var_draw_res = va_it->second->DrawRes();
-    const std::string& var_ylabel = (va_it->second->YLabel() != "") ? va_it->second->YLabel() : m_opt->YLabel();
-    const std::string& var_reslabel = (va_it->second->ResLabel() != "") ? va_it->second->ResLabel() : m_opt->ResLabel();
+    const std::string& var_name       = va_it->second->Name();
+    const std::string& var_label      = va_it->second->Label();
+    const std::string& var_draw_res   = va_it->second->DrawRes();
+    const std::string& var_ylabel     = (va_it->second->YLabel() != "") ? va_it->second->YLabel() : m_opt->YLabel();
+    const std::string& var_reslabel   = (va_it->second->ResLabel() != "") ? va_it->second->ResLabel() : m_opt->ResLabel();
+    const std::string& var_resdrawopt = (va_it->second->ResDrawOpt() != "") ? va_it->second->ResDrawOpt() : m_opt->ResDrawOpt();
 
     var_isShape                = (va_it->second->DoScale() == "SHAPE"); 
     var_do_width               = va_it->second->DoWidth();
     var_draw_stack = va_it->second->DrawStack();
     var_isLog = va_it->second->IsLog();
-
 
     std::string hname_sum = m_drawSum ? var_name + "_" + m_attrbt_map["SUM"]->Suffix() : "";
 
@@ -102,7 +102,7 @@ void PlotUtils::OverlayHists(){
 
     THStack* hs_res_a = drawRes ? new THStack(hs_res_name.c_str(), "") : NULL;
     std::string hbasename = var_name + "_" + s_base_suffix;
-    TH1D* h_base = drawRes ? m_hstMngr->GetTH1D(hbasename) : NULL;
+    //TH1D* h_base = drawRes ? m_hstMngr->GetTH1D(hbasename) : NULL;
 
     THStack* hs_nostack_a = new THStack(hs_nostack_name.c_str(), "");
     THStack* hs_stack_a = var_draw_stack ? new THStack(hs_stack_name.c_str(), "") : NULL;
@@ -132,6 +132,8 @@ void PlotUtils::OverlayHists(){
       const std::string& ds_leglabel = at_it->second->LegLabel();
       const std::string& ds_stylekey = at_it->second->StyleKey();
       const std::string& ds_drawopt = at_it->second->DrawOpt();
+      const std::string& ds_legopt = at_it->second->LegOpt();
+
       bool ds_isShape = (at_it->second->DrawScale() == "SHAPE"); 
       ds_draw_stack = at_it->second->DrawStack();
       ds_res_opt = at_it->second->ResOpt();
@@ -139,8 +141,10 @@ void PlotUtils::OverlayHists(){
       std::string hist_name = var_name + "_" + ds_suffix;
       SetStyleHist(hist_name, ds_stylekey);
       TH1D* hist_a = m_hstMngr->GetTH1D(hist_name);
-      leg_a->AddEntry(hist_a, ds_leglabel.c_str(), "lpf");
-      //leg_a->AddEntry(hist_a, Form("%.1f",hist_a->Integral()), "lpf");
+
+      leg_a->AddEntry(hist_a, ds_leglabel.c_str(), ds_legopt.c_str());
+
+
       if(leg_yield){ 
 	if(!ds_isShape){leg_yield->AddEntry(hist_a, Form("%.4g",hist_a->Integral()), ""); }
 	else{ leg_yield->AddEntry(hist_a, " ", ""); }
@@ -163,7 +167,8 @@ void PlotUtils::OverlayHists(){
 	if(drawRes && (ds_res_opt == 0) && (ds_name != "SUM") ){
 	  std::string resname_a = var_name + "_" + ds_suffix + "_res_" + s_base_suffix;
 	  TH1D* hist_res_a = makeResidual(resname_a, hist_name, hbasename, var_draw_res);
-	  hs_res_a->Add(hist_res_a);
+	  const std::string& resdrawopt = (var_resdrawopt != "") ? var_resdrawopt : ds_drawopt;
+	  hs_res_a->Add(hist_res_a, resdrawopt.c_str());
 	  resname_a.clear();
 	} 
 
@@ -252,11 +257,20 @@ void PlotUtils::OverlayHists(){
       //double r_max = 1.1*hs_res_a->GetHistogram()->GetMaximum();
 
       double r_min = 0.; double r_max = 0.;
-      if(var_draw_res == "RESIDUAL"){ r_min = -1.; r_max = 1.;}
-      else if(var_draw_res == "FRACRES"){ r_min = -1.; r_max = 1.;}
-      else if(var_draw_res == "RATIO"){ r_min = 0.1; r_max = 1.9;}
-      else if(var_draw_res == "INVRATIO"){ r_min = 0.1; r_max = 1.9;}
- 
+      if(va_it->second->HasResMin()){r_min = va_it->second->ResMin();}
+      else if(m_opt->OptStr().find("--RESMIN") != std::string::npos){m_opt->ResMin();}
+      else if(var_draw_res == "RESIDUAL"){ r_min = -1.;}
+      else if(var_draw_res == "FRACRES"){ r_min = -1.;}
+      else if(var_draw_res == "RATIO"){ r_min = 0.5;}
+      else if(var_draw_res == "INVRATIO"){ r_min = 0.5;}
+
+      if(va_it->second->HasResMax()){r_max = va_it->second->ResMax();}
+      else if(m_opt->OptStr().find("--RESMAX") != std::string::npos){m_opt->ResMax();}
+      else if(var_draw_res == "RESIDUAL"){ r_max = 1.;}
+      else if(var_draw_res == "FRACRES"){ r_max = 1.;}
+      else if(var_draw_res == "RATIO"){ r_max = 1.5;}
+      else if(var_draw_res == "INVRATIO"){ r_max = 1.5;}
+
       hs_res_a->Draw("nostack");
 
       double nbinx = hs_res_a->GetHistogram()->GetNbinsX();
@@ -369,6 +383,9 @@ int PlotUtils::SetStyleHist(std::string hname, std::string style_key){
   hist->SetLineWidth( m_style_dict->LineWidth(style_key) );
   hist->SetFillColor( m_style_dict->FillColour(style_key) );
   hist->SetFillStyle( m_style_dict->FillStyle(style_key) );
+  hist->SetMarkerColor( m_style_dict->MarkerColour(style_key) );
+  hist->SetMarkerStyle( m_style_dict->MarkerStyle(style_key) );
+  hist->SetMarkerSize( m_style_dict->MarkerSize(style_key) );
 
   return 0;
 }

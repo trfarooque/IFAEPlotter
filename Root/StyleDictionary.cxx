@@ -16,21 +16,28 @@ void StyleDictionary::AddStyle(const std::string& key){
   style_col.lineWidth = 1;
   style_col.fillColour = 0;
   style_col.fillStyle = 1;
-
+  style_col.markerColour = kBlack;
+  style_col.markerStyle = 1;
+  style_col.markerSize = 1;
   m_style_map[key] = style_col;
 
 }
 
-void StyleDictionary::AddStyle(const std::string& key, const std::string& val_lnCol, int val_lnStyle, int val_lnWdt, const std::string& val_fillCol, int val_fillStyle){
+void StyleDictionary::AddStyle(const std::string& key, const std::string& val_lnCol, int val_lnStyle, int val_lnWdt
+			       , const std::string& val_markCol, int val_markStyle, int val_markSize
+			       , const std::string& val_fillCol, int val_fillStyle){
 
   StyleStruct style_col;
   style_col.key = key;
   style_col.lineColour = ParseColourString(val_lnCol);
   style_col.lineStyle = val_lnStyle;
   style_col.lineWidth = val_lnWdt;
+  style_col.markerColour = ParseColourString(val_markCol);
+  style_col.markerStyle = val_markStyle;
+  style_col.markerSize = val_markSize;
   style_col.fillColour = ParseColourString(val_fillCol);
   style_col.fillStyle = val_fillStyle;
-  
+
   m_style_map[key] = style_col;
 
   return;
@@ -44,6 +51,17 @@ void StyleDictionary::SetLineColour(const std::string &key, const std::string &v
 void StyleDictionary::SetLineColour(const std::string &key, Color_t colour){
   if(m_style_map.find(key) == m_style_map.end() ){ AddStyle(key); }
   m_style_map[key].lineColour = colour;
+  return;
+}
+
+void StyleDictionary::SetMarkerColour(const std::string &key, const std::string &value){
+  SetMarkerColour(key, ParseColourString(value) );
+  return;
+}
+
+void StyleDictionary::SetMarkerColour(const std::string &key, Color_t colour){
+  if(m_style_map.find(key) == m_style_map.end() ){ AddStyle(key); }
+  m_style_map[key].markerColour = colour;
   return;
 }
 
@@ -70,6 +88,18 @@ void StyleDictionary::SetLineStyle(const std::string &key, Style_t style){
   return;
 }
 
+void StyleDictionary::SetMarkerStyle(const std::string &key, int value){
+  if(m_style_map.find(key) == m_style_map.end() ){ AddStyle(key); }
+  m_style_map[key].markerStyle = value;
+  return;
+}
+
+void StyleDictionary::SetMarkerStyle(const std::string &key, Style_t style){
+  if(m_style_map.find(key) == m_style_map.end() ){ AddStyle(key); }
+  m_style_map[key].markerStyle = style;
+  return;
+}
+
 void StyleDictionary::SetFillStyle(const std::string &key, int value){
   if(m_style_map.find(key) == m_style_map.end() ){ AddStyle(key); }
   m_style_map[key].fillStyle = value;
@@ -79,6 +109,18 @@ void StyleDictionary::SetFillStyle(const std::string &key, int value){
 void StyleDictionary::SetFillStyle(const std::string &key, Style_t style){
   if(m_style_map.find(key) == m_style_map.end() ){ AddStyle(key); }
   m_style_map[key].fillStyle = style;
+  return;
+}
+
+void StyleDictionary::SetMarkerSize(const std::string &key, int value){
+  if(m_style_map.find(key) == m_style_map.end() ){ AddStyle(key); }
+  m_style_map[key].markerSize = value;
+  return;
+}
+
+void StyleDictionary::SetMarkerSize(const std::string &key, Size_t size){
+  if(m_style_map.find(key) == m_style_map.end() ){ AddStyle(key); }
+  m_style_map[key].markerSize = size;
   return;
 }
 
@@ -117,6 +159,32 @@ Style_t StyleDictionary::LineStyle(const std::string& key){
   }
   return m_style_map[key].lineStyle;
 }
+
+Color_t StyleDictionary::MarkerColour(const std::string& key){
+  if(m_style_map.find(key) == m_style_map.end() ){
+    std::cout<<"Key "<<key<<" not found in dictionary"<<std::endl; 
+    return kBlack;
+  }
+  return m_style_map[key].markerColour;
+}
+
+Size_t StyleDictionary::MarkerSize(const std::string& key){
+  if(m_style_map.find(key) == m_style_map.end() ){
+    std::cout<<"Key "<<key<<" not found in dictionary"<<std::endl; 
+    return 0;
+  }
+  return m_style_map[key].markerSize;
+}
+
+Style_t StyleDictionary::MarkerStyle(const std::string& key){
+  if(m_style_map.find(key) == m_style_map.end() ){
+    std::cout<<"Key "<<key<<" not found in dictionary"<<std::endl; 
+    return 0;
+  }
+  return m_style_map[key].markerStyle;
+}
+
+
 
 Color_t StyleDictionary::FillColour(const std::string& key){
   if(m_style_map.find(key) == m_style_map.end() ){
