@@ -25,12 +25,19 @@ PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
   m_filescale_map.clear();
   m_multi_extra.clear();
 
-  ParseSampleConfig( m_opt->ConfigSample() );
-  ParseVariableConfig( m_opt->ConfigVariable() );
-  ParseFileList( m_opt->FileList() );
+  int stat = 0;
+  stat = ParseSampleConfig( m_opt->ConfigSample() );
+  if(stat < 0){return;}
+
+  stat = ParseVariableConfig( m_opt->ConfigVariable() );
+  if(stat < 0){return;}
+
+  stat = ParseFileList( m_opt->FileList() );
+  if(stat < 0){return;}
 
   m_styleDict = new StyleDictionary("test");
-  ParseStyleConfig( m_opt->StyleLib() );
+  stat = ParseStyleConfig( m_opt->StyleLib() );
+  if(stat < 0){return;}
 
   std::vector<std::string>* ptr_extra = (m_multi_extra.size() > 0) ? &m_multi_extra : NULL; 
 
@@ -114,6 +121,11 @@ int PlotManager::ParseConfigFile(const std::string& config_file, std::vector<std
 
   std::map<int, std::string> paramSeq; paramSeq.clear();
   std::ifstream conf_stream(config_file);
+  if(!conf_stream){
+    std::cout<<"Error : configuration file "<<config_file<<" not found. Exiting."<<std::endl;
+    return -1;
+  }
+
   std::string conf_line;
   while( conf_line != "BEGIN" ){  getline(conf_stream, conf_line); }
   getline(conf_stream, conf_line);
@@ -170,7 +182,8 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
   int sc = 0; 
   vector<map<string, string> > parsed_map;
   int nline = ParseConfigFile(config_sample, parsed_map, delim); 
-  
+  if(nline < 0){ std::cout<<"Sample configuration file could not be opened. Exiting"<<std::endl; return nline; }
+
   //mandatory information
   std::string name = "";
   std::string suffix = "";
@@ -227,6 +240,7 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
   int sc = 0; 
   std::vector<std::map<std::string, std::string> > parsed_map;
   int nline = ParseConfigFile(config_variable, parsed_map, delim); 
+  if(nline < 0){ std::cout<<"Variable configuration file could not be opened. Exiting"<<std::endl; return nline; }
 
   std::string name = "";
   std::string label = "";
@@ -312,6 +326,7 @@ int PlotManager::ParseStyleConfig(const std::string& config_style, const std::st
   int sc = 0; 
   std::vector<std::map<std::string, std::string> > parsed_map;
   int nline = ParseConfigFile(config_style, parsed_map, delim); 
+  if(nline < 0){ std::cout<<"Style configuration file could not be opened. Exiting"<<std::endl; return nline; }
 
   std::string key = "";
   std::string linecolour = "";
@@ -380,6 +395,7 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
   int sc = 0; 
   std::vector<std::map<std::string, std::string> > parsed_map;
   int nline = ParseConfigFile(filelist, parsed_map, delim); 
+  if(nline < 0){ std::cout<<"File list could not be opened. Exiting"<<std::endl; return nline; }
 
   std::string key = "";
   std::string fileloc = "";
@@ -476,9 +492,12 @@ void PlotManager::FillHistManager(){
     std::vector<std::string>::iterator v_it = (fn_it->second).begin();
     int fnum_int = 0;
     for( ; v_it != (fn_it->second).end(); ++v_it){
-      //bool b_firstfile = (v_it == (fn_it->second).begin());
-      //infile_map.push_back( TFile::Open( (*v_it).c_str(), "READ" ) );
+
       infile = TFile::Open( (*v_it).c_str(), "READ" );
+      if(infile == NULL){ 
+	std::cout<<"ERROR: File "<<(*v_it)<<" can not be found"<<std::endl; 
+	continue;
+      }
 
       for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
 	

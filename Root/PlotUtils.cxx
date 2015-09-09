@@ -125,7 +125,7 @@ void PlotUtils::OverlayHists(){
     for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
 
       if( var_isShape && !var_draw_stack && at_it->first == "SUM" ){continue;}
-      if( var_isShape && (std::find(m_samples_noshape->begin(), m_samples_noshape->end(), at_it->first) != m_samples_noshape->end()) ){continue;}
+      if( (m_samples_noshape != NULL) && var_isShape && (std::find(m_samples_noshape->begin(), m_samples_noshape->end(), at_it->first) != m_samples_noshape->end()) ){continue;}
 
       const std::string& ds_name = at_it->second->Name();
       const std::string& ds_suffix = at_it->second->Suffix();

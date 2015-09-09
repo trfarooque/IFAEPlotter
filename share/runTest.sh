@@ -1,9 +1,9 @@
 #!/bin/bash
 
-sampleFile="IFAEPlotter/share/test_sample_config.txt"
-varFile="IFAEPlotter/share/test_variable_config.txt"
-styleLib="IFAEPlotter/share/test_style_config.txt"
-fList="IFAEPlotter/share/test_filelist.txt"
+sampleFile="$ROOTCOREBIN/data/IFAEPlotter/share/test_sample_config.txt"
+varFile="$ROOTCOREBIN/data/IFAEPlotter/share/test_variable_config.txt"
+styleLib="$ROOTCOREBIN/data/IFAEPlotter/share/test_style_config.txt"
+fList="$ROOTCOREBIN/data/IFAEPlotter/share/test_filelist.txt"
 outFormat="png,ROOT"
 yLabel="Events"
 resLabel="Data/MC"
