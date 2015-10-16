@@ -11,11 +11,11 @@
 //#include <vector>
 
 
+
 PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager constructor start"<<std::endl; 
   m_hstMngr = new HistManager();
-
 
   m_attr_map.clear();
   m_var_map.clear();
@@ -24,6 +24,31 @@ PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
   m_filekey_samples.clear();
   m_filescale_map.clear();
   m_multi_extra.clear();
+
+  m_new_sample_format = false;
+  m_new_variable_format = false;
+  m_new_style_format = false;
+  m_new_filelist_format = false;
+
+  bool opt_has_configformat = (m_opt->OptStr().find("--NEWCONFIG") != std::string::npos); 
+  bool opt_has_sampleformat = (m_opt->OptStr().find("--NEWSAMPLECONFIG") != std::string::npos); 
+  bool opt_has_variableformat = (m_opt->OptStr().find("--NEWVARIABLECONFIG") != std::string::npos); 
+  bool opt_has_styleformat = (m_opt->OptStr().find("--NEWSTYLECONFIG") != std::string::npos); 
+  bool opt_has_filelistformat = (m_opt->OptStr().find("--NEWFILELIST") != std::string::npos); 
+
+  if(opt_has_sampleformat){ m_new_sample_format = m_opt->NewSampleFormat(); }
+  else if(opt_has_configformat){ m_new_sample_format = m_opt->NewConfigFormat(); }
+
+  if(opt_has_variableformat){ m_new_variable_format = m_opt->NewVariableFormat(); }
+  else if(opt_has_configformat){ m_new_variable_format = m_opt->NewConfigFormat(); }
+
+  if(opt_has_styleformat){ m_new_style_format = m_opt->NewStyleFormat(); }
+  else if(opt_has_configformat){ m_new_style_format = m_opt->NewConfigFormat(); }
+
+  if(opt_has_filelistformat){ m_new_filelist_format = m_opt->NewFileListFormat(); }
+  else if(opt_has_configformat){ m_new_filelist_format = m_opt->NewConfigFormat(); }
+
+
 
   int stat = 0;
   stat = ParseSampleConfig( m_opt->ConfigSample() );
@@ -75,8 +100,21 @@ void PlotManager::Execute(){
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::Execute start"<<std::endl; 
 
-  FillHistManager();
-  m_plotUtils->OverlayHists();
+  if( m_opt->DoEff() ){ 
+    makeEfficiencyHistograms(); 
+    m_plotUtils->OverlayHists("EFF");
+  }
+  else if( m_opt->DoProjections() ){
+    ProjectByBin(); 
+    if( m_opt->ProjOpt().find("HIST") != std::string::npos){ m_plotUtils->OverlayHists("HIST");}
+    if( m_opt->ProjOpt().find("MEAN") != std::string::npos){ m_plotUtils->OverlayHists("MEAN");}
+    if( m_opt->ProjOpt().find("RMS") != std::string::npos){ m_plotUtils->OverlayHists("RMS");}
+  }
+  else if( m_opt->Do1DPlots() ){
+    FillHistManager(); 
+    m_plotUtils->OverlayHists("NONE");
+  } 
+
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::Execute end"<<std::endl; 
 
@@ -103,6 +141,17 @@ void PlotManager::Terminate(){
   return;
 }
 
+void PlotManager::TrimString(std::string& str, const std::string& whitespace){
+  const auto strBegin = str.find_first_not_of(whitespace);
+  if(strBegin == std::string::npos){ str = ""; }  // no content
+  else{
+    const auto strEnd = str.find_last_not_of(whitespace);
+    const auto strRange = strEnd - strBegin + 1;
+    str = str.substr(strBegin, strRange);
+  }
+  return;
+}
+
 std::string::size_type PlotManager::ParseString(std::string& base, std::string& piece, const std::string& delim ){
 
   std::string::size_type pos = base.find(delim);
@@ -115,7 +164,60 @@ std::string::size_type PlotManager::ParseString(std::string& base, std::string& 
 
 }
 
-int PlotManager::ParseConfigFile(const std::string& config_file, std::vector<std::map<string, string> >& ret_map, const std::string& delim ){
+int PlotManager::ParseConfigFile(const std::string& config_file, std::vector<std::map<std::string, std::string> >& ret_map, const std::string& delim, bool newformat ){
+
+  int stat = 1;
+  if(newformat){ stat = ParseConfigFile_New(config_file, ret_map,  delim); }
+  else{ stat = ParseConfigFile_Old(config_file, ret_map,  delim); }
+
+  return stat;
+
+}
+
+int PlotManager::ParseConfigFile_New(const std::string& config_file, std::vector<std::map<std::string, std::string> >& ret_map, const std::string& delim ){
+
+  ret_map.clear();
+  std::ifstream conf_stream(config_file);
+  if(!conf_stream){
+    std::cout<<"Error : configuration file "<<config_file<<" not found. Exiting."<<std::endl;
+    return -1;
+  }
+
+  std::string conf_line; 
+  bool begun = false;
+  int nset = -1;
+  while( getline(conf_stream, conf_line) ){
+    TrimString(conf_line);
+    if(conf_line == "BEGIN"){begun = true; continue;}
+    if(!begun){continue;}
+    if(conf_line == "END") break;
+    if( conf_line.empty() || (conf_line.find("#") == 0) ) continue;
+
+    if(conf_line == "NEW"){ 
+      nset++; 
+      std::map<std::string, std::string> varset;
+      ret_map.push_back(varset);
+    }
+    else{
+      std::string param; param.clear();
+      std::string paramString = conf_line;
+      std::string::size_type pos = ParseString(paramString, param, delim);
+      if(pos == std::string::npos){ 
+	std::cout<<" Could not read parameter value from line "<<conf_line<<std::endl;
+	std::cout<<" Format should be [PARAM] "<<delim<<" [VALUE]"<<std::endl;
+	continue;
+      }
+      TrimString(param);
+      ret_map.at(nset)[param] = paramString;
+      std::cout<<" nset = "<<nset<<" param = "<<param<<" paramString = "<<paramString<<std::endl;
+    }
+  }
+
+  return nset;
+
+}
+
+int PlotManager::ParseConfigFile_Old(const std::string& config_file, std::vector<std::map<std::string, std::string> >& ret_map, const std::string& delim ){
 
   ret_map.clear();
 
@@ -127,7 +229,10 @@ int PlotManager::ParseConfigFile(const std::string& config_file, std::vector<std
   }
 
   std::string conf_line;
-  while( conf_line != "BEGIN" ){  getline(conf_stream, conf_line); }
+  while( conf_line != "BEGIN" ){  
+    getline(conf_stream, conf_line); 
+    TrimString(conf_line);
+  }
   getline(conf_stream, conf_line);
 
   //Header gives the sequence of configuration variables
@@ -137,6 +242,8 @@ int PlotManager::ParseConfigFile(const std::string& config_file, std::vector<std
   std::string::size_type pos = 0;
   do{ 
     pos = ParseString(paramString, param, delim);
+    TrimString(param);
+    std::transform(param.begin(), param.end(), param.begin(), ::toupper);
     paramSeq[nparam] = param;
     nparam++;
   }while(pos != std::string::npos);
@@ -146,8 +253,10 @@ int PlotManager::ParseConfigFile(const std::string& config_file, std::vector<std
 
   map<string, string> keymap;
   while( getline(conf_stream, conf_line) ){
+    TrimString(conf_line);
     if(conf_line == "END") break;
-    if( conf_line.find("#") == 0 ) continue;
+    if( conf_line.empty() || (conf_line.find("#") == 0) ) continue;
+
     paramString = conf_line;
     param = "";
     nparam = 0;
@@ -156,6 +265,7 @@ int PlotManager::ParseConfigFile(const std::string& config_file, std::vector<std
 
     do{
       pos = ParseString(paramString, param, delim);
+      TrimString(param);
       if(nparam > nkey){
 	std::cout<<"Error: Number of parameters on line "<<nline<<" exceeds number of keys given in header"<<std::endl; 
 	break;
@@ -181,7 +291,7 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
   
   int sc = 0; 
   vector<map<string, string> > parsed_map;
-  int nline = ParseConfigFile(config_sample, parsed_map, delim); 
+  int nline = ParseConfigFile(config_sample, parsed_map, delim, m_new_sample_format); 
   if(nline < 0){ std::cout<<"Sample configuration file could not be opened. Exiting"<<std::endl; return nline; }
 
   //mandatory information
@@ -190,6 +300,7 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
   std::string leglabel = "";
   //optional information
   std::string drawopt = "";
+  std::string legopt = "";
   std::string stylekey = "";
   std::string drawscale = "";
   bool draw_stack_sample = false;
@@ -201,6 +312,7 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
     suffix = "";
     leglabel = "";
     drawopt = "hist";
+    legopt = "";
     drawscale = "NORM";
 
     stylekey = "";
@@ -215,17 +327,22 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
 
     if( keymap.find("STYLEKEY") != keymap.end() ){ stylekey = keymap["STYLEKEY"]; }
     if( keymap.find("DRAWOPT") != keymap.end() ){ drawopt = keymap["DRAWOPT"]; }
+    if( keymap.find("LEGOPT") != keymap.end() ){ legopt = keymap["LEGOPT"]; }
     if( keymap.find("DRAWSCALE") != keymap.end() ){ drawscale = keymap["DRAWSCALE"]; }
-    if( keymap.find("DRAWSTACK") != keymap.end() ){ draw_stack_sample = (atoi(keymap["DRAWSTACK"].c_str()) > 0); }
-    if( keymap.find("RESOPT") != keymap.end() ){ res_opt = atoi(keymap["RESOPT"].c_str()); }
-
+    if( keymap.find("DRAWSTACK") != keymap.end() ){ Plotter_Options::BoolValue(keymap["DRAWSTACK"], draw_stack_sample); }
+    if( keymap.find("RESOPT") != keymap.end() ){ 
+      if(keymap["RESOPT"] == "SKIP"){res_opt = -1;}
+      else if(keymap["RESOPT"] == "INC"){res_opt = 0;}
+      else if(keymap["RESOPT"] == "REF"){res_opt = 1;}
+      else{ std::cout<<"UNknown value "<<keymap["RESOPT"]<<" for RESOPT option"<<std::endl; }
+    }
     if(suffix == ""){suffix = name;}
     std::cout<<"nline = "<<l<<" name = "<<name<<" suffix = "<<suffix<<" leglabel = "<<leglabel
 	     <<" drawopt = "<<drawopt<<" stylekey = "<<stylekey<<" drawscale = "<<drawscale
 	     <<std::endl;  
     //---------- read all parameters------
     //Make a SampleAttribute object and add it to the map
-    SampleAttributes* sampleObj = new SampleAttributes(name, suffix, leglabel, stylekey, drawopt, drawscale, draw_stack_sample, res_opt);
+    SampleAttributes* sampleObj = new SampleAttributes(name, suffix, leglabel, stylekey, drawopt, legopt, drawscale, draw_stack_sample, res_opt);
     m_attr_map[name] = sampleObj;
     keymap.clear();
   }
@@ -239,24 +356,43 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
 
   int sc = 0; 
   std::vector<std::map<std::string, std::string> > parsed_map;
-  int nline = ParseConfigFile(config_variable, parsed_map, delim); 
+  int nline = ParseConfigFile(config_variable, parsed_map, delim, m_new_variable_format); 
   if(nline < 0){ std::cout<<"Variable configuration file could not be opened. Exiting"<<std::endl; return nline; }
 
   std::string name = "";
   std::string label = "";
   std::string ylabel = "";
   std::string reslabel = "";
-  bool draw_stack = 0;
+  std::string extralabel = "";
+
+  bool draw_stack = false;
   std::string draw_res = "";
   std::string do_scale = "NONE";
   bool isLog = false;
   int rebin = 0;
   bool do_width = false;
+  std::string resdrawopt = "";
   double resmin = 0.5;
   double resmax = 1.5;
-  std::string resdrawopt = "";
   bool has_resmin = false;
   bool has_resmax = false;
+  double ymin = 0.;
+  double ymax = 0.;
+  bool has_ymin = false;
+  bool has_ymax = false;
+  double xmin = 0.;
+  double xmax = 0.;
+  bool has_xmin = false;
+  bool has_xmax = false;
+
+  double ttl_xmin = 0.;
+  double ttl_ymin = 0.;
+  double ttl_xmax = 0.;
+  double ttl_ymax = 0.;
+  bool has_ttl_xmin = false;
+  bool has_ttl_ymin = false;
+  bool has_ttl_xmax = false;
+  bool has_ttl_ymax = false;
 
   for(int l = 0; l < nline; l++){
 
@@ -264,17 +400,38 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
     label = "";
     ylabel = "";
     reslabel = "";
+    extralabel = "";
+
     draw_stack = 0;
     draw_res = "";
     do_scale = "NONE";
     do_width = false;
     isLog = false;
     rebin = 0;
+    resdrawopt = "";
     resmin = 0.5;
     resmax = 1.5;
-    resdrawopt = "";
     has_resmin = false;
     has_resmax = false;
+
+    ymin = 0.;
+    ymax = 0.;
+    has_ymin = false;
+    has_ymax = false;
+
+    xmin = 0.;
+    xmax = 0.;
+    has_xmin = false;
+    has_xmax = false;
+
+    ttl_xmin = 0.;
+    ttl_ymin = 0.;
+    ttl_xmax = 0.;
+    ttl_ymax = 0.;
+    has_ttl_xmin = false;
+    has_ttl_ymin = false;
+    has_ttl_xmax = false;
+    has_ttl_ymax = false;
 
     std::map<std::string, std::string> keymap = parsed_map.at(l);
 
@@ -285,31 +442,63 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
 
     if( keymap.find("YLABEL") != keymap.end() ){ ylabel = keymap["YLABEL"];}
     if( keymap.find("RESLABEL") != keymap.end() ){ reslabel = keymap["RESLABEL"];}
-    if( keymap.find("DRAWSTACK") != keymap.end() ){ draw_stack = (atoi(keymap["DRAWSTACK"].c_str()) >0);}
-    if( keymap.find("DRAWRES") != keymap.end() ){ draw_res = keymap["DRAWRES"].c_str();}
-    if( keymap.find("ISLOG") != keymap.end() ){ isLog = (atoi(keymap["ISLOG"].c_str()) > 0) ;}
+    if( keymap.find("EXTRALABEL") != keymap.end() ){ extralabel = keymap["EXTRALABEL"];}
+    if( keymap.find("DRAWSTACK") != keymap.end() ){ Plotter_Options::BoolValue(keymap["DRAWSTACK"], draw_stack); }
+    if( keymap.find("DRAWRES") != keymap.end() ){ draw_res = keymap["DRAWRES"];}
+    if( keymap.find("ISLOG") != keymap.end() ){ Plotter_Options::BoolValue(keymap["ISLOG"], isLog); }
+ 
+
     if( keymap.find("REBIN") != keymap.end() ){ rebin = atoi(keymap["REBIN"].c_str());}
     if( keymap.find("DOSCALE") != keymap.end() ){ do_scale = keymap["DOSCALE"].c_str();}
-    if( keymap.find("DOWIDTH") != keymap.end() ){ do_width = keymap["DOWIDTH"].c_str();}
+    if( keymap.find("DOWIDTH") != keymap.end() ){ Plotter_Options::BoolValue(keymap["DOWIDTH"], do_width); }
+    if( keymap.find("RESDRAWOPT") != keymap.end() ){ resdrawopt = keymap["RESDRAWOPT"].c_str();}
     if( keymap.find("RESMIN") != keymap.end() ){ resmin = atof(keymap["RESMIN"].c_str()); }
     if( keymap.find("RESMAX") != keymap.end() ){ resmax = atof(keymap["RESMAX"].c_str());}
-    if( keymap.find("RESDRAWOPT") != keymap.end() ){ resdrawopt = keymap["RESDRAWOPT"].c_str();}
-
     has_resmin = (keymap.find("RESMIN") != keymap.end()) && (keymap["RESMIN"] != "");
     has_resmax = (keymap.find("RESMAX") != keymap.end()) && (keymap["RESMAX"] != "");
+    if( keymap.find("YMIN") != keymap.end() ){ ymin = atof(keymap["YMIN"].c_str()); }
+    if( keymap.find("YMAX") != keymap.end() ){ ymax = atof(keymap["YMAX"].c_str());}
+    has_ymin = (keymap.find("YMIN") != keymap.end()) && (keymap["YMIN"] != "");
+    has_ymax = (keymap.find("YMAX") != keymap.end()) && (keymap["YMAX"] != "");
+    if( keymap.find("XMIN") != keymap.end() ){ xmin = atof(keymap["XMIN"].c_str()); }
+    if( keymap.find("XMAX") != keymap.end() ){ xmax = atof(keymap["XMAX"].c_str());}
+    has_xmin = (keymap.find("XMIN") != keymap.end()) && (keymap["XMIN"] != "");
+    has_xmax = (keymap.find("XMAX") != keymap.end()) && (keymap["XMAX"] != "");
+
+    if( keymap.find("TITLEXMIN") != keymap.end() ){ ttl_xmin = atof(keymap["TITLEXMIN"].c_str()); }
+    if( keymap.find("TITLEYMIN") != keymap.end() ){ ttl_ymin = atof(keymap["TITLEYMIN"].c_str()); }
+    if( keymap.find("TITLEXMAX") != keymap.end() ){ ttl_xmax = atof(keymap["TITLEXMAX"].c_str());}
+    if( keymap.find("TITLEYMAX") != keymap.end() ){ ttl_ymax = atof(keymap["TITLEYMAX"].c_str());}
+    has_ttl_xmin = (keymap.find("TITLEXMIN") != keymap.end()) && (keymap["TITLEXMIN"] != "");
+    has_ttl_ymin = (keymap.find("TITLEYMIN") != keymap.end()) && (keymap["TITLEYMIN"] != "");
+    has_ttl_xmax = (keymap.find("TITLEXMAX") != keymap.end()) && (keymap["TITLEXMAX"] != "");
+    has_ttl_ymax = (keymap.find("TITLEYMAX") != keymap.end()) && (keymap["TITLEYMAX"] != "");
+
 
     std::cout<<"nline = "<<l<<" name = "<<name<<" label = "<<label
-	     <<" ylabel = "<<ylabel<<" reslabel = "<<reslabel
+	     <<" ylabel = "<<ylabel<<" reslabel = "<<reslabel<<" extralabel = "<<extralabel
 	     <<" draw_stack = "<<draw_stack<<" draw_res = "<<draw_res
 	     <<" isLog = "<<isLog<<" rebin = "<<rebin
 	     <<" do_scale = "<<do_scale<<" do_width = "<<do_width
 	     <<" has_resmin = "<<has_resmin<<" has_resmax = "<<has_resmax
 	     <<" resmin = "<<resmin<<" resmax = "<<resmax<<" resdrawopt = "<<resdrawopt 
+	     <<" has_ymin = "<<has_ymin<<" has_ymax = "<<has_ymax
+	     <<" ymin = "<<xmin<<" ymax = "<<ymax
+	     <<" has_xmin = "<<has_xmin<<" has_xmax = "<<has_xmax
+	     <<" xmin = "<<xmin<<" xmax = "<<xmax
+	     <<" has_ttl_xmin = "<<has_ttl_xmin<<" has_ttl_xmax = "<<has_ttl_xmax
+	     <<" ttl_xmin = "<<ttl_xmin<<" xmax = "<<ttl_xmax
+	     <<" has_ttl_ymin = "<<has_ttl_ymin<<" has_ttl_ymax = "<<has_ttl_ymax
+	     <<" ttl_ymin = "<<ttl_ymin<<" xmax = "<<ttl_ymax
+
 	     <<std::endl;  
 
     VariableAttributes* varObj = new VariableAttributes(name, label, do_scale, do_width, draw_stack, draw_res, isLog
 							, ylabel, reslabel, has_resmin, has_resmax, resmin, resmax
-							, resdrawopt, rebin);
+							, has_ymin, has_ymax, ymin, ymax, has_xmin, has_xmax, xmin, xmax
+							, has_ttl_xmin, has_ttl_xmax, ttl_xmin, ttl_xmax 
+							, has_ttl_ymin, has_ttl_ymax, ttl_ymin, ttl_ymax 
+							, resdrawopt, extralabel, rebin);
     m_var_map[name] = varObj;
     keymap.clear();
   }
@@ -325,7 +514,7 @@ int PlotManager::ParseStyleConfig(const std::string& config_style, const std::st
 
   int sc = 0; 
   std::vector<std::map<std::string, std::string> > parsed_map;
-  int nline = ParseConfigFile(config_style, parsed_map, delim); 
+  int nline = ParseConfigFile(config_style, parsed_map, delim, m_new_style_format); 
   if(nline < 0){ std::cout<<"Style configuration file could not be opened. Exiting"<<std::endl; return nline; }
 
   std::string key = "";
@@ -394,7 +583,7 @@ int PlotManager::ParseStyleConfig(const std::string& config_style, const std::st
 int PlotManager::ParseFileList(const std::string& filelist, const std::string& delim){
   int sc = 0; 
   std::vector<std::map<std::string, std::string> > parsed_map;
-  int nline = ParseConfigFile(filelist, parsed_map, delim); 
+  int nline = ParseConfigFile(filelist, parsed_map, delim, m_new_filelist_format); 
   if(nline < 0){ std::cout<<"File list could not be opened. Exiting"<<std::endl; return nline; }
 
   std::string key = "";
@@ -425,7 +614,7 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
       if(b_multi){
 	std::string parseString = keybase;
 	std::string sparse = "";
-	int pos = 0;
+	std::string::size_type pos = 0;
 	bool firstsample = true;
 	vector<std::string> v_samp; v_samp.clear();
 	do{
@@ -445,7 +634,7 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
       if(b_multi){
 	std::string parseString = scalebase;
 	std::string sparse = ""; int nsamp = 0;
-	int pos = 0;
+	std::string::size_type pos = 0;
 	do{
 	  pos = ParseString(parseString, sparse, delim_in);
 	  double sc = atof(sparse.c_str());
@@ -471,130 +660,8 @@ void PlotManager::FillHistManager(){
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::FillHistManager start"<<std::endl; 
 
-  //Loop over m_filename_map
-  //For every dataset, loop over the list of files 
-  //read in the list of histograms specified in the variable map
-  //the execute another loop over the variable maps, make the summed histograms
-  //Remove the original histogram as soon as it has been added to the sum
-
-  //std::map<std::string, std::vector<std::string> >::iterator mit = m_filename_map.begin();
-  //for( ; mit != m_filename_map.end(); ++mit){
-
-  //vector<TFile*> infile_map; infile_map.clear();
-  TFile* infile = NULL;
-  int fnum = 0;
+  ReadHistogramsFromFile(1);
   bool makeSum = m_attr_map.find("SUM") != m_attr_map.end();
-
-  std::map<std::string, std::vector<std::string> >::iterator fn_it = m_filename_map.begin();
-  for( ; fn_it != m_filename_map.end(); ++fn_it){
-    bool b_multi = m_filekey_multi_map[fn_it->first];
-
-    std::vector<std::string>::iterator v_it = (fn_it->second).begin();
-    int fnum_int = 0;
-    for( ; v_it != (fn_it->second).end(); ++v_it){
-
-      infile = TFile::Open( (*v_it).c_str(), "READ" );
-      if(infile == NULL){ 
-	std::cout<<"ERROR: File "<<(*v_it)<<" can not be found"<<std::endl; 
-	continue;
-      }
-
-      for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
-	
-	const std::string& var_name = varit->second->Name();
-	const std::string& var_doScale = varit->second->DoScale();
-	bool b_var_scale = (var_doScale != "NONE");
-	bool b_var_isShape = (var_doScale == "SHAPE");
-	bool var_draw_stack = varit->second->DrawStack();
-
-	//std::string key = var_name + "_TEMP";
-	std::string key_seq = Form("%s_%i", var_name.c_str(), fnum);
-	//m_hstMngr->ReadTH1D(var_name, infile_map.at(fnum), key_seq);
-	m_hstMngr->ReadTH1D(var_name, infile, key_seq);
-	TH1D* hkey_seq = m_hstMngr->GetTH1D(key_seq);
-
-	TH1D* hsum = NULL;
-	if(makeSum || (b_var_isShape && var_draw_stack)){
-	  std::string keysum = makeSum ? var_name + "_" + m_attr_map["SUM"]->Suffix() : var_name + "_sum";
-	  hsum = m_hstMngr->GetTH1D(keysum);
-	  if(hsum == NULL){hsum = m_hstMngr->CloneTH1D(keysum, hkey_seq, true); }
-	  keysum.clear();
-	}//Sum histogram created
-
-	TH1D* hkey = NULL;
-	if(b_multi){
-
-	  std::vector<std::string>& vsamp = m_filekey_samples[fn_it->first];
-	  for(unsigned int js = 0; js < vsamp.size(); js++){
-	    const std::string& samp = vsamp.at(js);
-	    //Make the histogram name to which hkey_seq is to be added
-	    //And also decide whether or not to scale 
-	    //const std::string& ds_suffix = vsamp.at(js)->Suffix();
-	    //const std::string& ds_drawScale = m_attr_map[samp]->DrawScale();
-
-	    std::string key = var_name + "_" + m_attr_map[samp]->Suffix();
-	    hkey = m_hstMngr->GetTH1D(key);
-	    if(hkey == NULL){hkey = m_hstMngr->CloneTH1D(key, hkey_seq, true); }
-
-	    /*
-	    if(makeSum || (b_var_isShape && var_draw_stack) ){
-	      std::string keybeg = var_name + "_" + samit->second->Suffix();
-	      std::string keysum = var_name + "_" + m_attr_map["SUM"]->Suffix();
-	      hsum = m_hstMngr->CloneTH1D(keysum, m_hstMngr->GetTH1D(keybeg), true);
-	      keysum.clear();
-	      keybeg.clear();
-	    }
-	    */
-	    std::string key_seq_samp = Form("%s_%i_%i", var_name.c_str(), fnum, js);
-	    TH1D* hkey_seq_samp = m_hstMngr->CloneTH1D(key_seq_samp, hkey_seq);
-	    if(b_var_scale){ 
-	      double sc = 1.;
-	      if( (m_filescale_map.find(samp) != m_filescale_map.end()) 
-		  && (m_filescale_map[samp].size() > fnum_int) ) 
-		{
-		  sc = m_filescale_map[samp].at(fnum_int);
-		}
-
-	      hkey_seq_samp->Scale(sc); 
-	    }
-	    hkey->Add(hkey_seq_samp);
-
-	    //Add hkey to the sum if it is to be stacked
-
-	    if(hsum && m_attr_map[samp]->DrawStack()){ hsum->Add(hkey_seq_samp); }
-	    m_hstMngr->ClearTH1(key_seq_samp);
-	    key_seq_samp.clear(); key.clear();
-
-	  }//subsample loop
-
-	}//if multi
-	else{
-	  const std::string& samp = fn_it->first;
-	  std::string key = var_name + "_" + m_attr_map[samp]->Suffix();
-	  hkey = m_hstMngr->GetTH1D(key);
-	  if(hkey == NULL){hkey = m_hstMngr->CloneTH1D(key, hkey_seq, true); }
-
-	  if(b_var_scale){ hkey_seq->Scale(m_filescale_map[samp].at(fnum_int)); }
-	  hkey->Add(hkey_seq);
-	  if(hsum && m_attr_map[samp]->DrawStack()){ hsum->Add(hkey_seq); }
-
-	  key.clear();
-	}
-
-	m_hstMngr->ClearTH1(key_seq);
-	key_seq.clear();
-
-      }//Variables
-      //infile_map[fnum]->Close();
-      //delete infile_map[fnum]; //infile_map.erase(infile_map.begin() + fnum);
-
-      infile->Close();
-      delete infile; //infile_map.erase(infile_map.begin() + fnum);
-
-      fnum++; fnum_int++;
-    }//File loop
-
-  }//Key loop
 
   for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
     const std::string& var_name = varit->second->Name();
@@ -602,6 +669,7 @@ void PlotManager::FillHistManager(){
     const std::string& var_doScale = varit->second->DoScale(); 
     bool b_var_isShape = (var_doScale == "SHAPE");
     bool var_draw_stack = varit->second->DrawStack();
+
 
     //Make the sum of histograms if needed
     TH1D* hsum = NULL;
@@ -634,6 +702,395 @@ void PlotManager::FillHistManager(){
   }//variable loop
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::FillHistManager end"<<std::endl; 
+
+  return;
+}
+
+void PlotManager::makeEfficiencyHistograms(){
+
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::makeEfficiency start"<<std::endl; 
+
+  TFile* infile = NULL;
+  int fnum = 0;
+
+  std::string var_name_num = ""; std::string var_name_den = "";
+  std::map<std::string, std::vector<std::string> >::iterator fn_it = m_filename_map.begin();
+  for( ; fn_it != m_filename_map.end(); ++fn_it){
+
+    std::vector<std::string>::iterator v_it = (fn_it->second).begin();
+    int fnum_int = 0;
+    for( ; v_it != (fn_it->second).end(); ++v_it){
+      infile = TFile::Open( (*v_it).c_str(), "READ" );
+      if(infile == NULL){ 
+	std::cout<<"ERROR: File "<<(*v_it)<<" can not be found"<<std::endl; 
+	continue;
+      }
+
+      for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
+	
+	const std::string& var_name = varit->second->Name();
+	var_name_num.clear(); var_name_den.clear();
+	if(m_opt->NumPrefix() != ""){ 
+	  var_name_num += m_opt->NumPrefix() + "_";  
+	}
+	if(m_opt->DenPrefix() != ""){ 
+	  var_name_den += m_opt->DenPrefix() + "_";  
+	}
+	var_name_num += var_name;
+	var_name_den += var_name;
+	if(m_opt->NumSuffix() != ""){ 
+	  var_name_num += "_" + m_opt->NumSuffix();
+	}
+	if(m_opt->DenSuffix() != ""){ 
+	  var_name_den += "_" + m_opt->DenSuffix();
+	}
+
+	std::string key_seq_num = Form("%s_%i", var_name_num.c_str(), fnum);
+	m_hstMngr->ReadTH1D(var_name_num, infile, key_seq_num);
+	TH1D* hkey_seq_num = m_hstMngr->GetTH1D(key_seq_num);
+
+	std::string key_seq_den = Form("%s_%i", var_name_den.c_str(), fnum);
+	m_hstMngr->ReadTH1D(var_name_den, infile, key_seq_den);
+	TH1D* hkey_seq_den = m_hstMngr->GetTH1D(key_seq_den);
+
+	TH1D* hkey_num = NULL;	TH1D* hkey_den = NULL;
+	const std::string& samp = fn_it->first;
+	std::string key_num = var_name_num + "_" + m_attr_map[samp]->Suffix();
+	std::string key_den = var_name_den + "_" + m_attr_map[samp]->Suffix();
+
+	hkey_num = m_hstMngr->GetTH1D(key_num);
+	if(hkey_num == NULL){hkey_num = m_hstMngr->CloneTH1D(key_num, hkey_seq_num, true); }
+	hkey_seq_num->Scale(m_filescale_map[samp].at(fnum_int));
+	hkey_num->Add(hkey_seq_num);
+
+	hkey_den = m_hstMngr->GetTH1D(key_den);
+	if(hkey_den == NULL){hkey_den = m_hstMngr->CloneTH1D(key_den, hkey_seq_den, true); }
+	hkey_seq_den->Scale(m_filescale_map[samp].at(fnum_int));
+	hkey_den->Add(hkey_seq_den);
+
+	key_num.clear(); key_den.clear();
+
+	m_hstMngr->ClearTH1(key_seq_num);
+	m_hstMngr->ClearTH1(key_seq_den);
+	key_seq_num.clear();
+	key_seq_den.clear();
+
+      }//Variables
+
+      infile->Close();
+      delete infile; //infile_map.erase(infile_map.begin() + fnum);
+
+      fnum++; fnum_int++;
+    }//File loop
+
+  }//Key loop
+
+  std::string var_name_eff = "";
+  for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
+
+    const std::string& var_name = varit->second->Name();
+    var_name_num.clear(); var_name_den.clear();
+    if(m_opt->NumPrefix() != ""){ 
+      var_name_num += m_opt->NumPrefix() + "_";  
+    }
+    if(m_opt->DenPrefix() != ""){ 
+      var_name_den += m_opt->DenPrefix() + "_";  
+    }
+    var_name_num += var_name;
+    var_name_den += var_name;
+    if(m_opt->NumSuffix() != ""){ 
+      var_name_num += "_" + m_opt->NumSuffix();
+    }
+    if(m_opt->DenSuffix() != ""){ 
+      var_name_den += "_" + m_opt->DenSuffix();
+    }
+    var_name_eff = var_name + "_EFF";
+
+    for(SampleAttributesMap::iterator samit = m_attr_map.begin(); samit != m_attr_map.end(); ++samit){
+      const std::string& ds_suffix = samit->second->Suffix();
+      std::string key_num = var_name_num + "_" + ds_suffix;
+      std::string key_den = var_name_den + "_" + ds_suffix;
+      std::string key_eff = var_name_eff + "_" + ds_suffix;
+      TH1D* hsample_num = m_hstMngr->GetTH1D( key_num ); 
+      TH1D* hsample_den = m_hstMngr->GetTH1D( key_den ); 
+      TH1D* hsample_eff = m_hstMngr->CloneTH1D(key_eff, key_num, true);
+      std::cout<<"keynum = "<<key_num<<" keyden = "<<key_den<<std::endl;
+      hsample_eff->Divide(hsample_num, hsample_den, 1, 1, "b");
+
+      key_num.clear(); key_den.clear(); key_eff.clear();
+    }//sample loop
+
+  
+  }//variable loop
+
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::makeEfficiencyHistograms end"<<std::endl; 
+
+  return;
+}
+
+
+int PlotManager::ReadHistogramsFromFile(int dim){
+
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::ReadHistogramsFromFile start"<<std::endl; 
+
+  TFile* infile = NULL;
+  int fnum = 0;
+  bool makeSum = m_attr_map.find("SUM") != m_attr_map.end();
+
+  std::map<std::string, std::vector<std::string> >::iterator fn_it = m_filename_map.begin();
+  for( ; fn_it != m_filename_map.end(); ++fn_it){
+    bool b_multi = m_filekey_multi_map[fn_it->first];
+
+    std::vector<std::string>::iterator v_it = (fn_it->second).begin();
+    unsigned int fnum_int = 0;
+    for( ; v_it != (fn_it->second).end(); ++v_it){
+
+      infile = TFile::Open( (*v_it).c_str(), "READ" );
+      if(infile == NULL){ 
+	std::cout<<"ERROR: File "<<(*v_it)<<" can not be found"<<std::endl; 
+	continue;
+      }
+      if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager ::ReadHistogramsFromFile , opened file "<<(*v_it)<<std::endl;
+      for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
+
+	TH1D* h1key_seq = NULL;
+	TH1D* h1sum = NULL;
+	TH1D* h1key = NULL;
+
+	TH2D* h2key_seq = NULL;
+	TH2D* h2sum = NULL;
+	TH2D* h2key = NULL;
+	
+	const std::string& var_name = varit->second->Name();
+	const std::string& var_doScale = varit->second->DoScale();
+	bool b_var_scale = (var_doScale != "NONE");
+	bool b_var_isShape = (var_doScale == "SHAPE");
+	bool var_draw_stack = varit->second->DrawStack();
+
+	//std::string key = var_name + "_TEMP";
+	std::string key_seq = Form("%s_%i", var_name.c_str(), fnum);
+
+	if(dim == 1){
+	  m_hstMngr->ReadTH1D(var_name, infile, key_seq);
+	  h1key_seq = m_hstMngr->GetTH1D(key_seq);
+	}
+	else if(dim == 2){
+	  m_hstMngr->ReadTH2D(var_name, infile, key_seq);
+	  h2key_seq = m_hstMngr->GetTH2D(key_seq);
+	} 
+
+	if(makeSum || (b_var_isShape && var_draw_stack)){
+	  std::string keysum = makeSum ? var_name + "_" + m_attr_map["SUM"]->Suffix() : var_name + "_sum";
+	  if(dim == 1){
+	    h1sum = m_hstMngr->GetTH1D(keysum);
+	    if(h1sum == NULL){h1sum = m_hstMngr->CloneTH1D(keysum, h1key_seq, true); }
+	  }
+	  else if(dim == 2){
+	    h2sum = m_hstMngr->GetTH2D(keysum);
+	    if(h2sum == NULL){h2sum = m_hstMngr->CloneTH2D(keysum, h2key_seq, true); }
+	  }
+	  keysum.clear();
+	}//Sum histogram created
+
+	if(b_multi){
+
+	  std::vector<std::string>& vsamp = m_filekey_samples[fn_it->first];
+	  for(unsigned int js = 0; js < vsamp.size(); js++){
+	    const std::string& samp = vsamp.at(js);
+	    std::string key = var_name + "_" + m_attr_map[samp]->Suffix();
+	    std::string key_seq_samp = Form("%s_%i_%i", var_name.c_str(), fnum, js);
+	    TH1D* h1key_seq_samp = NULL; 
+	    TH2D* h2key_seq_samp = NULL; 
+	    double sc = 1;
+	    if(b_var_scale){ 
+	      if( (m_filescale_map.find(samp) != m_filescale_map.end()) 
+		  && (m_filescale_map[samp].size() > fnum_int) ) 
+		{
+		  sc = m_filescale_map[samp].at(fnum_int);
+		}
+	    }
+
+
+	    if(dim == 1){
+	      h1key = m_hstMngr->GetTH1D(key);
+	      if(h1key == NULL){h1key = m_hstMngr->CloneTH1D(key, h1key_seq, true); }
+	      h1key_seq_samp = m_hstMngr->CloneTH1D(key_seq_samp, h1key_seq);
+	      if(b_var_scale){ h1key_seq_samp->Scale(sc); }
+
+	      h1key->Add(h1key_seq_samp); 
+	      if(h1sum && m_attr_map[samp]->DrawStack()){ h1sum->Add(h1key_seq_samp); }
+	      m_hstMngr->ClearTH1(key_seq_samp);
+	    }
+	    else if(dim == 2){
+	      h2key = m_hstMngr->GetTH2D(key);
+	      if(h2key == NULL){h2key = m_hstMngr->CloneTH2D(key, h2key_seq, true); }
+	      h2key_seq_samp = m_hstMngr->CloneTH2D(key_seq_samp, h2key_seq);
+	      if(b_var_scale){ h2key_seq_samp->Scale(sc); }
+
+	      h2key->Add(h2key_seq_samp); 
+	      if(h2sum && m_attr_map[samp]->DrawStack()){ h2sum->Add(h2key_seq_samp); }
+	      m_hstMngr->ClearTH2(key_seq_samp);
+	    }
+
+	    key_seq_samp.clear(); key.clear();
+
+	  }//subsample loop
+
+	}//if multi
+	else{
+	  const std::string& samp = fn_it->first;
+	  std::string key = var_name + "_" + m_attr_map[samp]->Suffix();
+
+	  if(dim == 1){
+	    h1key = m_hstMngr->GetTH1D(key);
+	    if(h1key == NULL){h1key = m_hstMngr->CloneTH1D(key, h1key_seq, true); }
+
+	    if(b_var_scale){ h1key_seq->Scale(m_filescale_map[samp].at(fnum_int)); }
+	    h1key->Add(h1key_seq);
+	    if(h1sum && m_attr_map[samp]->DrawStack()){ h1sum->Add(h1key_seq); }
+	  }
+	  else if(dim == 2){
+	    h2key = m_hstMngr->GetTH2D(key);
+	    if(h2key == NULL){h2key = m_hstMngr->CloneTH2D(key, h2key_seq, true); }
+
+	    if(b_var_scale){ h2key_seq->Scale(m_filescale_map[samp].at(fnum_int)); }
+	    h2key->Add(h2key_seq);
+	    if(h2sum && m_attr_map[samp]->DrawStack()){ h2sum->Add(h2key_seq); }
+	  }
+	  key.clear();
+	}
+
+	if(dim == 1){ m_hstMngr->ClearTH1(key_seq); }
+	else if(dim == 2){ m_hstMngr->ClearTH2(key_seq); }
+	key_seq.clear();
+
+      }//Variables
+
+      infile->Close();
+      delete infile; //infile_map.erase(infile_map.begin() + fnum);
+
+      fnum++; fnum_int++;
+    }//File loop
+
+  }//Key loop
+
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::ReadHistogramsFromFile end"<<std::endl; 
+
+  return 0;
+
+}
+
+
+void PlotManager::ProjectByBin(){
+
+  bool drawHists = ( m_opt->ProjOpt().find("HIST") != std::string::npos );
+  bool drawMean = ( m_opt->ProjOpt().find("MEAN") != std::string::npos );
+  bool drawRMS = ( m_opt->ProjOpt().find("RMS") != std::string::npos );
+
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::ProjectByBin start"<<std::endl; 
+
+  ReadHistogramsFromFile(2);
+  bool makeSum = m_attr_map.find("SUM") != m_attr_map.end();
+
+  for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
+
+    const std::string& var_name = varit->second->Name();
+    //const std::string& var_label = varit->second->Label();
+    int var_rebin = varit->second->Rebin();
+    const std::string& var_doScale = varit->second->DoScale(); 
+    bool b_var_isShape = (var_doScale == "SHAPE");
+    bool var_draw_stack = varit->second->DrawStack();
+
+    TH2D* hsum = NULL;
+    if(makeSum || (b_var_isShape && var_draw_stack)){
+      std::string keysum = makeSum ? var_name + "_" + m_attr_map["SUM"]->Suffix() : var_name + "_sum";
+      hsum = m_hstMngr->GetTH2D(keysum);
+      keysum.clear();
+    }
+
+    int nbinx = -1;
+    for(SampleAttributesMap::iterator samit = m_attr_map.begin(); samit != m_attr_map.end(); ++samit){
+
+      if( b_var_isShape && (std::find(m_multi_extra.begin(), m_multi_extra.end(), samit->first) != m_multi_extra.end()) ){continue;}
+      const std::string& ds_suffix = samit->second->Suffix();
+      const std::string& ds_drawScale = samit->second->DrawScale(); 
+      std::string key = var_name + "_" + ds_suffix;
+      TH2D* hsample = m_hstMngr->GetTH2D( key ); 
+      TH1D* hmean = NULL; TH1D* hrms = NULL;
+      if(drawMean || drawRMS){
+	TH1D* projtemp = hsample->ProjectionX(Form("%s_px", key.c_str()));
+	if(drawMean){
+	  std::string keymean = var_name + "_MEAN_" + ds_suffix;
+	  hmean = m_hstMngr->CloneTH1D(keymean, projtemp, true);
+	  keymean.clear();
+	}
+	if(drawRMS){
+	  std::string keyrms = var_name + "_RMS_" + ds_suffix;
+	  hrms = m_hstMngr->CloneTH1D(keyrms, projtemp, true);
+	  keyrms.clear();
+	}
+      }
+
+      //Project each bin in the x-axis onto a new histogram
+      if(nbinx < 0){nbinx = hsample->GetXaxis()->GetNbins();;}
+      double rmin = 0.; double rmax = 0.;
+      std::string projname = ""; std::string sumname = "";
+      for(int nb = 1; nb<nbinx; nb++){
+	std::string var_name_nb = Form("%s_%i", var_name.c_str(), nb);
+
+	rmin = hsample->GetXaxis()->GetBinLowEdge(nb);
+	rmax = hsample->GetXaxis()->GetBinLowEdge(nb);
+	projname = var_name_nb + "_" + ds_suffix;
+	TH1D* hproj = m_hstMngr->GetTH1D(projname);
+	if(hproj == NULL){
+	  hproj = hsample->ProjectionY(projname.c_str(), nb, nb);
+	  hproj->SetTitle(Form("%0.f < %s < %0.f", rmin, hsample->GetXaxis()->GetTitle(), rmax));
+	  m_hstMngr->SetTH1D(projname, hproj);
+	}
+
+	if(drawMean){
+	  hmean->SetBinContent(nb, hproj->GetMean());
+	  hmean->SetBinError(nb, hproj->GetMeanError());
+	}
+	if(drawRMS){
+	  hrms->SetBinContent(nb, hproj->GetRMS());
+	  hrms->SetBinError(nb, hproj->GetRMSError());
+	}
+	if(!drawHists){
+	  m_hstMngr->ClearTH1(projname); 
+	  continue;
+	}
+	if(var_rebin > 0){hproj->Rebin(var_rebin);}
+	if( b_var_isShape || (ds_drawScale == "SHAPE") ){
+	  double sc = 1.; 
+	  if( b_var_isShape && var_draw_stack && (samit->first != "SUM") && (ds_drawScale == "NORM") ){
+
+	    sumname = makeSum ? var_name_nb + "_" + m_attr_map["SUM"]->Suffix() : var_name_nb + "_sum";
+	    TH1D* hsum_proj = m_hstMngr->GetTH1D(sumname);
+	    if(hsum_proj == NULL){ 
+	      hsum_proj = hsum->ProjectionY(sumname.c_str(),nb,nb);
+	      m_hstMngr->SetTH1D(sumname, hsum_proj);
+	    }
+	    double intgl_sum = hsum_proj->Integral();
+	    sc = (intgl_sum > 0.) ? 1./intgl_sum : 1.;
+	  } 
+	  else{ 
+	    double intgl = hproj->Integral();
+	    sc = (intgl > 0.) ? 1./intgl : 1.;
+	  }
+	  hproj->Scale(sc);
+	}//if unit normalisation
+	
+      }//loop over bins
+      
+      key.clear();
+    }//sample loop
+
+    varit->second->SetNProjBin(nbinx);
+
+  }//Variable loop
+
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::ProjectByBin end"<<std::endl; 
 
   return;
 }

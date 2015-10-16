@@ -7,6 +7,7 @@
 #include "TCanvas.h"
 #include "TPad.h"
 #include "TLegend.h"
+#include "TPaveText.h"
 #include "TLegendEntry.h"
 //#include "TIter.h"
 #include "TLatex.h"
@@ -24,6 +25,21 @@ PlotUtils::PlotUtils(Plotter_Options* opt, HistManager* hstMngr, SampleAttribute
 { 
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::PlotUtils start"<<std::endl; 
+  m_var_map_proj.clear(); 
+
+  if( m_opt->DoProjections() && m_opt->ProjOpt().find("HIST") ){
+
+    for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
+      for(int i = 1; i <= varit->second->NProjBin(); i++){
+	
+	VariableAttributes* vartemp = new VariableAttributes( *(varit->second) );
+	std::string tempname = Form("%s_%i", varit->second->Name().c_str(), i);
+	vartemp->SetName(tempname); 
+	m_var_map_proj[tempname] = vartemp;
+	tempname.clear();
+      }
+    }
+  }
 
   m_drawSum = (m_attrbt_map.find("SUM") != m_attrbt_map.end());
   m_samples_noshape = samples_noshape;
@@ -36,24 +52,45 @@ PlotUtils::PlotUtils(Plotter_Options* opt, HistManager* hstMngr, SampleAttribute
 }
 
 PlotUtils::~PlotUtils(){
+
+  for(VariableAttributesMap::iterator varit = m_var_map_proj.begin(); varit != m_var_map_proj.end(); ++varit){
+    delete varit->second;
+    m_var_map_proj.erase(varit);
+  }
+
   delete m_outfile;
 }
 
 void PlotUtils::Terminate(){
-  m_outfile->Close();
+  if(m_outfile) m_outfile->Close();
 }
 
-void PlotUtils::OverlayHists(){
+void PlotUtils::OverlayHists(const std::string& projopt){
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists start"<<std::endl; 
 
+  bool doGraphs = ((projopt == "MEAN") || (projopt == "RMS") || (projopt == "EFF") );
+  const std::string& glob_ttl = m_opt->Title();
   // int nsample = m_attrbt_map.size();
   //int ndist = m_var_map.size();
 
+  bool opt_hasResMin = (m_opt->OptStr().find("--RESMIN") != std::string::npos); 
+  bool opt_hasResMax = (m_opt->OptStr().find("--RESMAX") != std::string::npos);
+  bool opt_hasYMin = (m_opt->OptStr().find("--YMIN") != std::string::npos);
+  bool opt_hasYMax = (m_opt->OptStr().find("--YMAX") != std::string::npos);
+  bool opt_hasXMin = (m_opt->OptStr().find("--XMIN") != std::string::npos);
+  bool opt_hasXMax = (m_opt->OptStr().find("--XMAX") != std::string::npos);
+  
   bool var_draw_stack = 0;
   bool var_isLog = false;
   bool var_isShape = false;
   bool var_do_width = false;
+  bool var_hasResMin = false;
+  bool var_hasResMax = false;
+  bool var_hasYMin = false;
+  bool var_hasYMax = false;
+  bool var_hasXMin = false;
+  bool var_hasXMax = false;
 
   bool ds_draw_stack = false;
   int ds_res_opt = -1;
@@ -71,19 +108,41 @@ void PlotUtils::OverlayHists(){
     }
   } 
 
-  for(VariableAttributesMap::iterator va_it = m_var_map.begin(); va_it != m_var_map.end(); ++va_it){
+  std::string legopt = "";
+  std::vector<TH1D*> v_hstack_a;
+  v_hstack_a.clear();
+  VariableAttributesMap* var_loop_map = (projopt == "HIST") ? &m_var_map_proj : &m_var_map;
+  for(VariableAttributesMap::iterator va_it = var_loop_map->begin(); va_it != var_loop_map->end(); ++va_it){
 
-    const std::string& var_name       = va_it->second->Name();
+    v_hstack_a.clear();
+    std::string var_name       = va_it->second->Name();
+    if(projopt == "MEAN"){var_name += "_MEAN";}
+    else if(projopt == "RMS"){var_name += "_RMS";}
+    else if(projopt == "EFF"){var_name += "_EFF";}
+ 
     const std::string& var_label      = va_it->second->Label();
     const std::string& var_draw_res   = va_it->second->DrawRes();
     const std::string& var_ylabel     = (va_it->second->YLabel() != "") ? va_it->second->YLabel() : m_opt->YLabel();
     const std::string& var_reslabel   = (va_it->second->ResLabel() != "") ? va_it->second->ResLabel() : m_opt->ResLabel();
     const std::string& var_resdrawopt = (va_it->second->ResDrawOpt() != "") ? va_it->second->ResDrawOpt() : m_opt->ResDrawOpt();
+    const std::string& var_extralabel = va_it->second->ExtraLabel();
 
-    var_isShape                = (va_it->second->DoScale() == "SHAPE"); 
-    var_do_width               = va_it->second->DoWidth();
-    var_draw_stack = va_it->second->DrawStack();
-    var_isLog = va_it->second->IsLog();
+    var_isShape        = !doGraphs && (va_it->second->DoScale() == "SHAPE"); 
+    var_do_width       = !doGraphs && va_it->second->DoWidth();
+    var_draw_stack     = !doGraphs && va_it->second->DrawStack();
+    var_isLog          = !doGraphs && va_it->second->IsLog();
+
+    var_hasResMin      = va_it->second->HasResMin();
+    var_hasResMax      = va_it->second->HasResMax();
+    var_hasYMin        = va_it->second->HasYMin();
+    var_hasYMax        = va_it->second->HasYMax();
+
+    var_hasXMin        = va_it->second->HasXMin();
+    var_hasXMax        = va_it->second->HasXMax();
+
+    int nbinx = 0; 
+    double xr_min = 0.; 
+    double xr_max = 0.;
 
     std::string hname_sum = m_drawSum ? var_name + "_" + m_attrbt_map["SUM"]->Suffix() : "";
 
@@ -109,6 +168,7 @@ void PlotUtils::OverlayHists(){
 
     TLegend* leg_a = new TLegend();
     TLegend* leg_yield = (m_opt->ShowYields() && (!var_isShape || var_draw_stack) ) ? new TLegend() : NULL;
+
     double textsize=0.03;
     if(drawRes){textsize=0.03;}
     SetStyleLegend(*leg_a, textsize);
@@ -117,11 +177,47 @@ void PlotUtils::OverlayHists(){
       SetStyleLegend(*leg_yield, textsize, 42, 0.05);
       leg_yield->Clear();
     }
-    //Decide on the rules for drawing stack and for drawing residuals or ratios
-    //This means decide how many pads the canvas will have
-    //Make a new THStack
-    //Make a TLegend and set its style
 
+    TPaveText* ttlbox = NULL;
+    if( (glob_ttl != "") || (var_extralabel != "") ){
+      double ttl_xmin = 0.; double ttl_ymin = 0.; double ttl_xmax = 0.; double ttl_ymax = 0.;
+      if(va_it->second->HasTitleXMin()){ ttl_xmin = va_it->second->TitleXMin(); }
+      else if(m_opt->OptStr().find("TITLEXMIN") != std::string::npos){ ttl_xmin = m_opt->TitleXMin(); }
+      else{ std::cout<<"Warning: No min. x coordinate give for title box"<<std::endl; } 
+
+      if(va_it->second->HasTitleXMax()){ ttl_xmax = va_it->second->TitleXMax(); }
+      else if(m_opt->OptStr().find("TITLEXMAX") != std::string::npos){ ttl_xmax = m_opt->TitleXMax(); }
+      else{ std::cout<<"Warning: No max. x coordinate give for title box"<<std::endl; } 
+
+      if(va_it->second->HasTitleYMin()){ ttl_ymin = va_it->second->TitleYMin(); }
+      else if(m_opt->OptStr().find("TITLEYMIN") != std::string::npos){ ttl_ymin = m_opt->TitleYMin(); }
+      else{ std::cout<<"Warning: No min. y coordinate give for title boy"<<std::endl; } 
+
+      if(va_it->second->HasTitleYMax()){ ttl_ymax = va_it->second->TitleYMax(); }
+      else if(m_opt->OptStr().find("TITLEYMAX") != std::string::npos){ ttl_ymax = m_opt->TitleYMax(); }
+      else{ std::cout<<"Warning: No max. y coordinate give for title boy"<<std::endl; } 
+
+
+      ttlbox = new TPaveText(ttl_xmin, ttl_ymin, ttl_xmax, ttl_ymax, "NBNDC");
+      ttlbox->SetFillColor(0);
+      ttlbox->SetFillStyle(0);
+      ttlbox->SetLineColor(0);
+      ttlbox->SetTextSize(0.03);
+      ttlbox->SetTextFont(42);
+      ttlbox->SetShadowColor(0);
+
+      if(glob_ttl != ""){ ttlbox->AddText(glob_ttl.c_str()); }
+      if(var_extralabel != ""){ ttlbox->AddText(var_extralabel.c_str());}
+    }
+    /*
+    v_label_stack.clear();
+    v_drawopt_stack.clear();
+    v_yield_stack.clear();
+
+    v_label_nostack.clear();
+    v_drawopt_nostack.clear();
+    v_yield_nostack.clear();
+    */
     for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
 
       if( var_isShape && !var_draw_stack && at_it->first == "SUM" ){continue;}
@@ -132,20 +228,32 @@ void PlotUtils::OverlayHists(){
       const std::string& ds_leglabel = at_it->second->LegLabel();
       const std::string& ds_stylekey = at_it->second->StyleKey();
       const std::string& ds_drawopt = at_it->second->DrawOpt();
-      const std::string& ds_legopt = at_it->second->LegOpt();
+      const std::string& ds_legopt =  at_it->second->LegOpt();
 
-      bool ds_isShape = (at_it->second->DrawScale() == "SHAPE"); 
-      ds_draw_stack = at_it->second->DrawStack();
+      bool ds_isShape = !doGraphs && (at_it->second->DrawScale() == "SHAPE"); 
+      ds_draw_stack = !doGraphs && at_it->second->DrawStack();
       ds_res_opt = at_it->second->ResOpt();
 
       std::string hist_name = var_name + "_" + ds_suffix;
       SetStyleHist(hist_name, ds_stylekey);
       TH1D* hist_a = m_hstMngr->GetTH1D(hist_name);
 
-      leg_a->AddEntry(hist_a, ds_leglabel.c_str(), ds_legopt.c_str());
+      if(ds_legopt != ""){
+	leg_a->AddEntry(hist_a, ds_leglabel.c_str(), ds_legopt.c_str());
+      }
+      else if(m_opt->LegOpt() != ""){
+	leg_a->AddEntry(hist_a, ds_leglabel.c_str(), m_opt->LegOpt().c_str());
+      }
+      else{
+	legopt = "l";
+	if( (ds_drawopt.find("hist") != std::string::npos) || (ds_drawopt.find("HIST") != std::string::npos) 
+	    || (ds_drawopt.find("e2") != std::string::npos) || (ds_drawopt.find("E2") != std::string::npos)  ){ legopt += "f";}
+	if( (ds_drawopt.find("e") != std::string::npos) || (ds_drawopt.find("E") != std::string::npos) ){ legopt += "p"; }
+	leg_a->AddEntry(hist_a, ds_leglabel.c_str(), legopt.c_str());
+	legopt.clear();
+      }
 
-
-      if(leg_yield){ 
+      if(!doGraphs && leg_yield){ 
 	if(!ds_isShape){leg_yield->AddEntry(hist_a, Form("%.4g",hist_a->Integral()), ""); }
 	else{ leg_yield->AddEntry(hist_a, " ", ""); }
       }
@@ -160,7 +268,9 @@ void PlotUtils::OverlayHists(){
 	}
       }
 
-      if(var_draw_stack && ds_draw_stack){ hs_stack_a->Add(hist_a, "hist"); }
+      if(var_draw_stack && ds_draw_stack){ 
+	v_hstack_a.push_back(hist_a);
+      }
       else{ 
 	hs_nostack_a->Add(hist_a, ds_drawopt.c_str()); 
 
@@ -178,6 +288,14 @@ void PlotUtils::OverlayHists(){
       hist_name.clear();
     }//sample loop
 
+    if(hs_stack_a && v_hstack_a.size() > 0){
+
+      for(int ro = v_hstack_a.size()-1; ro >= 0; ro--){
+	hs_stack_a->Add(v_hstack_a.at(ro), "hist");
+      }
+
+    }
+
     if( drawRes && var_draw_stack ){
       std::string resname_sum_a = var_name + "_sum_" + "_res_" + s_base_suffix;
       TH1D* hsum_res_a = makeResidual(resname_sum_a, hname_sum, hbasename, var_draw_res);
@@ -188,23 +306,56 @@ void PlotUtils::OverlayHists(){
     //std::cout<<" var_draw_stack = "<<var_draw_stack<<" drawRes = "<<drawRes<<" hs_res_a->size() = "<<size_res<<std::endl; 
 
     //Draw the THStack in the top panel, set the x and y axis labels
-    double c_min = 1.e-10;
-    double c_max = 1.; 
-    double stretch_max = var_isLog ? 1.E3 : 1.3;
-    double stretch_min = var_isLog ? 1.E-2 : 0.5;
+    double c_min = 0.; double c_max = 0.;
+    double stretch_min = 1.; double stretch_max = 1.;
+
+    if(var_hasYMin){c_min = va_it->second->YMin();}
+    else if(opt_hasYMin){c_min = m_opt->YMin();}
+    else{ stretch_min = var_isLog ? 1.E-2 : 0.5; }
+
+    if(var_hasYMax){c_max = va_it->second->YMax();}
+    else if(opt_hasYMax){c_max = m_opt->YMax();}
+    else{ stretch_max = var_isLog ? 1.E3 : 1.3; }
 
     TPad* curpad = (TPad*)(canv_a->cd(1));
     if(var_isLog){curpad->SetLogy();}
 
     if(var_draw_stack){
       hs_stack_a->Draw();
-      c_max = hs_stack_a->GetHistogram()->GetMaximum();
-      c_min = hs_stack_a->GetHistogram()->GetMinimum();
-
       if(hs_nostack_a->GetNhists() > 0){
-	hs_nostack_a->Draw("samenostack");
-	c_max = max(c_max, hs_nostack_a->GetHistogram()->GetMaximum());
-	c_min = max(c_min, hs_nostack_a->GetHistogram()->GetMinimum());
+      	hs_nostack_a->Draw("samenostack");
+      }
+
+      if(!var_hasYMax && !opt_hasYMax){
+	c_max = hs_stack_a->GetHistogram()->GetMaximum();
+	if(hs_nostack_a->GetNhists() > 0){
+	  c_max = max(c_max, hs_nostack_a->GetHistogram()->GetMaximum());
+	}
+	c_max *= stretch_max;
+      }
+      if(!var_hasYMin && !opt_hasYMin){
+	c_min = hs_stack_a->GetHistogram()->GetMinimum();
+	if(hs_nostack_a->GetNhists() > 0){
+	  c_min = min(c_min, hs_nostack_a->GetHistogram()->GetMinimum());
+	}
+	c_min *= stretch_min;
+      }
+      hs_stack_a->SetMinimum(c_min);
+      hs_stack_a->SetMaximum(c_max);
+
+      nbinx = hs_stack_a->GetHistogram()->GetNbinsX();
+
+
+      if(var_hasXMin || opt_hasXMin || var_hasXMax || opt_hasXMax){
+	if(var_hasXMin){ xr_min = va_it->second->XMin(); }
+	else if(opt_hasXMin){ xr_min = m_opt->XMin(); }
+	else{ xr_min = hs_stack_a->GetHistogram()->GetXaxis()->GetBinLowEdge(1); }
+
+	if(var_hasXMax){ xr_max = va_it->second->XMax(); }
+	else if(opt_hasXMax){ xr_max = m_opt->XMax(); }
+	else{ xr_max = hs_stack_a->GetHistogram()->GetXaxis()->GetBinUpEdge(nbinx); }
+
+	hs_stack_a->GetXaxis()->SetRangeUser(xr_min, xr_max);
       }
 
       if(var_label != ""){ hs_stack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
@@ -213,28 +364,44 @@ void PlotUtils::OverlayHists(){
       if(var_ylabel != ""){ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle(var_ylabel.c_str()); }
       else{ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_stack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
 
-      c_max *= stretch_max;
-      c_min *= stretch_min;
-
-      hs_stack_a->SetMinimum(c_min);
-      hs_stack_a->SetMaximum(c_max);
-
     }
     else{
       hs_nostack_a->Draw("nostack"); 
-      c_max = hs_nostack_a->GetHistogram()->GetMaximum();
-      c_min = hs_nostack_a->GetHistogram()->GetMinimum();
+      if(!var_hasYMax && !opt_hasYMax){
+	c_max = hs_nostack_a->GetHistogram()->GetMaximum();
+	c_max *= stretch_max;
+      }
+      if(!var_hasYMin && !opt_hasYMin){
+	c_min = hs_nostack_a->GetHistogram()->GetMinimum();
+	c_min *= stretch_min;
+      }
+
+      hs_nostack_a->SetMinimum(c_min);
+      hs_nostack_a->SetMaximum(c_max);
+
+      nbinx = hs_nostack_a->GetHistogram()->GetNbinsX();
+      if(var_hasXMin || opt_hasXMin || var_hasXMax || opt_hasXMax){
+	if(var_hasXMin){ xr_min = va_it->second->XMin(); }
+	else if(opt_hasXMin){ xr_min = m_opt->XMin(); }
+	else{ xr_min = hs_nostack_a->GetHistogram()->GetXaxis()->GetBinLowEdge(1); }
+
+	if(var_hasXMax){ xr_max = va_it->second->XMax(); }
+	else if(opt_hasXMax){ xr_max = m_opt->XMax(); }
+	else{ xr_max = hs_nostack_a->GetHistogram()->GetXaxis()->GetBinUpEdge(nbinx); }
+
+	hs_nostack_a->GetXaxis()->SetRangeUser(xr_min, xr_max);
+      }
+
       if(var_label != ""){ hs_nostack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
       else{ hs_nostack_a->GetHistogram()->GetXaxis()->SetTitle( ((TH1D*)(hs_nostack_a->GetStack()->First()))->GetXaxis()->GetTitle() ) ; }
 
       if(var_ylabel != ""){ hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle(var_ylabel.c_str()); }
       else{ hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_nostack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
 
-      c_max *= stretch_max;
-      c_min *= stretch_min;
+      //hs_nostack_a->SetMinimum(1e-11);
 
-      hs_nostack_a->SetMinimum(c_min);
-      hs_nostack_a->SetMaximum(c_max);
+      //hs_nostack_a->GetXaxis()->SetRangeUser(0.,200.);
+
     }
 
     if(var_isLog && c_min <= 1.e-10){ c_min = 1.e-10; }
@@ -245,7 +412,7 @@ void PlotUtils::OverlayHists(){
     else{ ResizeLegend(*leg_a, 0.89, 0.89 );}
     leg_a->DrawClone();
     if(leg_yield){ leg_yield->DrawClone(); }
-
+    if(ttlbox){ ttlbox->Draw(); } 
     curpad->RedrawAxis();
     curpad->Update();
     curpad->Modified();
@@ -257,27 +424,33 @@ void PlotUtils::OverlayHists(){
       //double r_max = 1.1*hs_res_a->GetHistogram()->GetMaximum();
 
       double r_min = 0.; double r_max = 0.;
-      if(va_it->second->HasResMin()){r_min = va_it->second->ResMin();}
-      else if(m_opt->OptStr().find("--RESMIN") != std::string::npos){m_opt->ResMin();}
+      if(var_hasResMin){r_min = va_it->second->ResMin();}
+      else if(opt_hasResMin){r_min = m_opt->ResMin();}
       else if(var_draw_res == "RESIDUAL"){ r_min = -1.;}
       else if(var_draw_res == "FRACRES"){ r_min = -1.;}
       else if(var_draw_res == "RATIO"){ r_min = 0.5;}
       else if(var_draw_res == "INVRATIO"){ r_min = 0.5;}
 
-      if(va_it->second->HasResMax()){r_max = va_it->second->ResMax();}
-      else if(m_opt->OptStr().find("--RESMAX") != std::string::npos){m_opt->ResMax();}
+      if(var_hasResMax){r_max = va_it->second->ResMax();}
+      else if(opt_hasResMax){r_max = m_opt->ResMax();}
       else if(var_draw_res == "RESIDUAL"){ r_max = 1.;}
       else if(var_draw_res == "FRACRES"){ r_max = 1.;}
       else if(var_draw_res == "RATIO"){ r_max = 1.5;}
       else if(var_draw_res == "INVRATIO"){ r_max = 1.5;}
 
       hs_res_a->Draw("nostack");
-
-      double nbinx = hs_res_a->GetHistogram()->GetNbinsX();
-      double rxmin = hs_res_a->GetHistogram()->GetXaxis()->GetBinLowEdge(1);
-      double rxmax = hs_res_a->GetHistogram()->GetXaxis()->GetBinUpEdge(nbinx);
+      if(var_hasXMin || opt_hasXMin || var_hasXMax || opt_hasXMax){
+	hs_res_a->GetXaxis()->SetRangeUser(xr_min, xr_max);
+      }
+      else{
+       nbinx = hs_res_a->GetHistogram()->GetNbinsX();
+       xr_min = hs_res_a->GetHistogram()->GetXaxis()->GetBinLowEdge(1);
+       xr_max = hs_res_a->GetHistogram()->GetXaxis()->GetBinUpEdge(nbinx);
+      }
       double ry = ( (var_draw_res == "RESIDUAL") || (var_draw_res == "FRACRES") ) ? 0. : 1.;
-      TLine* lnref = new TLine(rxmin, ry, rxmax, ry); // a reference line
+
+      TLine* lnref = new TLine(xr_min, ry, xr_max, ry); // a reference line
+      lnref->SetLineStyle(2); //dashed line
 
       if(var_label != ""){ hs_res_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
       else{ hs_res_a->GetHistogram()->GetXaxis()->SetTitle( ((TH1D*)(hs_res_a->GetStack()->First()))->GetXaxis()->GetTitle() ) ; }
@@ -317,6 +490,7 @@ void PlotUtils::OverlayHists(){
     delete hs_stack_a;
     delete hs_nostack_a;
     delete hs_res_a;
+    delete ttlbox;
     //delete leg_a;
     //delete leg_yield;
     //Clear strings
@@ -363,12 +537,21 @@ int PlotUtils::SetStyleCanvas(TCanvas& canv, bool divide){
 
   if(divide){canv.Divide(1,2);
     canv.cd(1)->SetPad(0.,0.35,0.95,0.95);
-    canv.cd(2)->SetPad(0.,0.,0.95,0.35);
+    canv.cd(1)->SetBorderMode(0);
+    canv.cd(1)->SetTopMargin(0.05);
     canv.cd(1)->SetBottomMargin(0.0001);
+    canv.cd(1)->SetRightMargin(0.05);
+
+    canv.cd(2)->SetPad(0.,0.,0.95,0.35);
+    canv.cd(2)->SetBorderMode(0);
     canv.cd(2)->SetTopMargin(0.0001);
     canv.cd(2)->SetBottomMargin(0.2);
-    canv.cd(1)->SetBorderMode(0);
-    canv.cd(2)->SetBorderMode(0);
+    canv.cd(2)->SetRightMargin(0.05);
+  }
+  else{
+    canv.cd()->SetTopMargin(0.05);
+    canv.cd()->SetBottomMargin(0.2);
+    canv.cd()->SetRightMargin(0.05);
   }
 
   return 0;
@@ -392,6 +575,7 @@ int PlotUtils::SetStyleHist(std::string hname, std::string style_key){
 
 int PlotUtils::SetStyleLegend(TLegend &leg, double textsize, int textfont, double margin){
   leg.SetFillColor(0);
+  leg.SetFillStyle(0);
   leg.SetLineColor(0);
   leg.SetMargin(margin);
   leg.SetTextSize(textsize);
@@ -437,7 +621,7 @@ int PlotUtils::ResizeLegend(TLegend& leg, double xpt, double ypt, const std::str
     X2 = X1 + delX; 
     Y2 = Y1 + delY;
   }
-  else{std::cout<<"Error : UNknown option for legend justification"<<std::endl;}
+  else{std::cout<<"Error : Unknown option for legend justification"<<std::endl;}
 
   leg.SetX1NDC(X1);
   leg.SetX2NDC(X2);

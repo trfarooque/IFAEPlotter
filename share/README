@@ -1,0 +1,142 @@
+NOTE: This README file is under reconstruction. Features are partially documented with priority given to the essential ones.
+
+Current recommended version
+----------------------------
+ svn+ssh://$USER@svn.cern.ch/reps/IfaeAnaRepo/IFAEanalysis/RunIITopTools/IFAEPlotter/devbranches/trisha_new
+
+This version is currently under beta-testing, but it provides substantial improvements over the version in the trunk. Please try this version and report any problems to us.
+
+Help and support
+--------------------
+trisha.farooque@cern.ch
+ 
+Overview
+--------------
+
+IFAEPlotter is designed to read in configuration files and make overlay plots from ROOT histograms. 
+It currently supports the following features:
+1. Overlaying TH1 for different samples onto a TCanvas.
+2. Making efficiency histograms from provided numerator and denominator histogram name patterns
+3. Projecting 2D histograms into 1D slices and making overlay plots out of them for various samples.
+
+*** Only the first option is currently documented****
+
+Configuration files
+----------------------
+IFAEPlotter will take in the following configuration files as input:
+1. A sample configuration file - This list all the samples that are to be overlaid on each plot 
+(e.g. data, signal, various backgrounds). The attributes of each sample are controlled by the 
+parameters given herein.
+
+2. A variable configuration file - This lists the names of each histogram to be plotted and the 
+associated plotting options. 
+
+3. A file list : This lists the files associated to each sample and, optionally, a normalisation scaling factor 
+associated to each file. For example, if one uses dijet pT slices (JZ0, JZ1, ...) to represent a multijet background, 
+then each pT slice may result in a different histogram file, and each file would be associated to the cross section 
+weight of that slice. If all of these files are associated to a single sample ID, then they will be added together 
+(properly weighted) and drawn as a single histogram in the overlay plot.
+
+4. Style library : This is a common file that can be reused by several programs. Each line in the style library associates 
+a style set (line colour, marker style, etc.) with a key. The sample configuration should associate this key with a given sample.
+
+
+Input format
+-----------------------
+In the current implementation, histograms for different samples should reside in different histograms - although, 
+as noted above, one can have multiple input files per sample. The histograms in each file for a given variable 
+must have identical names.
+
+
+Configuration parameters
+--------------------------
+
+1. Global options:
+
+In general, global options are applied to all samples and variables. If the same option exists in a config 
+file, the config file option will override the global option for a given sample/variable.
+
+--SAMPLES : The sample configuration file
+--VARIABLES : The variable configuration file
+--FILELIST : The file list for samples
+--STYLELIB : Style library to use
+--OUTFORMAT : Comma-separated list of all formats in which the plots should be printed. Currently supports eps, png, pdf.
+Writing ROOT files in buggy - please don't use right now.
+--YLABEL : Title of Y-axis. Overriden by variable configuration.
+--RESLABEL : Title of Y-axis in bottom panel. Overriden by variable configuration.
+--RESDRAWOPT: Drawing option for residual histogram in bottom panel. Overriden by variable configuration. If neither 
+provided, use the drawing option for each sample as given in the sample configuration.
+--NEWCONFIG : Switch to use new config file format. 
+--RESMIN : Minimum of y-axis range for bottom panel
+--RESMAX : Maximum of y-axis range for bottom panel
+--YMIN : Minimum of y-axis range. Overriden by variable configuration.
+--YMAX : Maximum of y-axis range. Overriden by variable configuration.
+--XMIN : Minimum of x-axis range. Overriden by variable configuration.
+--XMAX : Maximum of x-axis range. Overriden by variable configuration.
+--SHOWYIELDS : Show yields in the legend. TRUE or FALSE
+--LEGOPT : Option to pass to TLegend for each entry. Overriden by sample configuration. If neither specified, the draw option
+of each sample is used to determine the style of the legend entry
+--TITLEXMIN : NDC min-x. coordinate for title box. Overriden by variable configuration.
+--TITLEYMIN : NDC min-y. coordinate for title box. Overriden by variable configuration.
+--TITLEXMAX : NDC max-x. coordinate for title box. Overriden by variable configuration.
+--TITLEYMAX : NDC max-y. coordinate for title box. Overriden by variable configuration.
+--TITLE : Title string to be drawn (e.g. ATLAS internal). Accepts #splitline.
+
+***Other global options exist***
+
+2. Sample attributes: 
+
+NAME : Name of sample. Histograms are currently stacked in alphabetical order using this name.
+LEGLABEL : Label used in legend entry
+STYLEKEY : Style key from style library to associate to this sample
+DRAWOPT : Histogram drawing option
+LEGOPT : Option to pass to TLegend for this sample's entry
+DRAWSCALE : "NORM" if this should be drawn normalised to given sample weight. "SHAPE" if unit-normalisation wanted. 
+"NONE" if no weight is to be applied
+DRAWSTACK : TRUE or FALSE. Sample added to THStack if TRUE. If FALSE, the sample will be drawn with a "nostack" option (e.g. data).
+RESOPT : SKIP or INC or REF. This option is used to determine how this sample should be used in the calculation of residuals
+for the bottom panel. SKIP means this sample is not drawn in the residual panel. REF means this is the reference sample,
+ with respect to which the residuals are to be calculated. The residuals are calculated and drawn for all samples indicating "INC"
+
+
+3. Variable attributes:
+
+NAME : Name of histogram in file
+LABEL : Title of x-axis. Existing x-axis title from histogram used if this is not specified
+YLABEL : Title of y-axis. Existing y-axis title from histogram used if this is not specified 
+RESLABEL : Title of y-axis on bottom panel.
+EXTRALABEL : Extra text to be added to the title box beyond what is already given in global --TITLE option
+DRAWSTACK : TRUE or FALSE. No histogram is stacked if this option is FALSE, even if the sample attribute indicates TRUE
+DRAWRES : No bottom panel drawn if NONE. The following options are supported currently:
+	RATIO : reference / sample
+	INVRATIO : sample / reference
+	RESIDUAL : sample - reference
+	Others to be added
+ISLOG : TRUE or FALSE. canv->SetLogY() on top panel if TRUE
+REBIN : Nothing done if 0. Else, the given integer is used to perform TH1::Rebin(). Variable bins will be implemented.
+DOSCALE : SHAPE or NORM. 
+DOWIDTH : TRUE or FALSE. TRUE can be used to draw bin content / bin width for histograms with irregular bin sizes.
+RESDRAWOPT : See global option
+RESMIN : See global option 
+RESMAX : See global option 
+YMIN : See global option 
+YMAX : See global option
+XMIN : See global option 
+XMAX : See global option 
+TITLEXMIN : See global option 
+TITLEYMIN : See global option
+TITLEXMAX : See global option 
+TITLEYMAX : See global option 
+	
+********************
+
+Some notes:
+
+1. If DRAWSTACK = TRUE and DOSCALE=SHAPE for a variable, the summed histogram will be normalised to unit area. Each histogram 
+in the stack will represent the fraction of the area. In this case, it is essential that the individual histograms are 
+properly normalised through the options given in sample configuration
+
+2. share folder contains a set of example configuration files and an example running script. Files are in Trisha's private area 
+on lxplus. Please ask for access.
+
+*** More notes to be added

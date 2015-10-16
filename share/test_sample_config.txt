@@ -4,12 +4,14 @@ Trailing spaces
 
 BEGIN
 NAME : SUFFIX : LEGLABEL : STYLEKEY : DRAWOPT : DRAWSTACK : RESOPT : DRAWSCALE
-0_data : dat : Data : 1 : e1 : 0 : 1 : NONE
-1_ttbar : tt : t#bar{t} : 2 : e1hist : 1 : 0 : NORM
-2_Wj : Wjets : W+jets : 3 : e1hist : 1 : 0 : NORM
-3_dijet : dijet : QCD Dijet : 4 : e1hist : 1 : -1 : NORM
-5_ttbar_shape : tt_shape : t#bar{t} (Shape) : 6 : hist : 0 : -1 : SHAPE
-SUM : sum : Total Background : 5 : e2 : 0 : 0 : NONE
+0_p4_2_0 : p4_2_0 : S = 4 : 1 : e1 : FALSE : REF : NORM
+1_p6_2_0 : p6_2_0 : S = 6 : 2 : e1 : FALSE : INC : NORM
+2_p8_2_0 : p8_2_0 : S = 8 : 3 : e1 : FALSE : INC : NORM
+3_p10_2_0 : p10_2_0 : S = 10 : 4 : e1 : FALSE : INC : NORM
+4_p12_2_0 : p12_2_0 : S = 12 : 5 : e1 : FALSE : INC : NORM
+5_p14_2_0 : p14_2_0 : S = 14 : 6 : e1 : FALSE : INC : NORM
+6_p16_2_0 : p16_2_0 : S = 16 : 7 : e1 : FALSE : INC : NORM
+7_p18_2_0 : p18_2_0 : S = 18 : 8 : e1 : FALSE : INC : NORM
 END
 
 Now we have some more lines that will never see the light of day

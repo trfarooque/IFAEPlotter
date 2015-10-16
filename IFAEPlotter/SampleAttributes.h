@@ -9,7 +9,8 @@ class SampleAttributes{
  public:
   SampleAttributes();
   SampleAttributes(const std::string& name, const std::string& suffix, const std::string& leglabel, const std::string& stylekey
-		   , const std::string& drawopt="hist", const std::string& drawscale="NORM", bool draw_stack=false, int res_opt=-1);
+		   , const std::string& drawopt="hist", const std::string& legopt = ""
+		   , const std::string& drawscale="NORM", bool draw_stack=false, int res_opt=-1);
   ~SampleAttributes(){}
 
  private:
