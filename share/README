@@ -2,7 +2,7 @@ NOTE: This README file is under reconstruction. Features are partially documente
 
 Current recommended version
 ----------------------------
- svn+ssh://$USER@svn.cern.ch/reps/IfaeAnaRepo/IFAEanalysis/RunIITopTools/IFAEPlotter/devbranches/trisha_new
+ svn+ssh://$USER@svn.cern.ch/reps/IfaeAnaRepo/IFAEanalysis/RunIITopTools/IFAEPlotter/trunk
 
 This version is currently under beta-testing, but it provides substantial improvements over the version in the trunk. Please try this version and report any problems to us.
 
@@ -98,6 +98,9 @@ RESOPT : SKIP or INC or REF. This option is used to determine how this sample sh
 for the bottom panel. SKIP means this sample is not drawn in the residual panel. REF means this is the reference sample,
  with respect to which the residuals are to be calculated. The residuals are calculated and drawn for all samples indicating "INC"
 
+**NOTE** The keyword SUM can be used to draw a sum of all histograms in the THStack with a statistical error band. Add it as 
+just another sample in the sample configuration file. Currently, SUM must be included if the DRAWRES option is used with stacked 
+samples. This feature will be corrected in the future.
 
 3. Variable attributes:
 
