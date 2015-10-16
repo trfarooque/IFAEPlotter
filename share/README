@@ -4,7 +4,7 @@ Current recommended version
 ----------------------------
  svn+ssh://$USER@svn.cern.ch/reps/IfaeAnaRepo/IFAEanalysis/RunIITopTools/IFAEPlotter/trunk
 
-This version is currently under beta-testing, but it provides substantial improvements over the version in the trunk. Please try this version and report any problems to us.
+This version is currently under beta-testing. Please try it and report any problems to us.
 
 Help and support
 --------------------
