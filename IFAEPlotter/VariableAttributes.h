@@ -13,7 +13,7 @@ class VariableAttributes{
 		     , bool has_xmin=false, bool has_xmax=false, double xmin=0., double xmax=0.
 		     , bool has_ttl_xmin=false, bool has_ttl_xmax=false, double ttl_xmin=0., double ttl_xmax=0.
 		     , bool has_ttl_ymin=false, bool has_ttl_ymax=false, double ttl_ymin=0., double ttl_ymax=0.   
-		     , const std::string& resdrawopt="", const std::string& extralabel="", int rebin=-1);
+		     , const std::string& resdrawopt="", const std::string& extralabel="", int rebin=-1, const std::string& blinding="");
   VariableAttributes(VariableAttributes& q);
 
   ~VariableAttributes(){ }
@@ -29,6 +29,7 @@ class VariableAttributes{
   void SetDrawRes(const std::string& draw_res){ m_draw_res = draw_res; }
   void SetDoWidth(bool do_width){ m_do_width = do_width; }
   void SetResDrawOpt(const std::string& resdrawopt){ m_resdrawopt = resdrawopt; }
+  void SetBlinding(const std::string& blinding){ m_blinding = blinding; }
   void SetResMin(double resmin){ m_resmin = resmin; }
   void SetResMax(double resmax){ m_resmax = resmax; }
   void SetHasResMin(bool has_resmin){ m_has_resmin = has_resmin; }
@@ -87,6 +88,7 @@ class VariableAttributes{
 
   int NProjBin(){ return m_nprojbin; }
   const std::string& ResDrawOpt(){ return m_resdrawopt; }
+  const std::string& Blinding(){ return m_blinding; }
   const std::string& ExtraLabel(){ return m_extralabel; }
 
  private:  
@@ -124,6 +126,7 @@ class VariableAttributes{
 
   int m_nprojbin;
   std::string m_resdrawopt;
+  std::string m_blinding;
   std::string m_extralabel;
 };
 

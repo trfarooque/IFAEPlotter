@@ -65,7 +65,7 @@ class StyleDictionary{
   Color_t MarkerColour(const std::string& key);
   Style_t MarkerStyle(const std::string& key);
   Size_t MarkerSize(const std::string& key);
-
+  unsigned int NStyles(){ return m_style_map.size(); }
   Color_t ParseColourString(const std::string& value);
 
 

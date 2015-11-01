@@ -37,6 +37,7 @@ class PlotUtils{
 
  private:
   bool m_drawSum;
+  bool m_drawBlinder;
   Plotter_Options* m_opt; //not owned
   HistManager* m_hstMngr; //not owned
   std::vector<std::string>* m_samples_noshape; //not owned

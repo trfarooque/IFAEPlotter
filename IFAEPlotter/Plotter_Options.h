@@ -31,6 +31,10 @@ public:
     inline const std::string& ProjOpt(){ return m_projopt; }
     inline const std::string& Title(){ return m_title; }
     inline const std::string& LegOpt(){ return m_legopt; }
+    inline const std::string& Blinding(){ return m_blinding; }
+    inline const std::string& BlindSample(){ return m_blind_sample; }
+    inline const std::string& BlindCriterion(){ return m_blind_criterion; }
+    inline const std::string& YieldFormat(){ return m_yield_format; } 
 
     inline bool NewConfigFormat(){ return m_new_config_format; }
     inline bool NewSampleFormat(){ return m_new_sample_format; }
@@ -51,6 +55,8 @@ public:
     inline double TitleYMin(){ return m_titleymin; }
     inline double TitleXMax(){ return m_titlexmax; }
     inline double TitleYMax(){ return m_titleymax; }
+    inline double GlobalScale(){ return m_global_scale; }
+    inline double BlindThreshold(){ return m_blind_threshold; }
 
 protected:
     virtual bool IdentifyOption( const std::string &, const std::string & );
@@ -74,6 +80,10 @@ private:
     std::string m_projopt;
     std::string m_legopt;
     std::string m_title;
+    std::string m_blinding;
+    std::string m_blind_sample;
+    std::string m_blind_criterion;
+    std::string m_yield_format;
 
     bool m_new_config_format;
     bool m_new_sample_format;
@@ -95,6 +105,8 @@ private:
     double m_titleymin;
     double m_titlexmax;
     double m_titleymax;
+    double m_global_scale;
+    double m_blind_threshold;
 
 };
 

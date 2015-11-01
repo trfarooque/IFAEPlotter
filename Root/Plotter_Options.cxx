@@ -25,6 +25,10 @@ Plotter_Options::Plotter_Options():
   m_projopt("MEAN"),
   m_legopt(""),
   m_title(""),
+  m_blinding(""),
+  m_blind_sample(""),
+  m_blind_criterion("CONTAMINATION"),
+  m_yield_format("%4g"),
   m_new_config_format(false),
   m_new_sample_format(false),
   m_new_variable_format(false),
@@ -43,7 +47,9 @@ Plotter_Options::Plotter_Options():
   m_titlexmin(0.),
   m_titleymin(0.),
   m_titlexmax(0.),
-  m_titleymax(0.)
+  m_titleymax(0.),
+  m_global_scale(1.),
+  m_blind_threshold(0.)
 {}
 
 //_____________________________________________________________
@@ -83,10 +89,16 @@ OptionsBase(q)
   m_show_yields          = q.m_show_yields;
   m_legopt               = q.m_legopt;
   m_title                = q.m_title;
+  m_blinding             = q.m_blinding;
+  m_blind_sample         = q.m_blind_sample;
+  m_blind_criterion      = q.m_blind_criterion;
+  m_yield_format         = q.m_yield_format;
   m_titlexmin            = q.m_titlexmin;
   m_titleymin            = q.m_titleymin;
   m_titlexmax            = q.m_titlexmax;
   m_titleymax            = q.m_titleymax;
+  m_global_scale         = q.m_global_scale;
+  m_blind_threshold      = q.m_blind_threshold;
 }
 
 //_____________________________________________________________
@@ -231,7 +243,24 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     else if( temp_arg.find("--TITLE") != std::string::npos ){
       m_title = temp_val;
     } 
-
+    else if( temp_arg.find("--BLINDING") != std::string::npos ){
+      m_blinding = temp_val;
+    } 
+    else if( temp_arg.find("--BLINDSAMPLE") != std::string::npos ){
+      m_blind_sample = temp_val;
+    } 
+    else if( temp_arg.find("--GLOBALSCALE") != std::string::npos ){
+      m_global_scale = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--BLINDTHRESHOLD") != std::string::npos ){
+      m_blind_threshold = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--BLINDCRITERION") != std::string::npos ){
+      m_blind_criterion = temp_val;
+    } 
+    else if( temp_arg.find("--YIELDFORMAT") != std::string::npos ){
+      m_yield_format = temp_val;
+    } 
     else {
       return false;
     }
@@ -261,6 +290,8 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_den_prefix             = " << m_den_prefix           << std::endl;
     std::cout << " m_legopt                 = " << m_legopt               << std::endl;
     std::cout << " m_title                  = " << m_title                << std::endl;
+    std::cout << " m_blinding               = " << m_blinding             << std::endl;
+    std::cout << " m_blind_sample           = " << m_blind_sample         << std::endl;
     std::cout << " m_new_config_format      = " << m_new_config_format    << std::endl;
     std::cout << " m_new_sample_format      = " << m_new_sample_format    << std::endl;
     std::cout << " m_new_variable_format    = " << m_new_variable_format  << std::endl;
@@ -280,6 +311,10 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_titleymin              = " << m_titleymin            << std::endl;
     std::cout << " m_titlexmax              = " << m_titlexmax            << std::endl;
     std::cout << " m_titleymax              = " << m_titleymax            << std::endl;
+    std::cout << " m_global_scale           = " << m_global_scale         << std::endl;
+    std::cout << " m_blind_threshold        = " << m_blind_threshold      << std::endl;
+    std::cout << " m_blind_criterion        = " << m_blind_criterion      << std::endl;
+    std::cout << " m_yield_format           = " << m_yield_format         << std::endl;
 
     std::cout << "============================================="          << std::endl;
     std::cout << "" << std::endl;

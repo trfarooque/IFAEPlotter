@@ -6,7 +6,7 @@ SampleAttributes::SampleAttributes(){
 
 SampleAttributes::SampleAttributes(const std::string& name, const std::string& suffix, const std::string& leglabel, const std::string& stylekey
 				   , const std::string& drawopt, const std::string& legopt, const std::string& drawscale
-				   , bool draw_stack, int res_opt) : 
+				   , bool draw_stack, int res_opt, const std::string& blinding) : 
   m_name(name),
   m_suffix(suffix),
   m_leglabel(leglabel),
@@ -15,5 +15,6 @@ SampleAttributes::SampleAttributes(const std::string& name, const std::string& s
   m_drawscale(drawscale),
   m_legopt(legopt),
   m_draw_stack(draw_stack),
-  m_res_opt(res_opt)
+  m_res_opt(res_opt),
+  m_blinding(blinding)
 {}

@@ -10,7 +10,7 @@ class SampleAttributes{
   SampleAttributes();
   SampleAttributes(const std::string& name, const std::string& suffix, const std::string& leglabel, const std::string& stylekey
 		   , const std::string& drawopt="hist", const std::string& legopt = ""
-		   , const std::string& drawscale="NORM", bool draw_stack=false, int res_opt=-1);
+		   , const std::string& drawscale="NORM", bool draw_stack=false, int res_opt=-1, const std::string& blinding="NONE");
   ~SampleAttributes(){}
 
  private:
@@ -21,6 +21,7 @@ class SampleAttributes{
   std::string m_drawopt;
   std::string m_drawscale;
   std::string m_legopt; 
+  std::string m_blinding;
 
   bool m_draw_stack;
   int m_res_opt;
@@ -33,6 +34,7 @@ class SampleAttributes{
   void SetDrawScale(const std::string& drawscale){ m_drawscale = drawscale; }
   void SetLegLabel(const std::string& leglabel){ m_leglabel = leglabel; }
   void SetLegOpt(const std::string& legopt){ m_legopt = legopt; }
+  void SetBlinding(const std::string& blinding){ m_blinding = blinding; }
   void SetDrawStack(bool draw_stack){ m_draw_stack = draw_stack; }
   void SetResOpt(int res_opt){ m_res_opt = res_opt; }
 
@@ -43,6 +45,7 @@ class SampleAttributes{
   const std::string& StyleKey(){ return m_stylekey; }
   const std::string& DrawOpt(){ return m_drawopt; }
   const std::string& DrawScale(){ return m_drawscale; }
+  const std::string& Blinding(){ return m_blinding; }
   bool DrawStack(){ return m_draw_stack; }
   int ResOpt(){ return m_res_opt; }
 

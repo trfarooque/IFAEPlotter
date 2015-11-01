@@ -60,26 +60,26 @@ file, the config file option will override the global option for a given sample/
 --VARIABLES : The variable configuration file
 --FILELIST : The file list for samples
 --STYLELIB : Style library to use
---OUTFORMAT : Comma-separated list of all formats in which the plots should be printed. Currently supports eps, png, pdf.
+--OUTFORMAT(DEFAULT="PNG") : Comma-separated list of all formats in which the plots should be printed. Currently supports eps, png, pdf.
 Writing ROOT files in buggy - please don't use right now.
---YLABEL : Title of Y-axis. Overriden by variable configuration.
---RESLABEL : Title of Y-axis in bottom panel. Overriden by variable configuration.
---RESDRAWOPT: Drawing option for residual histogram in bottom panel. Overriden by variable configuration. If neither 
+--YLABEL(DEFAULT="Events") : Title of Y-axis. Overriden by variable configuration.
+--RESLABEL(DEFAULT="Data/MC") : Title of Y-axis in bottom panel. Overriden by variable configuration.
+--RESDRAWOPT(DEFAULT=NONE): Drawing option for residual histogram in bottom panel. Overriden by variable configuration. If neither 
 provided, use the drawing option for each sample as given in the sample configuration.
---NEWCONFIG : Switch to use new config file format. 
---RESMIN : Minimum of y-axis range for bottom panel
---RESMAX : Maximum of y-axis range for bottom panel
---YMIN : Minimum of y-axis range. Overriden by variable configuration.
---YMAX : Maximum of y-axis range. Overriden by variable configuration.
---XMIN : Minimum of x-axis range. Overriden by variable configuration.
---XMAX : Maximum of x-axis range. Overriden by variable configuration.
---SHOWYIELDS : Show yields in the legend. TRUE or FALSE
---LEGOPT : Option to pass to TLegend for each entry. Overriden by sample configuration. If neither specified, the draw option
+--NEWCONFIG(DEFAULT=FALSE) : Switch to use new config file format. 
+--RESMIN(DEFAULT=NONE) : Minimum of y-axis range for bottom panel
+--RESMAX(DEFAULT=NONE) : Maximum of y-axis range for bottom panel
+--YMIN(DEFAULT=NONE) : Minimum of y-axis range. Overriden by variable configuration.
+--YMAX(DEFAULT=NONE) : Maximum of y-axis range. Overriden by variable configuration.
+--XMIN(DEFAULT=NONE) : Minimum of x-axis range. Overriden by variable configuration.
+--XMAX(DEFAULT=NONE) : Maximum of x-axis range. Overriden by variable configuration.
+--SHOWYIELDS(DEFAULT=FALSE) : Show yields in the legend. TRUE or FALSE
+--LEGOPT(DEFAULT="") : Option to pass to TLegend for each entry. Overriden by sample configuration. If neither specified, the draw option
 of each sample is used to determine the style of the legend entry
---TITLEXMIN : NDC min-x. coordinate for title box. Overriden by variable configuration.
---TITLEYMIN : NDC min-y. coordinate for title box. Overriden by variable configuration.
---TITLEXMAX : NDC max-x. coordinate for title box. Overriden by variable configuration.
---TITLEYMAX : NDC max-y. coordinate for title box. Overriden by variable configuration.
+--TITLEXMIN(DEFAULT=NONE) : NDC min-x. coordinate for title box. Overriden by variable configuration.
+--TITLEYMIN(DEFAULT=NONE) : NDC min-y. coordinate for title box. Overriden by variable configuration.
+--TITLEXMAX(DEFAULT=NONE) : NDC max-x. coordinate for title box. Overriden by variable configuration.
+--TITLEYMAX(DEFAULT=NONE) : NDC max-y. coordinate for title box. Overriden by variable configuration.
 --TITLE : Title string to be drawn (e.g. ATLAS internal). Accepts #splitline.
 
 ***Other global options exist***
@@ -89,12 +89,12 @@ of each sample is used to determine the style of the legend entry
 NAME : Name of sample. Histograms are currently stacked in alphabetical order using this name.
 LEGLABEL : Label used in legend entry
 STYLEKEY : Style key from style library to associate to this sample
-DRAWOPT : Histogram drawing option
+DRAWOPT(DEFAULT=HIST) : Histogram drawing option
 LEGOPT : Option to pass to TLegend for this sample's entry
-DRAWSCALE : "NORM" if this should be drawn normalised to given sample weight. "SHAPE" if unit-normalisation wanted. 
+DRAWSCALE(DEFAULT=NORM) : "NORM" if this should be drawn normalised to given sample weight. "SHAPE" if unit-normalisation wanted. 
 "NONE" if no weight is to be applied
-DRAWSTACK : TRUE or FALSE. Sample added to THStack if TRUE. If FALSE, the sample will be drawn with a "nostack" option (e.g. data).
-RESOPT : SKIP or INC or REF. This option is used to determine how this sample should be used in the calculation of residuals
+DRAWSTACK (DEFAULT=FALSE) : TRUE or FALSE. Sample added to THStack if TRUE. If FALSE, the sample will be drawn with a "nostack" option (e.g. data).
+RESOPT(DEFAULT=SKIP) : SKIP or INC or REF. This option is used to determine how this sample should be used in the calculation of residuals
 for the bottom panel. SKIP means this sample is not drawn in the residual panel. REF means this is the reference sample,
  with respect to which the residuals are to be calculated. The residuals are calculated and drawn for all samples indicating "INC"
 
@@ -109,27 +109,27 @@ LABEL : Title of x-axis. Existing x-axis title from histogram used if this is no
 YLABEL : Title of y-axis. Existing y-axis title from histogram used if this is not specified 
 RESLABEL : Title of y-axis on bottom panel.
 EXTRALABEL : Extra text to be added to the title box beyond what is already given in global --TITLE option
-DRAWSTACK : TRUE or FALSE. No histogram is stacked if this option is FALSE, even if the sample attribute indicates TRUE
+DRAWSTACK(DEFAULT=FALSE) : TRUE or FALSE. No histogram is stacked if this option is FALSE, even if the sample attribute indicates TRUE
 DRAWRES : No bottom panel drawn if NONE. The following options are supported currently:
 	RATIO : reference / sample
 	INVRATIO : sample / reference
 	RESIDUAL : sample - reference
 	Others to be added
-ISLOG : TRUE or FALSE. canv->SetLogY() on top panel if TRUE
-REBIN : Nothing done if 0. Else, the given integer is used to perform TH1::Rebin(). Variable bins will be implemented.
-DOSCALE : SHAPE or NORM. 
-DOWIDTH : TRUE or FALSE. TRUE can be used to draw bin content / bin width for histograms with irregular bin sizes.
+ISLOG(DEFAULT=FALSE) : TRUE or FALSE. canv->SetLogY() on top panel if TRUE
+REBIN(DEFAULT=0) : Nothing done if 0. Else, the given integer is used to perform TH1::Rebin(). Variable bins will be implemented.
+DOSCALE(DEFAULT=NONE) : SHAPE or NORM or NONE. 
+DOWIDTH(DEFAULT=FALSE) : TRUE or FALSE. TRUE can be used to draw bin content / bin width for histograms with irregular bin sizes.
 RESDRAWOPT : See global option
-RESMIN : See global option 
-RESMAX : See global option 
-YMIN : See global option 
-YMAX : See global option
-XMIN : See global option 
-XMAX : See global option 
-TITLEXMIN : See global option 
-TITLEYMIN : See global option
-TITLEXMAX : See global option 
-TITLEYMAX : See global option 
+RESMIN(DEFAULT=NONE) : See global option 
+RESMAX(DEFAULT=NONE) : See global option 
+YMIN(DEFAULT=NONE) : See global option 
+YMAX(DEFAULT=NONE) : See global option
+XMIN(DEFAULT=NONE) : See global option 
+XMAX(DEFAULT=NONE) : See global option 
+TITLEXMIN(DEFAULT=NONE) : See global option 
+TITLEYMIN(DEFAULT=NONE) : See global option
+TITLEXMAX(DEFAULT=NONE) : See global option 
+TITLEYMAX(DEFAULT=NONE) : See global option 
 	
 ********************
 
