@@ -198,7 +198,7 @@ void makeVariableConfigurationFile(){
   for(unsigned int r = 0; r < m_prefix_list.size(); r++){
     const std::string& region = m_prefix_list.at(r);
 
-    if(region == "c0l"){ var_title = "#splitline{0 lepton, 4 jets, 2-bjets}{MET > 200 GeV, #Deltaphi_{min}(jet, MET) > 0.4}"}
+    if(region == "c0l"){ var_title = "#splitline{0 lepton, 4 jets, 2-bjets}{MET > 200 GeV, #Deltaphi_{min}(jet, MET) > 0.4}";}
     else if(region == "Gtt0L_SR1"){var_title = "Gtt_0L_SR-A";}
     else if(region == "Gtt0L_SR2"){var_title = "Gtt_0L_SR-B";}
     else if(region == "Gtt0L_SR3"){var_title = "Gtt_0L_SR-C";}
