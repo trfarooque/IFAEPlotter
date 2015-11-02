@@ -329,7 +329,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     else{ stretch_max = var_isLog ? 1.E3 : 1.35; }
 
     TPad* curpad = (TPad*)(canv_a->cd(1));
-    std::cout<<"00 var_name = "<<var_name<<" curpad = "<<curpad<<std::endl;
     if(var_isLog){curpad->SetLogy();}
 
     if(var_draw_stack){
@@ -429,12 +428,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	if(h_blinder->GetBinContent(b) > 0){h_blinder->SetBinContent(b, c_max);}
       }
       std::string blinder_drawopt = "same" + m_attrbt_map["BLINDER"]->DrawOpt();
-      std::cout<<"01 var_name = "<<var_name<<" curpad = "<<curpad<<std::endl;
+      canv_a->cd(1);
       h_blinder->Draw(blinder_drawopt.c_str());
       blinder_drawopt.clear();
     }
-
-    std::cout<<"02 var_name = "<<var_name<<" curpad = "<<curpad<<" gPad = "<<gPad<<std::endl;
 
     leg_a->DrawClone();
     if(leg_yield){ leg_yield->DrawClone(); }
@@ -442,7 +439,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     curpad->RedrawAxis();
     curpad->Update();
     curpad->Modified();
-    std::cout<<"03 var_name = "<<var_name<<" curpad = "<<curpad<<std::endl;
 
     if(drawRes){
       curpad = (TPad*)(canv_a->cd(2));
@@ -503,7 +499,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       canv_a->cd(2)->Modified();
       delete lnref;
     }
-    std::cout<<"05 var_name = "<<var_name<<" curpad = "<<curpad<<std::endl;
 
     if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" hs_stack_a->GetNhists() = "<<hs_stack_a->GetNhists()
 						   <<" hs_nostack_a->GetNhists() = "<<hs_nostack_a->GetNhists()
