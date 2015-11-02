@@ -747,7 +747,7 @@ void PlotManager::FillHistManager(){
 
       if(var_do_blind_threshold  && (samp_blinding == "SIGNAL")){
 	if(var_do_blind_bin){
-	  for( int b = 0; b < hsample->GetNbinsX(); b++ ){
+	  for( int b = 1; b <= hsample->GetNbinsX(); b++ ){
 	    if( h_blinder->GetBinContent(b) > 0.){ continue; }
 	  
 	    double num = hsample->GetBinContent(b);
@@ -766,14 +766,14 @@ void PlotManager::FillHistManager(){
 	  if(h_blinder->Integral() > 0.){continue;}
 	  double num = hsample->Integral();
 	  if( (g_blind_crit == "NSIG") && (num >= g_blind_thresh) ){
-	    for( int b = 0; b < hsample->GetNbinsX(); b++ ){ h_blinder->SetBinContent(b, 1.); }
+	    for( int b = 1; b <= hsample->GetNbinsX(); b++ ){ h_blinder->SetBinContent(b, 1.); }
 	  }
 	  else if( g_blind_crit == "SBYB" ){
 	    double den = hsum->Integral();
 	    if( samit->second->DrawStack() ){ den = den - num; }
 	    double sbyb = (den > 0.) ? num/den : g_blind_thresh + 1.; 
 	    if( (num > 0) && (sbyb >= g_blind_thresh) ){
-	      for( int b = 0; b < hsample->GetNbinsX(); b++ ){ h_blinder->SetBinContent(b, 1.); }
+	      for( int b = 1; b <= hsample->GetNbinsX(); b++ ){ h_blinder->SetBinContent(b, 1.); }
 	    }
 	  }
 	}//yield blinding
@@ -797,7 +797,7 @@ void PlotManager::FillHistManager(){
 
     //Blinding
     if(var_do_blind_bin){
-      for( int b = 0; b < h_blinder->GetNbinsX(); b++ ){
+      for( int b = 1; b <= h_blinder->GetNbinsX(); b++ ){
 	if(h_blinder->GetBinContent(b) < 1.){continue;}
 	else{ 
 	  h_blind_sample->SetBinContent(b, 0.); 
