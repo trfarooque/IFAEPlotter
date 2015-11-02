@@ -136,7 +136,7 @@ void makeSampleConfigurationFile(){
     }
     else{ 
       samp_drawopt = "e0hist"; 
-      samp_legopt = "lpef"; 
+      samp_legopt = "lpe"; 
       samp_drawscale = "NORM"; 
       samp_drawstack = "TRUE"; 
       samp_resopt = "INC";
@@ -145,7 +145,7 @@ void makeSampleConfigurationFile(){
     }
 
     sample_config << "NEW" <<std::endl;
-    sample_config << "NAME : "<<samp_name<<std::endl;
+    sample_config << "NAME : "<<samp_key<<std::endl;
     sample_config << "LEGLABEL : "<<samp_leglabel<<std::endl;
     sample_config << "STYLEKEY : "<<samp_stylekey<<std::endl;
     sample_config << "DRAWOPT : "<<samp_drawopt<<std::endl;
@@ -198,26 +198,26 @@ void makeVariableConfigurationFile(){
   for(unsigned int r = 0; r < m_prefix_list.size(); r++){
     const std::string& region = m_prefix_list.at(r);
 
-    if(region == "c0l"){ var_title = "#splitline{0 lepton, 4 jets, 2-bjets}{MET > 200 GeV, #Deltaphi_{min}(jet, MET) > 0.4}";}
-    else if(region == "Gtt0L_SR1"){var_title = "Gtt_0L_SR-A";}
-    else if(region == "Gtt0L_SR2"){var_title = "Gtt_0L_SR-B";}
-    else if(region == "Gtt0L_SR3"){var_title = "Gtt_0L_SR-C";}
-    else if(region == "Gtt0L_SR4"){var_title = "Gtt_0L_SR-D";}
+    if(region == "c0l"){ var_title = "#splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{0 lepton, 4 jets, 2-bjets}}{#splitline{MET > 200 GeV}{#Delta#phi_{min}(jet, MET) > 0.4}}";}
+    else if(region == "Gtt0L_SR1"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_SR-A}";}
+    else if(region == "Gtt0L_SR2"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_SR-B}";}
+    else if(region == "Gtt0L_SR3"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_SR-C}";}
+    else if(region == "Gtt0L_SR4"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_SR-D}";}
 
-    else if(region == "Gtt0L_CR1"){var_title = "Gtt_0L_CR-A";}
-    else if(region == "Gtt0L_CR2"){var_title = "Gtt_0L_CR-B";}
-    else if(region == "Gtt0L_CR3"){var_title = "Gtt_0L_CR-C";}
-    else if(region == "Gtt0L_CR4"){var_title = "Gtt_0L_CR-D";}
+    else if(region == "Gtt0L_CR1"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_CR-A}";}
+    else if(region == "Gtt0L_CR2"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_CR-B}";}
+    else if(region == "Gtt0L_CR3"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_CR-C}";}
+    else if(region == "Gtt0L_CR4"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_CR-D}";}
 
-    else if(region == "Gtt0L_VR1_0L"){var_title = "Gtt_0L_VR0L-A";}
-    else if(region == "Gtt0L_VR2_0L"){var_title = "Gtt_0L_VR0L-B";}
-    else if(region == "Gtt0L_VR3_0L"){var_title = "Gtt_0L_VR0L-C";}
-    else if(region == "Gtt0L_VR4_0L"){var_title = "Gtt_0L_VR0L-D";}
+    else if(region == "Gtt0L_VR1_0L"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_VR0L-A}";}
+    else if(region == "Gtt0L_VR2_0L"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_VR0L-B}";}
+    else if(region == "Gtt0L_VR3_0L"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_VR0L-C}";}
+    else if(region == "Gtt0L_VR4_0L"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_VR0L-D}";}
 
-    else if(region == "Gtt0L_VR1_1L"){var_title = "Gtt_0L_VR1L-A";}
-    else if(region == "Gtt0L_VR2_1L"){var_title = "Gtt_0L_VR1L-B";}
-    else if(region == "Gtt0L_VR3_1L"){var_title = "Gtt_0L_VR1L-C";}
-    else if(region == "Gtt0L_VR4_1L"){var_title = "Gtt_0L_VR1L-D";}
+    else if(region == "Gtt0L_VR1_1L"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_VR1L-A}";}
+    else if(region == "Gtt0L_VR2_1L"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_VR1L-B}";}
+    else if(region == "Gtt0L_VR3_1L"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_VR1L-C}";}
+    else if(region == "Gtt0L_VR4_1L"){var_title = "#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{Gtt_0L_VR1L-D}";}
 
     for(unsigned int v = 0; v < m_variable_list.size(); v++){
       /*

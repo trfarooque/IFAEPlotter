@@ -735,6 +735,7 @@ void PlotManager::FillHistManager(){
 
     
     for(SampleAttributesMap::iterator samit = m_attr_map.begin(); samit != m_attr_map.end(); ++samit){
+
       if(samit->first == "BLINDER"){continue;}
 
       const std::string& samp_blinding = samit->second->Blinding();
@@ -755,7 +756,7 @@ void PlotManager::FillHistManager(){
 	      double den =  hsum->GetBinContent(b);
 	      if( samit->second->DrawStack() ){ den = den - num; }
 	      double sbyb = (den > 0.) ? num/den : g_blind_thresh + 1; //blind any bin that does not have background
-	      if( sbyb >= g_blind_thresh ){ h_blinder->SetBinContent(b, 1.); }
+	      if( (num > 0) && sbyb >= g_blind_thresh ){ h_blinder->SetBinContent(b, 1.); }
 	    }
 	  
 	  }//bin loop
@@ -771,7 +772,7 @@ void PlotManager::FillHistManager(){
 	    double den = hsum->Integral();
 	    if( samit->second->DrawStack() ){ den = den - num; }
 	    double sbyb = (den > 0.) ? num/den : g_blind_thresh + 1.; 
-	    if( sbyb >= g_blind_thresh ){
+	    if( (num > 0) && (sbyb >= g_blind_thresh) ){
 	      for( int b = 0; b < hsample->GetNbinsX(); b++ ){ h_blinder->SetBinContent(b, 1.); }
 	    }
 	  }
@@ -798,7 +799,10 @@ void PlotManager::FillHistManager(){
     if(var_do_blind_bin){
       for( int b = 0; b < h_blinder->GetNbinsX(); b++ ){
 	if(h_blinder->GetBinContent(b) < 1.){continue;}
-	else{h_blind_sample->SetBinContent(b, 0.);}
+	else{ 
+	  h_blind_sample->SetBinContent(b, 0.); 
+	  h_blind_sample->SetBinError(b, 0.);
+	}
       }
     }
     else if(var_do_blinding){
@@ -1053,7 +1057,6 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	  double sc = m_filescale_map[samp].at(fnum_int);
 	  //std::cout<<" samp = "<<samp<<std::endl;
 	  std::string key = var_name + "_" + m_attr_map[samp]->Suffix();
-
 	  if(dim == 1){
 	    h1key = m_hstMngr->GetTH1D(key);
 	    if(h1key == NULL){h1key = m_hstMngr->CloneTH1D(key, h1key_seq, true); }

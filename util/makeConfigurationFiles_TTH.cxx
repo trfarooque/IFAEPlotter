@@ -169,7 +169,7 @@ void makeSampleConfigurationFile(){
   std::string samp_drawscale = "NORM"; //default - will change for data
   std::string samp_drawstack = "TRUE"; //will change to default for data
   std::string samp_resopt = "INC"; //will change for data
-  std::string samp_blinding = "NONE"; //will DEFINITELY change for data
+  std::string samp_blinding = "NONE"; //will DEFINITELY change for signal
 
   std::vector<std::string> samp_list; samp_list.clear();
   samp_list.push_back("0_Data");
@@ -234,7 +234,7 @@ void makeSampleConfigurationFile(){
     sample_config << "DRAWSCALE : "<<samp_drawscale<<std::endl;
     sample_config << "DRAWSTACK : "<<samp_drawstack<<std::endl;
     sample_config << "RESOPT : "<<samp_resopt<<std::endl;
-    //sample_config << "BLINDING : "<<samp_blinding<<std::endl;
+    sample_config << "BLINDING : "<<samp_blinding<<std::endl;
     sample_config << std::endl;
 
 
@@ -260,16 +260,16 @@ void makeVariableConfigurationFile(){
   var_list.push_back("njet");
   var_list.push_back("nbjet");
   var_list.push_back("nljet");
-
+  /*
   var_list.push_back("el_pt");
   var_list.push_back("el_eta");
 
   var_list.push_back("mu_pt");
   var_list.push_back("mu_eta");
-
+  */
   var_list.push_back("jet_1_pt");
   var_list.push_back("jet_all_pt");
-
+  /*
   var_list.push_back("jet_1_eta");
   var_list.push_back("jet_all_eta");
 
@@ -303,20 +303,20 @@ void makeVariableConfigurationFile(){
 
   var_list.push_back("nTopTag_loose");
   var_list.push_back("nTopTag_tight");
-
+  */
   var_list.push_back("MET");
   var_list.push_back("HT_had");
   var_list.push_back("MTW");
 
   std::vector<std::string> reg_list; reg_list.clear();
-  //reg_list.push_back("reg_e_jets_6jin4bin");
+  reg_list.push_back("reg_e_jets_6jin4bin");
   //reg_list.push_back("reg_mu_jets_6jin4bin");
 
-
+  /*
   reg_list.push_back("reg_emu_jets");
   reg_list.push_back("reg_e_jets_4jex2bex");
   reg_list.push_back("reg_mu_jets_4jex2bex");
-
+  */
   /*
   reg_list.push_back("reg_boosted_emu_jets");
   reg_list.push_back("reg_boosted_tag_emu_jets");
