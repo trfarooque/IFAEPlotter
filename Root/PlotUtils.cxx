@@ -611,8 +611,8 @@ int PlotUtils::SetStyleHist(std::string hname, std::string style_key){
 }
 
 int PlotUtils::SetStyleLegend(TLegend &leg, double textsize, int textfont, double margin){
-  leg.SetFillColor(0);
-  leg.SetFillStyle(0);
+  leg.SetFillColor(kWhite);
+  leg.SetFillStyle(1);
   leg.SetLineColor(0);
   leg.SetMargin(margin);
   leg.SetTextSize(textsize);
