@@ -1,5 +1,3 @@
-NOTE: This README file is under reconstruction. Features are partially documented with priority given to the essential ones.
-
 Current recommended version
 ----------------------------
  svn+ssh://$USER@svn.cern.ch/reps/IfaeAnaRepo/IFAEanalysis/RunIITopTools/IFAEPlotter/trunk
@@ -60,19 +58,29 @@ file, the config file option will override the global option for a given sample/
 --VARIABLES : The variable configuration file
 --FILELIST : The file list for samples
 --STYLELIB : Style library to use
---OUTFORMAT(DEFAULT="PNG") : Comma-separated list of all formats in which the plots should be printed. Currently supports eps, png, pdf.
-Writing ROOT files in buggy - please don't use right now.
+--OUTFORMAT(DEFAULT="PNG") : Comma-separated list of all formats in which the plots should be printed. 
+Currently supports eps ("EPS"), png ("PNG"), pdf ("PDF") and .C ("CPP") files.
+Writing ROOT files is buggy - the legends are not displayed.
 --YLABEL(DEFAULT="Events") : Title of Y-axis. Overriden by variable configuration.
 --RESLABEL(DEFAULT="Data/MC") : Title of Y-axis in bottom panel. Overriden by variable configuration.
---RESDRAWOPT(DEFAULT=NONE): Drawing option for residual histogram in bottom panel. Overriden by variable configuration. If neither 
-provided, use the drawing option for each sample as given in the sample configuration.
+--RESDRAWOPT(DEFAULT=NONE): Drawing option for residual histogram in bottom panel. 
+Overriden by variable configuration, which is in turn overriden by sample configuration. 
+If RESDRAWOPT is not provided anywhere, use the drawing option for each sample as given in the sample configuration.
 --NEWCONFIG(DEFAULT=FALSE) : Switch to use new config file format. 
+--NEWSAMPLECONFIG(DEFAULT=FALSE) : Switch to use new file format for sample configuration. 
+--NEWVARIABLECONFIG(DEFAULT=FALSE) : Switch to use new file format for variable configuration. 
+--NEWSTYLECONFIG(DEFAULT=FALSE) : Switch to use new file format for style library. 
+--NEWFILELIST(DEFAULT=FALSE) : Switch to use new format for file list. 
+--WRITEHISTOS(DEFAULT=FALSE) : Write histograms for specified samples in output ROOT file.
+--DO1DPLOTS(DEFAULT=TRUE) : Create overlay plots for TH1Ds by sample
+--DOPROJ(DEFAULT=FALSE) : Create overlays of bin projections of TH2Ds by sample and make plots of MEAN/RMS
+--DOEFF(DEFAULT=FALSE) : Create overlays of efficiency plots by samples from specified numerator and denominator TH1Ds.
 --RESMIN(DEFAULT=NONE) : Minimum of y-axis range for bottom panel
 --RESMAX(DEFAULT=NONE) : Maximum of y-axis range for bottom panel
 --YMIN(DEFAULT=NONE) : Minimum of y-axis range. Overriden by variable configuration.
 --YMAX(DEFAULT=NONE) : Maximum of y-axis range. Overriden by variable configuration.
 --XMIN(DEFAULT=NONE) : Minimum of x-axis range. Overriden by variable configuration.
---XMAX(DEFAULT=NONE) : Maximum of x-axis range. Overriden by variable configuration.
+--XMAX(DEFAULT=NONE) : Maximum of x-axis range. Overriden by variable configurati
 --SHOWYIELDS(DEFAULT=FALSE) : Show yields in the legend. TRUE or FALSE
 --LEGOPT(DEFAULT="") : Option to pass to TLegend for each entry. Overriden by sample configuration. If neither specified, the draw option
 of each sample is used to determine the style of the legend entry
@@ -81,6 +89,18 @@ of each sample is used to determine the style of the legend entry
 --TITLEXMAX(DEFAULT=NONE) : NDC max-x. coordinate for title box. Overriden by variable configuration.
 --TITLEYMAX(DEFAULT=NONE) : NDC max-y. coordinate for title box. Overriden by variable configuration.
 --TITLE : Title string to be drawn (e.g. ATLAS internal). Accepts #splitline.
+--BLINDING : Type of blinding to apply to blind sample. Supported options: 
+	   "THRESH" : Only blind bins/histograms where the blinding variable is above threshold. 
+	   "BIN" : Blinding is applied to individual bins. 
+	   "YIELD" :  Do not print the yield of the blind sample in the legend. 
+Options can be concatenated. Overriden by variable configuration.  
+--BLINDSAMPLE : Sample to blind (e.g. Data)
+--BLINDTHRESHOLD : Threshold above which to blind
+--BLINDCRITERION(DEFAULT=SBYB) : Variable on which blinding threshold is calculated. Supported options: 
+			       SBYB = SIGNAL/SUM as specified in the sample configuration file.
+			       NSIG = Number of events in SIGNAL sample. 
+--GLOBALSCALE : A global constant by which all histograms are scaled. Multiplied to the individual sample scales.
+--YIELDFORMAT : Printf style formatting string used to print yield in legends. Overriden by sample configuration.
 
 ***Other global options exist***
 
@@ -90,17 +110,25 @@ NAME : Name of sample. Histograms are currently stacked in alphabetical order us
 LEGLABEL : Label used in legend entry
 STYLEKEY : Style key from style library to associate to this sample
 DRAWOPT(DEFAULT=HIST) : Histogram drawing option
+RESDRAWOPT : Drawing option in residual panel. 
 LEGOPT : Option to pass to TLegend for this sample's entry
 DRAWSCALE(DEFAULT=NORM) : "NORM" if this should be drawn normalised to given sample weight. "SHAPE" if unit-normalisation wanted. 
 "NONE" if no weight is to be applied
 DRAWSTACK (DEFAULT=FALSE) : TRUE or FALSE. Sample added to THStack if TRUE. If FALSE, the sample will be drawn with a "nostack" option (e.g. data).
+DOSUM : TRUE or FALSE. Sample added to "SUM" if TRUE. Option reverts to same value as DRAWSTACK if not provided.
 RESOPT(DEFAULT=SKIP) : SKIP or INC or REF. This option is used to determine how this sample should be used in the calculation of residuals
-for the bottom panel. SKIP means this sample is not drawn in the residual panel. REF means this is the reference sample,
- with respect to which the residuals are to be calculated. The residuals are calculated and drawn for all samples indicating "INC"
+for the bottom panel. 
+    SKIP : Sample is not drawn in the residual panel. 
+    REF : Reference sample with respect to which the residuals are to be calculated. 
+    INC : Residuals are calculated and drawn for all samples indicating "INC"
+BLINDING : SIGNAL or NONE. Contamination is calculated as the maximum value over all SIGNAL samples. 
+SBYB values are always calulated assuming SUM to be the total background.
+YIELDFORMAT : Printf style formatting string used to print yield in legend.
+WRITE : TRUE or FALSE. All histograms for sample written to file with name OUTFILENAME if WRITEHISTOS is TRUE in global options.
+OUTFILENAME : Name of file to which histograms for sample can be written.
 
-**NOTE** The keyword SUM can be used to draw a sum of all histograms in the THStack with a statistical error band. Add it as 
-just another sample in the sample configuration file. Currently, SUM must be included if the DRAWRES option is used with stacked 
-samples. This feature will be corrected in the future.
+**NOTE** The keyword SUM can be used to draw a sum of all samples with DOSUM=TRUE with a statistical error band. Add it as 
+just another sample in the sample configuration file. 
 
 3. Variable attributes:
 
@@ -111,15 +139,21 @@ RESLABEL : Title of y-axis on bottom panel.
 EXTRALABEL : Extra text to be added to the title box beyond what is already given in global --TITLE option
 DRAWSTACK(DEFAULT=FALSE) : TRUE or FALSE. No histogram is stacked if this option is FALSE, even if the sample attribute indicates TRUE
 DRAWRES : No bottom panel drawn if NONE. The following options are supported currently:
-	RATIO : reference / sample
-	INVRATIO : sample / reference
-	RESIDUAL : sample - reference
+	RATIO : sample /reference
+	INVRATIO : reference / sample
+	DIFF : sample - reference
+	RESIDUAL : (sample - reference)/sample
 	Others to be added
-ISLOG(DEFAULT=FALSE) : TRUE or FALSE. canv->SetLogY() on top panel if TRUE
+DRAWRESERR : Controls the manner in which errors are displayed in the residual panel. Errors are propagated and drawn on the calculated 
+residual by default. "REFBAND" chnages this to produce a statistical error band on the reference line and a scaled error bar on each line 
+in the residual panel.
+ISLOGY(DEFAULT=FALSE) : TRUE or FALSE. canv->SetLogY() on top panel if TRUE
+ISLOGX(DEFAULT=FALSE) : TRUE or FALSE. canv->SetLogY() on top panel if TRUE
 REBIN(DEFAULT=0) : Nothing done if 0. Else, the given integer is used to perform TH1::Rebin(). Variable bins will be implemented.
 DOSCALE(DEFAULT=NONE) : SHAPE or NORM or NONE. 
 DOWIDTH(DEFAULT=FALSE) : TRUE or FALSE. TRUE can be used to draw bin content / bin width for histograms with irregular bin sizes.
 RESDRAWOPT : See global option
+BLINDING : See global option
 RESMIN(DEFAULT=NONE) : See global option 
 RESMAX(DEFAULT=NONE) : See global option 
 YMIN(DEFAULT=NONE) : See global option 

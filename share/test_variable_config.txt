@@ -4,34 +4,34 @@ Trailing spaces
 
 BEGIN
 NAME : LABEL : YLABEL : RESLABEL : DRAWSTACK : DRAWRES : ISLOG : REBIN : DOSCALE : DOWIDTH : RESMIN : RESMAX : RESDRAWOPT : XMIN : XMAX
-Dst_ak4EM_pt : AntiKt4EM Jet p_{T} [GeV] :  : Ratio to 4-2-0 : FALSE : INVRATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 200.
-Dst_ak4EM_eta : AntiKt4EM Jet #eta :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4EM_phi : AntiKt4EM Jet #phi :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4EM_m : AntiKt4EM Jet Mass [GeV] :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4LC_pt : AntiKt4LC Jet p_{T} [GeV] :  : Ratio to 4-2-0 : FALSE : INVRATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 200.
-Dst_ak4LC_eta : AntiKt4LC Jet #eta :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4LC_phi : AntiKt4LC Jet #phi :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4LC_m : AntiKt4LC Jet Mass [GeV] :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4EM_njet_pt0_etal06 : N_{jet}^{EM}(|eta|<0.6) :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4EM_njet_pt20_etal06 : N_{jet}^{EM}(p_{T} > 20 GeV, |eta|<0.6) :  : Ratio to 4-2-0 : FALSE : INVRATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
-Dst_ak4EM_njet_pt0_eta06_17 : N_{jet}^{EM}(0.6<|eta|<1.7) :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4EM_njet_pt20_eta06_17 : N_{jet}^{EM}(p_{T} > 20 GeV, 0.6<|eta|<1.7) :  : Ratio to 4-2-0 : FALSE : INVRATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
-Dst_ak4EM_njet_pt0_eta17_25 : N_{jet}^{EM}(1.7<|eta|<2.5) :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4EM_njet_pt20_eta17_25 : N_{jet}^{EM}(p_{T} > 20 GeV, 1.7<|eta|<2.5) :  : Ratio to 4-2-0 : FALSE : INVRATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
-Dst_ak4EM_njet_pt0_eta25_32 : N_{jet}^{EM}(2.5<|eta|<3.2) :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4EM_njet_pt20_eta25_32 : N_{jet}^{EM}(p_{T} > 20 GeV, 2.5<|eta|<3.2) :  : Ratio to 4-2-0 : FALSE : INVRATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
-Dst_ak4EM_njet_pt0_etag32 : N_{jet}^{EM}(|eta|>3.2) :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4EM_njet_pt20_etag32 : N_{jet}^{EM}(p_{T} > 20 GeV, |eta|>3.2) :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 1 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
-Dst_ak4LC_njet_pt0_etal06 : N_{jet}^{LC}(|eta|<0.6) :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4LC_njet_pt20_etal06 : N_{jet}^{LC}(p_{T} > 20 GeV, |eta|<0.6) :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 2 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
-Dst_ak4LC_njet_pt0_eta06_17 : N_{jet}^{LC}(0.6<|eta|<1.7) :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4LC_njet_pt20_eta06_17 : N_{jet}^{LC}(p_{T} > 20 GeV, 0.6<|eta|<1.7) :  : Ratio to 4-2-0 : FALSE : INVRATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
-Dst_ak4LC_njet_pt0_eta17_25 : N_{jet}^{LC}(1.7<|eta|<2.5) :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4LC_njet_pt20_eta17_25 : N_{jet}^{LC}(p_{T} > 20 GeV, 1.7<|eta|<2.5) :  : Ratio to 4-2-0 : FALSE : INVRATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
-Dst_ak4LC_njet_pt0_eta25_32 : N_{jet}^{LC}(2.5<|eta|<3.2) :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4LC_njet_pt20_eta25_32 : N_{jet}^{LC}(p_{T} > 20 GeV, 2.5<|eta|<3.2) :  : Ratio to 4-2-0 : FALSE : INVRATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
-Dst_ak4LC_njet_pt0_etag32 : N_{jet}^{LC}(|eta|>3.2) :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
-Dst_ak4LC_njet_pt20_etag32 : N_{jet}^{LC}(p_{T} > 20 GeV, |eta|>3.2) :  : Ratio to 4-2-0 : FALSE : INVRATIO : FALSE : 2 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
+Dst_ak4EM_pt : AntiKt4EM Jet p_{T} [GeV] :  : Ratio to 4-2-0 : FALSE : RATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 200.
+Dst_ak4EM_eta : AntiKt4EM Jet #eta :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4EM_phi : AntiKt4EM Jet #phi :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4EM_m : AntiKt4EM Jet Mass [GeV] :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4LC_pt : AntiKt4LC Jet p_{T} [GeV] :  : Ratio to 4-2-0 : FALSE : RATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 200.
+Dst_ak4LC_eta : AntiKt4LC Jet #eta :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4LC_phi : AntiKt4LC Jet #phi :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4LC_m : AntiKt4LC Jet Mass [GeV] :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4EM_njet_pt0_etal06 : N_{jet}^{EM}(|eta|<0.6) :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4EM_njet_pt20_etal06 : N_{jet}^{EM}(p_{T} > 20 GeV, |eta|<0.6) :  : Ratio to 4-2-0 : FALSE : RATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
+Dst_ak4EM_njet_pt0_eta06_17 : N_{jet}^{EM}(0.6<|eta|<1.7) :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4EM_njet_pt20_eta06_17 : N_{jet}^{EM}(p_{T} > 20 GeV, 0.6<|eta|<1.7) :  : Ratio to 4-2-0 : FALSE : RATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
+Dst_ak4EM_njet_pt0_eta17_25 : N_{jet}^{EM}(1.7<|eta|<2.5) :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4EM_njet_pt20_eta17_25 : N_{jet}^{EM}(p_{T} > 20 GeV, 1.7<|eta|<2.5) :  : Ratio to 4-2-0 : FALSE : RATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
+Dst_ak4EM_njet_pt0_eta25_32 : N_{jet}^{EM}(2.5<|eta|<3.2) :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4EM_njet_pt20_eta25_32 : N_{jet}^{EM}(p_{T} > 20 GeV, 2.5<|eta|<3.2) :  : Ratio to 4-2-0 : FALSE : RATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
+Dst_ak4EM_njet_pt0_etag32 : N_{jet}^{EM}(|eta|>3.2) :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4EM_njet_pt20_etag32 : N_{jet}^{EM}(p_{T} > 20 GeV, |eta|>3.2) :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 1 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
+Dst_ak4LC_njet_pt0_etal06 : N_{jet}^{LC}(|eta|<0.6) :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4LC_njet_pt20_etal06 : N_{jet}^{LC}(p_{T} > 20 GeV, |eta|<0.6) :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 2 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
+Dst_ak4LC_njet_pt0_eta06_17 : N_{jet}^{LC}(0.6<|eta|<1.7) :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4LC_njet_pt20_eta06_17 : N_{jet}^{LC}(p_{T} > 20 GeV, 0.6<|eta|<1.7) :  : Ratio to 4-2-0 : FALSE : RATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
+Dst_ak4LC_njet_pt0_eta17_25 : N_{jet}^{LC}(1.7<|eta|<2.5) :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4LC_njet_pt20_eta17_25 : N_{jet}^{LC}(p_{T} > 20 GeV, 1.7<|eta|<2.5) :  : Ratio to 4-2-0 : FALSE : RATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
+Dst_ak4LC_njet_pt0_eta25_32 : N_{jet}^{LC}(2.5<|eta|<3.2) :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4LC_njet_pt20_eta25_32 : N_{jet}^{LC}(p_{T} > 20 GeV, 2.5<|eta|<3.2) :  : Ratio to 4-2-0 : FALSE : RATIO : TRUE : 0 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
+Dst_ak4LC_njet_pt0_etag32 : N_{jet}^{LC}(|eta|>3.2) :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 0 : SHAPE : FALSE : 0.5 : 10. : e1
+Dst_ak4LC_njet_pt20_etag32 : N_{jet}^{LC}(p_{T} > 20 GeV, |eta|>3.2) :  : Ratio to 4-2-0 : FALSE : RATIO : FALSE : 2 : SHAPE : FALSE : 0.5 : 10. : e1 : 0. : 10.
 END
 
 Now we have some more lines that will never see the light of day

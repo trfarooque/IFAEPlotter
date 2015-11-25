@@ -115,9 +115,11 @@ void PlotManager::Execute(){
     if( m_opt->ProjOpt().find("MEAN") != std::string::npos){ m_plotUtils->OverlayHists("MEAN");}
     if( m_opt->ProjOpt().find("RMS") != std::string::npos){ m_plotUtils->OverlayHists("RMS");}
   }
-  else if( m_opt->Do1DPlots() ){
+  else if( m_opt->WriteHistos() || m_opt->Do1DPlots() ){
     FillHistManager(); 
-    m_plotUtils->OverlayHists("NONE");
+    if( m_opt->Do1DPlots() ){ m_plotUtils->OverlayHists("NONE"); }
+    if( m_opt->WriteHistos() ){ WriteHistogramsToFile(); }
+
   } 
 
 
@@ -146,29 +148,6 @@ void PlotManager::Terminate(){
   return;
 }
 
-void PlotManager::TrimString(std::string& str, const std::string& whitespace){
-  const auto strBegin = str.find_first_not_of(whitespace);
-  if(strBegin == std::string::npos){ str = ""; }  // no content
-  else{
-    const auto strEnd = str.find_last_not_of(whitespace);
-    const auto strRange = strEnd - strBegin + 1;
-    str = str.substr(strBegin, strRange);
-  }
-  return;
-}
-
-std::string::size_type PlotManager::ParseString(std::string& base, std::string& piece, const std::string& delim ){
-
-  std::string::size_type pos = base.find(delim);
-  if(pos != std::string::npos ){
-    piece = base.substr(0, pos);
-    base = base.substr(pos + delim.size());
-  }
-  else {piece = base;}
-  return pos;
-
-}
-
 int PlotManager::ParseConfigFile(const std::string& config_file, std::vector<std::map<std::string, std::string> >& ret_map, const std::string& delim, bool newformat ){
 
   int stat = 1;
@@ -192,7 +171,7 @@ int PlotManager::ParseConfigFile_New(const std::string& config_file, std::vector
   bool begun = false;
   int nset = -1;
   while( getline(conf_stream, conf_line) ){
-    TrimString(conf_line);
+    AnalysisUtils::TrimString(conf_line);
     if(conf_line == "BEGIN"){begun = true; continue;}
     if(!begun){continue;}
     if(conf_line == "END") break;
@@ -206,13 +185,13 @@ int PlotManager::ParseConfigFile_New(const std::string& config_file, std::vector
     else{
       std::string param; param.clear();
       std::string paramString = conf_line;
-      std::string::size_type pos = ParseString(paramString, param, delim);
+      std::string::size_type pos = AnalysisUtils::ParseString(paramString, param, delim);
       if(pos == std::string::npos){ 
 	std::cout<<" Could not read parameter value from line "<<conf_line<<std::endl;
 	std::cout<<" Format should be [PARAM] "<<delim<<" [VALUE]"<<std::endl;
 	continue;
       }
-      TrimString(param);
+      AnalysisUtils::TrimString(param);
       ret_map.at(nset)[param] = paramString;
       //if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" nset = "<<nset<<" param = "<<param<<" paramString = "<<paramString<<std::endl;
     }
@@ -236,7 +215,7 @@ int PlotManager::ParseConfigFile_Old(const std::string& config_file, std::vector
   std::string conf_line;
   while( conf_line != "BEGIN" ){  
     getline(conf_stream, conf_line); 
-    TrimString(conf_line);
+    AnalysisUtils::TrimString(conf_line);
   }
   getline(conf_stream, conf_line);
 
@@ -246,8 +225,8 @@ int PlotManager::ParseConfigFile_Old(const std::string& config_file, std::vector
   int nparam = 0;
   std::string::size_type pos = 0;
   do{ 
-    pos = ParseString(paramString, param, delim);
-    TrimString(param);
+    pos = AnalysisUtils::ParseString(paramString, param, delim);
+    AnalysisUtils::TrimString(param);
     std::transform(param.begin(), param.end(), param.begin(), ::toupper);
     paramSeq[nparam] = param;
     if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" nparam = "<<nparam<<" param = "<<param<<std::endl; 
@@ -260,7 +239,7 @@ int PlotManager::ParseConfigFile_Old(const std::string& config_file, std::vector
 
   map<string, string> keymap;
   while( getline(conf_stream, conf_line) ){
-    TrimString(conf_line);
+    AnalysisUtils::TrimString(conf_line);
     if(conf_line == "END") break;
     if( conf_line.empty() || (conf_line.find("#") == 0) ) continue;
 
@@ -271,8 +250,8 @@ int PlotManager::ParseConfigFile_Old(const std::string& config_file, std::vector
     keymap.clear();
 
     do{
-      pos = ParseString(paramString, param, delim);
-      TrimString(param);
+      pos = AnalysisUtils::ParseString(paramString, param, delim);
+      AnalysisUtils::TrimString(param);
       if(nparam > nkey){
 	std::cout<<"Error: Number of parameters on line "<<nline<<" exceeds number of keys given in header"<<std::endl; 
 	break;
@@ -307,12 +286,17 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
   std::string leglabel = "";
   //optional information
   std::string drawopt = "";
+  std::string resdrawopt = "";
   std::string legopt = "";
   std::string stylekey = "";
   std::string drawscale = "";
   std::string blinding = "NONE";
+  std::string yield_format = "";
   bool draw_stack_sample = false;
+  bool do_sum = false;
   int res_opt = -1;
+  bool write = false;
+  std::string outfile_name = "";
 
   for(int l = 0; l < nline; l++){
 
@@ -320,10 +304,17 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
     suffix = "";
     leglabel = "";
     drawopt = "hist";
+    resdrawopt="";
     legopt = "";
-    drawscale = "NORM";
-
     stylekey = "";
+    drawscale = "NORM";
+    blinding = "NONE";
+    yield_format = "";
+    draw_stack_sample = false;
+    do_sum = false;
+    res_opt = -1;
+    write = false;
+    outfile_name = "";
 
     map<string, string> keymap = parsed_map.at(l);
 
@@ -335,9 +326,13 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
 
     if( keymap.find("STYLEKEY") != keymap.end() ){ stylekey = keymap["STYLEKEY"]; }
     if( keymap.find("DRAWOPT") != keymap.end() ){ drawopt = keymap["DRAWOPT"]; }
+    if( keymap.find("RESDRAWOPT") != keymap.end() ){ resdrawopt = keymap["RESDRAWOPT"]; }
     if( keymap.find("LEGOPT") != keymap.end() ){ legopt = keymap["LEGOPT"]; }
     if( keymap.find("DRAWSCALE") != keymap.end() ){ drawscale = keymap["DRAWSCALE"]; }
-    if( keymap.find("DRAWSTACK") != keymap.end() ){ Plotter_Options::BoolValue(keymap["DRAWSTACK"], draw_stack_sample); }
+    if( keymap.find("DRAWSTACK") != keymap.end() ){ AnalysisUtils::BoolValue(keymap["DRAWSTACK"], draw_stack_sample); }
+    if( keymap.find("DOSUM") != keymap.end() && (keymap["DOSUM"] != "") ){ AnalysisUtils::BoolValue(keymap["DOSUM"], do_sum); }
+    else{ do_sum = draw_stack_sample; }
+
     if( keymap.find("RESOPT") != keymap.end() ){ 
       if(keymap["RESOPT"] == "SKIP"){res_opt = -1;}
       else if(keymap["RESOPT"] == "INC"){res_opt = 0;}
@@ -345,16 +340,17 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
       else{ std::cout<<"UNknown value "<<keymap["RESOPT"]<<" for RESOPT option"<<std::endl; }
     }
     if( keymap.find("BLINDING") != keymap.end() ){ blinding = keymap["BLINDING"]; }
+    if( keymap.find("YIELDFORMAT") != keymap.end() ){ yield_format = keymap["YIELDFORMAT"]; }
+    if( keymap.find("WRITE") != keymap.end() ){ AnalysisUtils::BoolValue(keymap["WRITE"], write); }
+    if( keymap.find("OUTFILENAME") != keymap.end() ){ outfile_name = keymap["OUTFILENAME"]; }
 
     if(suffix == ""){suffix = name;}
-    /*
-    std::cout<<"nline = "<<l<<" name = "<<name<<" suffix = "<<suffix<<" leglabel = "<<leglabel
-	     <<" drawopt = "<<drawopt<<" stylekey = "<<stylekey<<" drawscale = "<<drawscale
-	     <<std::endl;  
-    */
+
     //---------- read all parameters------
     //Make a SampleAttribute object and add it to the map
-    SampleAttributes* sampleObj = new SampleAttributes(name, suffix, leglabel, stylekey, drawopt, legopt, drawscale, draw_stack_sample, res_opt, blinding);
+    SampleAttributes* sampleObj = new SampleAttributes(name, suffix, leglabel, stylekey, drawopt, legopt, drawscale
+						       , draw_stack_sample, do_sum, res_opt, resdrawopt, blinding, yield_format
+						       , write, outfile_name);
     if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" Adding sample "<<name<<std::endl;
     m_attr_map[name] = sampleObj;
     keymap.clear();
@@ -383,8 +379,10 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
 
   bool draw_stack = false;
   std::string draw_res = "";
+  std::string draw_res_err = "";
   std::string do_scale = "NONE";
-  bool isLog = false;
+  bool isLogY = false;
+  bool isLogX = false;
   int rebin = 0;
   bool do_width = false;
   std::string resdrawopt = "";
@@ -421,9 +419,11 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
 
     draw_stack = 0;
     draw_res = "";
+    draw_res_err = "";
     do_scale = "NONE";
     do_width = false;
-    isLog = false;
+    isLogY = false;
+    isLogX = false;
     rebin = 0;
     resdrawopt = "";
     resmin = 0.5;
@@ -460,14 +460,16 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
     if( keymap.find("YLABEL") != keymap.end() ){ ylabel = keymap["YLABEL"];}
     if( keymap.find("RESLABEL") != keymap.end() ){ reslabel = keymap["RESLABEL"];}
     if( keymap.find("EXTRALABEL") != keymap.end() ){ extralabel = keymap["EXTRALABEL"];}
-    if( keymap.find("DRAWSTACK") != keymap.end() ){ Plotter_Options::BoolValue(keymap["DRAWSTACK"], draw_stack); }
+    if( keymap.find("DRAWSTACK") != keymap.end() ){ AnalysisUtils::BoolValue(keymap["DRAWSTACK"], draw_stack); }
     if( keymap.find("DRAWRES") != keymap.end() ){ draw_res = keymap["DRAWRES"];}
-    if( keymap.find("ISLOG") != keymap.end() ){ Plotter_Options::BoolValue(keymap["ISLOG"], isLog); }
+    if( keymap.find("DRAWRESERR") != keymap.end() ){ draw_res_err = keymap["DRAWRESERR"];}
+    if( keymap.find("ISLOGY") != keymap.end() ){ AnalysisUtils::BoolValue(keymap["ISLOGY"], isLogY); }
+    if( keymap.find("ISLOGX") != keymap.end() ){ AnalysisUtils::BoolValue(keymap["ISLOGX"], isLogX); }
  
 
     if( keymap.find("REBIN") != keymap.end() ){ rebin = atoi(keymap["REBIN"].c_str());}
     if( keymap.find("DOSCALE") != keymap.end() ){ do_scale = keymap["DOSCALE"].c_str();}
-    if( keymap.find("DOWIDTH") != keymap.end() ){ Plotter_Options::BoolValue(keymap["DOWIDTH"], do_width); }
+    if( keymap.find("DOWIDTH") != keymap.end() ){ AnalysisUtils::BoolValue(keymap["DOWIDTH"], do_width); }
     if( keymap.find("RESDRAWOPT") != keymap.end() ){ resdrawopt = keymap["RESDRAWOPT"].c_str();}
     if( keymap.find("BLINDING") != keymap.end() ){ blinding = keymap["BLINDING"];}
 
@@ -513,7 +515,8 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
 
 	     <<std::endl;  
     */
-    VariableAttributes* varObj = new VariableAttributes(name, label, do_scale, do_width, draw_stack, draw_res, isLog
+    VariableAttributes* varObj = new VariableAttributes(name, label, do_scale, do_width, draw_stack, draw_res, draw_res_err
+							, isLogY, isLogX
 							, ylabel, reslabel, has_resmin, has_resmax, resmin, resmax
 							, has_ymin, has_ymax, ymin, ymax, has_xmin, has_xmax, xmin, xmax
 							, has_ttl_xmin, has_ttl_xmax, ttl_xmin, ttl_xmax 
@@ -623,7 +626,6 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
     if( keymap.find("KEY") != keymap.end() ){keybase = keymap["KEY"];}
     else{std::cout<<"Error : No sample key found for file name"<<std::endl; continue;}
     if( keymap.find("SCALE") != keymap.end() ){scalebase = keymap["SCALE"];}
-
     if( keymap.find("FILE") == keymap.end() ){std::cout<<"Error : No file name given for sample key "<<keymap["KEY"]<<std::endl; continue; }
 
     bool b_multi = (keybase.find(delim_in) != std::string::npos);      
@@ -643,7 +645,8 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
 	bool firstsample = true;
 	vector<std::string> v_samp; v_samp.clear();
 	do{
-	  pos = ParseString(parseString, sparse, delim_in);
+	  pos = AnalysisUtils::ParseString(parseString, sparse, delim_in);
+	  if( m_attr_map.find(sparse) == m_attr_map.end() ){ continue; }
 	  v_samp.push_back(sparse);
 	  if(!firstsample){m_multi_extra.push_back(sparse);}
 	  std::vector<double> vscale; vscale.clear();
@@ -661,7 +664,7 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
 	std::string sparse = ""; int nsamp = 0;
 	std::string::size_type pos = 0;
 	do{
-	  pos = ParseString(parseString, sparse, delim_in);
+	  pos = AnalysisUtils::ParseString(parseString, sparse, delim_in);
 	  double sc = atof(sparse.c_str());
 	  if(m_opt->OptStr().find("--GLOBALSCALE") != std::string::npos){ sc *= m_opt->GlobalScale(); }
 
@@ -689,6 +692,32 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
   return sc;
 }
 
+void PlotManager::WriteHistogramsToFile(){
+
+    for(SampleAttributesMap::iterator samit = m_attr_map.begin(); samit != m_attr_map.end(); ++samit){
+      std::cout<<" samit->first = "<<samit->first<<" write = "<<samit->second->Write()<<std::endl; 
+      if( !samit->second->Write() ){ continue; }
+      const std::string& ds_suffix = samit->second->Suffix();
+      const std::string& ds_outfile_name = samit->second->OutFileName();
+      TFile* ds_outfile = TFile::Open(ds_outfile_name.c_str(), "NEW");
+      std::cout<<" samit->first = "<<samit->first<<" write = "<<samit->second->Write()<<" ds_outfile = "<<ds_outfile_name<<std::endl; 
+
+      ds_outfile->cd();
+      for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
+	const std::string& var_name = varit->second->Name();
+	std::string key = var_name + "_" + ds_suffix;
+	TH1D* hsample = (TH1D*)(m_hstMngr->GetTH1D( key )->Clone(var_name.c_str()));
+	hsample->Write();
+	hsample->SetDirectory(0);
+	delete hsample;
+      }//Variable loop
+      ds_outfile->Close();
+      delete ds_outfile;
+    }//Sample loop
+  return;
+}
+
+
 void PlotManager::FillHistManager(){
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::FillHistManager start"<<std::endl; 
@@ -714,14 +743,17 @@ void PlotManager::FillHistManager(){
     bool var_do_blind_threshold = var_blinding.find("THRESH") != std::string::npos;
     bool var_do_blind_bin = var_blinding.find("BIN") != std::string::npos;
   
+    bool var_do_width = varit->second->DoWidth();
+
     //Get the blinded histogram, clone it to make a blinder
     TH1D* h_blind_sample = NULL; TH1D* h_blinder = NULL;
     std::string blinder_key = ""; 
     if(var_do_blinding){
       blinder_key = makeBlinder ? var_name + "_" + m_attr_map["BLINDER"]->Suffix() : var_name + "_blinder";
-      std::string blind_hist_key = var_name + "_" + m_attr_map[g_blind_sample]->Suffix();
-      h_blind_sample = m_hstMngr->GetTH1D( blind_hist_key ); 
-      h_blinder = m_hstMngr->CloneTH1D(blinder_key, h_blind_sample, true); 
+      if(g_blind_sample != ""){
+	std::string blind_hist_key = var_name + "_" + m_attr_map[g_blind_sample]->Suffix();
+	h_blind_sample = m_hstMngr->GetTH1D( blind_hist_key ); 
+      }
     }
 
     TH1D* hsum = NULL;
@@ -738,12 +770,24 @@ void PlotManager::FillHistManager(){
 
       if(samit->first == "BLINDER"){continue;}
 
+
       const std::string& samp_blinding = samit->second->Blinding();
       const std::string& ds_suffix = samit->second->Suffix();
       const std::string& ds_drawScale = samit->second->DrawScale(); 
 
       std::string key = var_name + "_" + ds_suffix;
       TH1D* hsample = m_hstMngr->GetTH1D( key ); 
+      if(var_do_width){
+	int nbin = hsample->GetNbinsX();
+	for(int nb = 0; nb <= nbin; nb++){
+	  double bc = hsample->GetBinContent(nb)/hsample->GetXaxis()->GetBinWidth(nb);
+	  double be = hsample->GetBinError(nb)/hsample->GetXaxis()->GetBinWidth(nb);
+	  hsample->SetBinContent(nb, bc);
+	  hsample->SetBinError(nb, be);
+	}
+      }
+
+      if( var_do_blinding && (h_blinder==NULL) ){ h_blinder = m_hstMngr->CloneTH1D(blinder_key, hsample, true); }
 
       if(var_do_blind_threshold  && (samp_blinding == "SIGNAL")){
 	if(var_do_blind_bin){
@@ -754,7 +798,7 @@ void PlotManager::FillHistManager(){
 	    if( (g_blind_crit == "NSIG") && (num >= g_blind_thresh) ){ h_blinder->SetBinContent(b, 1.); }
 	    else if(g_blind_crit == "SBYB"){
 	      double den =  hsum->GetBinContent(b);
-	      if( samit->second->DrawStack() ){ den = den - num; }
+	      if( samit->second->DoSum() ){ den = den - num; }
 	      double sbyb = (den > 0.) ? num/den : g_blind_thresh + 1; //blind any bin that does not have background
 	      if( (num > 0) && sbyb >= g_blind_thresh ){ h_blinder->SetBinContent(b, 1.); }
 	    }
@@ -770,7 +814,7 @@ void PlotManager::FillHistManager(){
 	  }
 	  else if( g_blind_crit == "SBYB" ){
 	    double den = hsum->Integral();
-	    if( samit->second->DrawStack() ){ den = den - num; }
+	    if( samit->second->DoSum() ){ den = den - num; }
 	    double sbyb = (den > 0.) ? num/den : g_blind_thresh + 1.; 
 	    if( (num > 0) && (sbyb >= g_blind_thresh) ){
 	      for( int b = 1; b <= hsample->GetNbinsX(); b++ ){ h_blinder->SetBinContent(b, 1.); }
@@ -796,19 +840,20 @@ void PlotManager::FillHistManager(){
 
 
     //Blinding
-    if(var_do_blind_bin){
-      for( int b = 1; b <= h_blinder->GetNbinsX(); b++ ){
-	if(h_blinder->GetBinContent(b) < 1.){continue;}
-	else{ 
-	  h_blind_sample->SetBinContent(b, 0.); 
-	  h_blind_sample->SetBinError(b, 0.);
+    if( g_blind_sample != "" ){
+      if(var_do_blind_bin){
+	for( int b = 1; b <= h_blinder->GetNbinsX(); b++ ){
+	  if(h_blinder->GetBinContent(b) < 1.){continue;}
+	  else{ 
+	    h_blind_sample->SetBinContent(b, 0.); 
+	    h_blind_sample->SetBinError(b, 0.);
+	  }
 	}
       }
+      else if(var_do_blinding){
+	if(h_blinder->Integral() > 0. ){ h_blind_sample->Reset(); }
+      }
     }
-    else if(var_do_blinding){
-      if(h_blinder->Integral() > 0. ){ h_blind_sample->Reset(); }
-    }
-
     if(!makeBlinder){m_hstMngr->ClearTH1(blinder_key);}
     blinder_key.clear();
   
@@ -956,6 +1001,7 @@ int PlotManager::ReadHistogramsFromFile(int dim){
     std::vector<std::string>::iterator v_it = (fn_it->second).begin();
     unsigned int fnum_int = 0;
     for( ; v_it != (fn_it->second).end(); ++v_it){
+      //std::cout << " fn_it->first = "<<fn_it->first<<"  *v_it = "<<*v_it<<" found : "<<(m_attr_map.find(*v_it) != m_attr_map.end())<<std::endl;
 
       infile = TFile::Open( (*v_it).c_str(), "READ" );
       if(infile == NULL){ 
@@ -1032,7 +1078,7 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	      if(b_var_scale && b_samp_scale){ h1key_seq_samp->Scale(sc); }
 
 	      h1key->Add(h1key_seq_samp); 
-	      if(h1sum && m_attr_map[samp]->DrawStack()){ h1sum->Add(h1key_seq_samp); }
+	      if(h1sum && m_attr_map[samp]->DoSum()){ h1sum->Add(h1key_seq_samp); }
 	      m_hstMngr->ClearTH1(key_seq_samp);
 	    }
 	    else if(dim == 2){
@@ -1042,7 +1088,7 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	      if(b_var_scale && b_samp_scale){ h2key_seq_samp->Scale(sc); }
 
 	      h2key->Add(h2key_seq_samp); 
-	      if(h2sum && m_attr_map[samp]->DrawStack()){ h2sum->Add(h2key_seq_samp); }
+	      if(h2sum && m_attr_map[samp]->DoSum()){ h2sum->Add(h2key_seq_samp); }
 	      m_hstMngr->ClearTH2(key_seq_samp);
 	    }
 
@@ -1053,6 +1099,7 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	}//if multi
 	else{
 	  const std::string& samp = fn_it->first;
+	  //std::cout<<"samp = "<<samp<<std::endl;
 	  bool b_samp_scale = (m_attr_map[samp]->DrawScale() != "NONE");
 	  double sc = m_filescale_map[samp].at(fnum_int);
 	  //std::cout<<" samp = "<<samp<<std::endl;
@@ -1063,7 +1110,7 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 
 	    if(b_var_scale && b_samp_scale){ h1key_seq->Scale(sc); }
 	    h1key->Add(h1key_seq);
-	    if(h1sum && m_attr_map[samp]->DrawStack()){ h1sum->Add(h1key_seq); }
+	    if(h1sum && m_attr_map[samp]->DoSum()){ h1sum->Add(h1key_seq); }
 	  }
 	  else if(dim == 2){
 	    h2key = m_hstMngr->GetTH2D(key);
@@ -1071,7 +1118,7 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 
 	    if(b_var_scale && b_samp_scale){ h2key_seq->Scale(sc); }
 	    h2key->Add(h2key_seq);
-	    if(h2sum && m_attr_map[samp]->DrawStack()){ h2sum->Add(h2key_seq); }
+	    if(h2sum && m_attr_map[samp]->DoSum()){ h2sum->Add(h2key_seq); }
 	  }
 	  key.clear();
 	}

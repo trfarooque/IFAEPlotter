@@ -84,9 +84,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   bool opt_hasXMax = (m_opt->OptStr().find("--XMAX") != std::string::npos);
   
   bool var_draw_stack = 0;
-  bool var_isLog = false;
+  bool var_isLogY = false;
+  bool var_isLogX = false;
   bool var_isShape = false;
-  bool var_do_width = false;
+  //bool var_do_width = false;
   bool var_hasResMin = false;
   bool var_hasResMax = false;
   bool var_hasYMin = false;
@@ -96,6 +97,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
   bool ds_draw_stack = false;
   int ds_res_opt = -1;
+  std::string ds_res_erropt = "";
 
   //One preliminary loop to find the baseline sample
   std::string s_base_name = ""; 
@@ -119,23 +121,26 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     const std::string& var_blinding = (va_it->second->Blinding() != "") ?  va_it->second->Blinding() : m_opt->Blinding();
     bool var_drawBlinder = m_drawBlinder && (var_blinding.find("BIN") != std::string::npos);
+    bool var_blind_yield = (var_blinding.find("YIELD") != std::string::npos);
     v_hstack_a.clear();
     std::string var_name       = va_it->second->Name();
     if(projopt == "MEAN"){var_name += "_MEAN";}
     else if(projopt == "RMS"){var_name += "_RMS";}
     else if(projopt == "EFF"){var_name += "_EFF";}
  
-    const std::string& var_label      = va_it->second->Label();
-    const std::string& var_draw_res   = va_it->second->DrawRes();
-    const std::string& var_ylabel     = (va_it->second->YLabel() != "") ? va_it->second->YLabel() : m_opt->YLabel();
-    const std::string& var_reslabel   = (va_it->second->ResLabel() != "") ? va_it->second->ResLabel() : m_opt->ResLabel();
-    const std::string& var_resdrawopt = (va_it->second->ResDrawOpt() != "") ? va_it->second->ResDrawOpt() : m_opt->ResDrawOpt();
-    const std::string& var_extralabel = va_it->second->ExtraLabel();
+    const std::string& var_label         = va_it->second->Label();
+    const std::string& var_draw_res      = va_it->second->DrawRes();
+    const std::string& var_draw_res_err  = va_it->second->DrawResErr();
+    const std::string& var_ylabel        = (va_it->second->YLabel() != "") ? va_it->second->YLabel() : m_opt->YLabel();
+    const std::string& var_reslabel      = (va_it->second->ResLabel() != "") ? va_it->second->ResLabel() : m_opt->ResLabel();
+    const std::string& var_resdrawopt    = (va_it->second->ResDrawOpt() != "") ? va_it->second->ResDrawOpt() : m_opt->ResDrawOpt();
+    const std::string& var_extralabel    = va_it->second->ExtraLabel();
 
     var_isShape        = !doGraphs && (va_it->second->DoScale() == "SHAPE"); 
-    var_do_width       = !doGraphs && va_it->second->DoWidth();
+    //var_do_width       = !doGraphs && va_it->second->DoWidth();
     var_draw_stack     = !doGraphs && va_it->second->DrawStack();
-    var_isLog          = !doGraphs && va_it->second->IsLog();
+    var_isLogY         = !doGraphs && va_it->second->IsLogY();
+    var_isLogX         = !doGraphs && va_it->second->IsLogX();
 
     var_hasResMin      = va_it->second->HasResMin();
     var_hasResMax      = va_it->second->HasResMax();
@@ -160,12 +165,13 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     std::string hs_stack_name = "hs_stack_" + var_name;
     std::string hs_nostack_name = "hs_nostack_" + var_name;
     std::string hs_res_name = "hs_res_" + var_name;
+    //std::string hs_res_ref_name = "hs_res_ref_" + var_name;
 
     TCanvas* canv_a = new TCanvas(canv_name.c_str(), "", 800, 800);
-    canv_a->cd(1);
     SetStyleCanvas( *canv_a, drawRes );
 
     THStack* hs_res_a = drawRes ? new THStack(hs_res_name.c_str(), "") : NULL;
+    //THStack* hs_res_ref_a = drawRes ? new THStack(hs_res_ref_name.c_str(), "") : NULL;
     std::string hbasename = var_name + "_" + s_base_suffix;
     //TH1D* h_base = drawRes ? m_hstMngr->GetTH1D(hbasename) : NULL;
 
@@ -234,12 +240,18 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       const std::string& ds_leglabel = at_it->second->LegLabel();
       const std::string& ds_stylekey = at_it->second->StyleKey();
       const std::string& ds_drawopt = at_it->second->DrawOpt();
+      const std::string& ds_resdrawopt = at_it->second->ResDrawOpt();
       const std::string& ds_legopt =  at_it->second->LegOpt();
+      const std::string& ds_yield_format = (at_it->second->YieldFormat() != "") ? at_it->second->YieldFormat() : m_opt->YieldFormat();
+
+      ds_res_erropt = "";
+      if( var_draw_res_err  == "REFBAND" ){ ds_res_erropt = "SCALE"; } //scale both REF and INC sample error by the factor used for the division
+      else if( at_it->second->ResOpt() == 1 ){ ds_res_erropt = "ZERO"; } 
 
       bool ds_isShape = !doGraphs && (at_it->second->DrawScale() == "SHAPE"); 
       ds_draw_stack = !doGraphs && at_it->second->DrawStack();
       ds_res_opt = at_it->second->ResOpt();
-
+      bool ds_isBlind = (ds_name == m_opt->BlindSample());
       std::string hist_name = var_name + "_" + ds_suffix;
       SetStyleHist(hist_name, ds_stylekey);
       TH1D* hist_a = m_hstMngr->GetTH1D(hist_name);
@@ -261,21 +273,11 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	}
 
 	if(!doGraphs && leg_yield){ 
-	  if(!ds_isShape){leg_yield->AddEntry(hist_a, Form(m_opt->YieldFormat().c_str(),hist_a->Integral()), ""); }
+	  if( !(ds_isShape || (var_blind_yield && ds_isBlind)) ){leg_yield->AddEntry(hist_a, Form(ds_yield_format.c_str(),hist_a->Integral()), ""); }
 	  else{ leg_yield->AddEntry(hist_a, " ", ""); }
 	}
 
       }//if leglabel was not provided, then clearly the sample is not meant to be added to the legend
-
-      if(var_do_width && at_it->first != "BLINDER"){
-	int nbin = hist_a->GetNbinsX();
-	for(int nb = 0; nb <= nbin; nb++){
-	  double bc = hist_a->GetBinContent(nb)/hist_a->GetXaxis()->GetBinWidth(nb);
-	  double be = hist_a->GetBinError(nb)/hist_a->GetXaxis()->GetBinWidth(nb);
-	  hist_a->SetBinContent(nb, bc);
-	  hist_a->SetBinError(nb, be);
-	}
-      }
 
       if(at_it->first != "BLINDER"){
 	if(var_draw_stack && ds_draw_stack){ 
@@ -283,17 +285,25 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	}
 	else{ 
 	  hs_nostack_a->Add(hist_a, ds_drawopt.c_str()); 
-
-	  if(drawRes && (ds_res_opt == 0) && (ds_name != "SUM") ){
-	    std::string resname_a = var_name + "_" + ds_suffix + "_res_" + s_base_suffix;
-	    TH1D* hist_res_a = makeResidual(resname_a, hist_name, hbasename, var_draw_res);
-	    const std::string& resdrawopt = (var_resdrawopt != "") ? var_resdrawopt : ds_drawopt;
-	    hs_res_a->Add(hist_res_a, resdrawopt.c_str());
-	    resname_a.clear();
-	  } 
-
 	}//if this sample is not be be stacked
-      }
+
+	if(drawRes && (ds_res_opt != -1)){
+	  std::string resname_a = var_name + "_" + ds_suffix + "_res_" + s_base_suffix;
+	  TH1D* hist_res_a = makeResidual(resname_a, hist_name, hbasename, var_draw_res, ds_res_erropt);
+	  string resdrawopt = ""; 
+	  if(ds_resdrawopt != ""){ resdrawopt = ds_resdrawopt; }
+	  else if(var_resdrawopt != ""){ resdrawopt = var_resdrawopt; }
+	  else if(ds_res_opt == 1){
+	    if(var_draw_res_err == "REFBAND"){ resdrawopt = "e2";}
+	    else{ resdrawopt = "E0"; hist_res_a->SetFillStyle(0); }
+	  }
+	  else{ resdrawopt = ds_drawopt; }
+	  hs_res_a->Add(hist_res_a, resdrawopt.c_str());
+
+	  resname_a.clear(); resdrawopt.clear();
+	}//if residual histogram needed 
+
+      }//if not a BLINDER
 
       //Clear strings
       hist_name.clear();
@@ -307,14 +317,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     }
 
-    if( drawRes && var_draw_stack ){
-      std::string resname_sum_a = var_name + "_sum_" + "_res_" + s_base_suffix;
-      TH1D* hsum_res_a = makeResidual(resname_sum_a, hname_sum, hbasename, var_draw_res);
-      hs_res_a->Add(hsum_res_a);
-      resname_sum_a.clear();
-    }
-    //int size_res = hs_res_a ? hs_res_a->GetNhists() : 0;
-    //std::cout<<" var_draw_stack = "<<var_draw_stack<<" drawRes = "<<drawRes<<" hs_res_a->size() = "<<size_res<<std::endl; 
 
     //Draw the THStack in the top panel, set the x and y axis labels
     double c_min = 0.; double c_max = 0.;
@@ -322,14 +324,15 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(var_hasYMin){c_min = va_it->second->YMin();}
     else if(opt_hasYMin){c_min = m_opt->YMin();}
-    else{ stretch_min = var_isLog ? 1.E-2 : 0.5; }
+    else{ stretch_min = var_isLogY ? 1.E-2 : 0.5; }
 
     if(var_hasYMax){c_max = va_it->second->YMax();}
     else if(opt_hasYMax){c_max = m_opt->YMax();}
-    else{ stretch_max = var_isLog ? 1.E3 : 1.35; }
+    else{ stretch_max = var_isLogY ? 1.E3 : 1.35; }
 
     TPad* curpad = (TPad*)(canv_a->cd(1));
-    if(var_isLog){curpad->SetLogy();}
+    if(var_isLogY){curpad->SetLogy();}
+    if(var_isLogX){curpad->SetLogx();}
 
     if(var_draw_stack){
       hs_stack_a->Draw();
@@ -351,7 +354,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	}
 	c_min *= stretch_min;
       }
-      if(var_isLog && c_min <= 1.e-10){ c_min = 1.e-10; }
+      if(var_isLogY && c_min <= 1.e-10){ c_min = 1.e-10; }
       hs_stack_a->SetMinimum(c_min);
       hs_stack_a->SetMaximum(c_max);
 
@@ -370,11 +373,38 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	hs_stack_a->GetXaxis()->SetRangeUser(xr_min, xr_max);
       }
 
-      if(var_label != ""){ hs_stack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
-      else{ hs_stack_a->GetHistogram()->GetXaxis()->SetTitle( ((TH1D*)(hs_stack_a->GetStack()->First()))->GetXaxis()->GetTitle() ) ; }
-
       if(var_ylabel != ""){ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle(var_ylabel.c_str()); }
       else{ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_stack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
+
+      double yoff = 0.;
+      double yttlsz = drawRes ? 0.05 : 0.04;
+      double ylblsz = drawRes ? 0.05 : 0.04;
+
+      int ndig = 0.;
+      if( var_isLogY ){ndig = 2;}
+      else if(c_min < 0.0001 || c_max > 100000.){ndig = 6; }
+      else if(c_min < 0.01 || c_max > 1000.){ndig = 4; }
+      else {ndig = 3; }
+
+      if( ndig<=3 ){ yoff = 0.7; }
+      else if( ndig>3 && ndig<6 ){ yoff = 1.0; }
+      else if( ndig==6 ){ yoff = 1.2; }
+      else{ yoff = 1.5; }
+
+
+      hs_stack_a->GetHistogram()->GetYaxis()->SetTitleOffset(yoff);
+      hs_stack_a->GetHistogram()->GetYaxis()->SetTitleSize(yttlsz);
+      hs_stack_a->GetHistogram()->GetYaxis()->SetLabelSize(ylblsz);
+
+      if(!drawRes){      
+	if(var_label != ""){ hs_stack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
+	else{ hs_stack_a->GetHistogram()->GetXaxis()->SetTitle( ((TH1D*)(hs_stack_a->GetStack()->First()))->GetXaxis()->GetTitle() ) ; }
+
+	hs_stack_a->GetHistogram()->GetXaxis()->SetTitleOffset(1.);
+	hs_stack_a->GetHistogram()->GetXaxis()->SetTitleSize(0.04);
+	hs_stack_a->GetHistogram()->GetXaxis()->SetLabelSize(0.04);
+
+      }
 
     }//if var_draw_stack
     else{
@@ -387,7 +417,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	c_min = hs_nostack_a->GetHistogram()->GetMinimum();
 	c_min *= stretch_min;
       }
-      if(var_isLog && c_min <= 1.e-10){ c_min = 1.e-10; }
+      if(var_isLogY && c_min <= 1.e-10){ c_min = 1.e-10; }
 
       hs_nostack_a->SetMinimum(c_min);
       hs_nostack_a->SetMaximum(c_max);
@@ -405,34 +435,57 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	hs_nostack_a->GetXaxis()->SetRangeUser(xr_min, xr_max);
       }
 
-      if(var_label != ""){ hs_nostack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
-      else{ hs_nostack_a->GetHistogram()->GetXaxis()->SetTitle( ((TH1D*)(hs_nostack_a->GetStack()->First()))->GetXaxis()->GetTitle() ) ; }
-
       if(var_ylabel != ""){ hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle(var_ylabel.c_str()); }
       else{ hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_nostack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
 
-      //hs_nostack_a->SetMinimum(1e-11);
+      double yoff = 0.;
+      double yttlsz = drawRes ? 0.05 : 0.04;
+      double ylblsz = drawRes ? 0.05 : 0.04;
 
-      //hs_nostack_a->GetXaxis()->SetRangeUser(0.,200.);
+      int ndig = 0.;
+      if( var_isLogY ){ndig = 2;}
+      else if(c_min < 0.0001 || c_max > 100000.){ndig = 6; }
+      else if(c_min < 0.01 || c_max > 1000.){ndig = 4; }
+      else {ndig = 3; }
+
+      if( ndig<=3 ){ yoff = 0.7; }
+      else if( ndig>3 && ndig<6 ){ yoff = 1.0; }
+      else if( ndig==6 ){ yoff = 1.2; }
+      else{ yoff = 1.5; }
+
+      hs_nostack_a->GetHistogram()->GetYaxis()->SetTitleOffset(yoff);
+      hs_nostack_a->GetHistogram()->GetYaxis()->SetTitleSize(yttlsz);
+      hs_nostack_a->GetHistogram()->GetYaxis()->SetLabelSize(ylblsz);
+
+
+      if(!drawRes){      
+	if(var_label != ""){ hs_nostack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
+	else{ hs_nostack_a->GetHistogram()->GetXaxis()->SetTitle( ((TH1D*)(hs_nostack_a->GetStack()->First()))->GetXaxis()->GetTitle() ) ; }
+
+	hs_nostack_a->GetHistogram()->GetXaxis()->SetTitleOffset(1.);
+	hs_nostack_a->GetHistogram()->GetXaxis()->SetTitleSize(0.04);
+	hs_nostack_a->GetHistogram()->GetXaxis()->SetLabelSize(0.04);
+
+      }
 
     }//if !var_draw_stack
 
-    if(leg_yield){
-      ResizeLegend(*leg_yield, 0.89, 0.89);
-      ResizeLegend(*leg_a, leg_yield->GetX1NDC(), leg_yield->GetY2NDC() );
-    }
-    else{ ResizeLegend(*leg_a, 0.89, 0.89 );}
     if(var_drawBlinder){
       TH1D* h_blinder = m_hstMngr->GetTH1D(hname_blinder);
       for(int b = 1; b <= h_blinder->GetNbinsX(); b++){
 	if(h_blinder->GetBinContent(b) > 0){h_blinder->SetBinContent(b, c_max);}
       }
       std::string blinder_drawopt = "same" + m_attrbt_map["BLINDER"]->DrawOpt();
-      canv_a->cd(1);
+      //canv_a->cd(1);
       h_blinder->Draw(blinder_drawopt.c_str());
       blinder_drawopt.clear();
     }
 
+    if(leg_yield){
+      ResizeLegend(*leg_yield, 0.89, 0.89);
+      ResizeLegend(*leg_a, leg_yield->GetX1NDC(), leg_yield->GetY2NDC() );
+    }
+    else{ ResizeLegend(*leg_a, 0.89, 0.89 );}
     leg_a->DrawClone();
     if(leg_yield){ leg_yield->DrawClone(); }
     if(ttlbox){ ttlbox->Draw(); } 
@@ -442,6 +495,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(drawRes){
       curpad = (TPad*)(canv_a->cd(2));
+      if(var_isLogX){curpad->SetLogx();}
 
       //double r_min = 0.9*hs_res_a->GetHistogram()->GetMinimum();
       //double r_max = 1.1*hs_res_a->GetHistogram()->GetMaximum();
@@ -470,8 +524,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
        xr_min = hs_res_a->GetHistogram()->GetXaxis()->GetBinLowEdge(1);
        xr_max = hs_res_a->GetHistogram()->GetXaxis()->GetBinUpEdge(nbinx);
       }
-      double ry = ( (var_draw_res == "RESIDUAL") || (var_draw_res == "FRACRES") ) ? 0. : 1.;
 
+      double ry = ( (var_draw_res == "RESIDUAL") || (var_draw_res == "DIFF") ) ? 0. : 1.;
       TLine* lnref = new TLine(xr_min, ry, xr_max, ry); // a reference line
       lnref->SetLineStyle(2); //dashed line
 
@@ -495,9 +549,12 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       
       hs_res_a->GetHistogram()->GetYaxis()->CenterTitle();
 
-      canv_a->cd(2)->Update();
-      canv_a->cd(2)->Modified();
-      delete lnref;
+      curpad->Update();
+      curpad->Modified();
+
+      //canv_a->cd(2)->Update();
+      //canv_a->cd(2)->Modified();
+      //delete lnref;
     }
 
     if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" hs_stack_a->GetNhists() = "<<hs_stack_a->GetNhists()
@@ -516,6 +573,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       canv_a->SaveAs(Form("%s%s.pdf" ,m_opt->OutputFolder().c_str() ,canv_name.c_str()));
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".pdf"<<std::endl;
     }
+    if(m_opt->OutputFormat().find("CPP") != std::string::npos){
+      canv_a->SaveAs(Form("%s%s.C" ,m_opt->OutputFolder().c_str() ,canv_name.c_str()));
+      if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists writing "<<canv_name<<".C"<<std::endl;
+    }
     if(m_opt->OutputFormat().find("ROOT") != std::string::npos){ 
       m_outfile->cd(); canv_a->Write();
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists writing "<<canv_name<<" into ROOT file"<<std::endl;
@@ -528,6 +589,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     delete hs_nostack_a;
     delete hs_res_a;
     delete ttlbox;
+    curpad = NULL;
     //delete leg_a;
     //delete leg_yield;
     //Clear strings
@@ -548,23 +610,97 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
 }
 
-TH1D* PlotUtils::makeResidual(const std::string& resname, const std::string& s_hnum, const std::string& s_href, const std::string& opt){
+//TH1D* hist_res_a = makeResidual(resname_a, hist_name, hbasename, var_draw_res);
+//erropt by default empty
+//can change to "NONE" or "SCALE"
+//so if one want the error on data to be zero, give "NONE" there.
+//and if the error on MC sum should be scaled, give "SCALE"
+//also change the drawing of the residuals so that REF is not skipped - this must be 
+//the line that is drawn instead of an extra TLine
 
-  return makeResidual(resname, m_hstMngr->GetTH1D(s_hnum), m_hstMngr->GetTH1D(s_href), opt);
+TH1D* PlotUtils::makeResidual(const std::string& resname, const std::string& s_hnum, const std::string& s_href
+			      , const std::string& opt, const std::string& erropt){
+
+  return makeResidual(resname, m_hstMngr->GetTH1D(s_hnum), m_hstMngr->GetTH1D(s_href), opt, erropt);
 
 }
 
-TH1D* PlotUtils::makeResidual(const std::string& resname, TH1D* hist, TH1D* href, const std::string& opt){
+TH1D* PlotUtils::makeResidual(const std::string& resname, TH1D* hist, TH1D* href
+			      , const std::string& opt, const std::string& erropt){
+
+  bool b_selfdivide = (hist == href);
+
+  if(opt == "NONE"){return NULL;}
+  if( ! ( (opt == "RATIO") || (opt == "INVRATIO") || (opt == "DIFF") || (opt == "RESIDUAL") ) ){
+    std::cout << " Error : Unknown option "<<opt<<" for residual calculation "<<std::endl;
+    return NULL;
+  }
 
   TH1D* hist_res = (TH1D*)(hist->Clone(resname.c_str()) );
 
   hist_res->SetStats(0);
   hist_res->SetName(resname.c_str());
   hist_res->SetTitle("");
-  if(opt == "RATIO"){ hist_res->Divide(href, hist_res); }
-  else if(opt == "INVRATIO"){ hist_res->Divide(hist_res, href); }
-  else if(opt == "RESIDUAL"){ hist_res->Add(href, -1);}
-  else{ std::cout<<"Unknown option for residual calculation : "<<opt<<std::endl;}
+
+  bool b_rootfn = true;
+  bool b_def_err = (erropt == "");
+  bool b_zero_err = (erropt == "ZERO");
+  bool b_scale_err = (erropt == "SCALE");
+
+  if( opt == "RATIO" ){ hist_res->Divide(hist_res, href); }
+  else if(opt == "INVRATIO"){ hist_res->Divide(href, hist_res); }
+  else if(opt == "DIFF"){ hist_res->Add(href, -1);}
+  else{ b_rootfn = false; }
+
+  if( b_selfdivide || !(b_rootfn && b_def_err) ){
+
+    double res_bc = 0.; double res_be = 0.;
+    double cont_c = 0.; double cont_e = 0.; double cont_fe = 0.;
+    double ref_c = 0.; double ref_e = 0.; double ref_fe = 0.;
+
+    for( int b = 1; b <=hist_res->GetNbinsX(); b++ ){
+  
+      cont_c = hist->GetBinContent(b);
+      ref_c = href->GetBinContent(b);
+
+      if(b_zero_err){ res_be = 0.; }
+      else{
+	cont_e = hist->GetBinError(b);
+	ref_e = href->GetBinError(b);
+      }
+
+      if(opt == "RESIDUAL"){
+	res_bc = (ref_c > 0.) ? (cont_c/ref_c - 1.) : 0.;
+
+	if(b_def_err){
+	  cont_fe = (cont_c > 0.) ? cont_e/cont_c : 0.;  
+	  ref_fe = (ref_c > 0.) ? ref_e/cont_c : 0.;  
+	  res_be = res_bc * sqrt(cont_fe*cont_fe + ref_fe*ref_fe); 
+	}
+	else if(b_scale_err){ res_be = (ref_c > 0.) ? cont_e/ref_c : 0.; }
+
+      }
+      else if( opt == "RATIO"){
+	if(b_scale_err){ res_be = (ref_c > 0.) ? cont_e/ref_c : 0.; }
+      }
+      else if( opt == "DIFF"){
+	if(b_scale_err){ res_be = cont_e; }
+      }
+
+      if( b_selfdivide ){
+	if( (opt=="RATIO")|| (opt=="INVRATIO") || opt == ("RESIDUAL") ) { hist_res->SetBinContent(b, 1.); }
+	else if(opt == "DIFF"){ hist_res->SetBinContent(b, 0.); }
+      }
+      else if(!(b_rootfn)){ hist_res->SetBinContent(b, res_bc); }  
+
+      //if(!(b_rootfn || b_selfdivide) ){}
+      //if(!b_selfdivide){ hist_res->SetBinContent(b, res_bc); }
+      hist_res->SetBinError(b, res_be);
+
+    }//bin loop
+
+  }//not ROOT function or non-default error or self-division
+
   m_hstMngr->SetTH1D(resname, hist_res);
   return hist_res;
 
@@ -578,17 +714,20 @@ int PlotUtils::SetStyleCanvas(TCanvas& canv, bool divide){
     canv.cd(1)->SetTopMargin(0.05);
     canv.cd(1)->SetBottomMargin(0.0001);
     canv.cd(1)->SetRightMargin(0.05);
+    canv.cd(1)->SetLeftMargin(0.15);
 
     canv.cd(2)->SetPad(0.,0.,0.95,0.35);
     canv.cd(2)->SetBorderMode(0);
     canv.cd(2)->SetTopMargin(0.0001);
     canv.cd(2)->SetBottomMargin(0.2);
     canv.cd(2)->SetRightMargin(0.05);
+    canv.cd(2)->SetLeftMargin(0.15);
   }
   else{
     canv.cd()->SetTopMargin(0.05);
     canv.cd()->SetBottomMargin(0.2);
     canv.cd()->SetRightMargin(0.05);
+    canv.cd()->SetLeftMargin(0.15);
   }
 
   return 0;
@@ -612,8 +751,8 @@ int PlotUtils::SetStyleHist(std::string hname, std::string style_key){
 
 int PlotUtils::SetStyleLegend(TLegend &leg, double textsize, int textfont, double margin){
   leg.SetFillColor(kWhite);
-  leg.SetFillStyle(1);
-  leg.SetLineColor(0);
+  leg.SetFillStyle(1001);
+  leg.SetLineColor(kWhite);
   leg.SetMargin(margin);
   leg.SetTextSize(textsize);
   leg.SetTextFont(textfont);

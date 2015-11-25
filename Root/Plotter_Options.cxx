@@ -27,13 +27,14 @@ Plotter_Options::Plotter_Options():
   m_title(""),
   m_blinding(""),
   m_blind_sample(""),
-  m_blind_criterion("CONTAMINATION"),
+  m_blind_criterion("SBYB"),
   m_yield_format("%4g"),
   m_new_config_format(false),
   m_new_sample_format(false),
   m_new_variable_format(false),
   m_new_style_format(false),
   m_new_filelist_format(false),
+  m_write_histos(false),
   m_do1DPlots(true),
   m_doProjections(false),
   m_doEff(false),
@@ -77,6 +78,7 @@ OptionsBase(q)
   m_new_variable_format  = q.m_new_variable_format;
   m_new_style_format     = q.m_new_style_format;
   m_new_filelist_format  = q.m_new_filelist_format;
+  m_write_histos         = q.m_write_histos;
   m_do1DPlots            = q.m_do1DPlots;
   m_doProjections        = q.m_doProjections;
   m_doEff                = q.m_doEff;
@@ -106,14 +108,6 @@ OptionsBase(q)
 Plotter_Options::~Plotter_Options()
 {}
 
-
-bool Plotter_Options::BoolValue(std::string &arg_val, bool& bin_val){
-
-  std::transform(arg_val.begin(), arg_val.end(), arg_val.begin(), ::toupper);
-  if( arg_val.find("TRUE") != std::string::npos ){ bin_val = true; return true; }
-  else if( arg_val.find("FALSE") != std::string::npos ){ bin_val = false; return true; }
-  else{std::cout<<"Error : Unknown value "<<arg_val<<" for binary option "<<std::endl; return false; }
-}
 //_____________________________________________________________
 //
 bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::string &value ) {
@@ -170,38 +164,40 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     } 
     else if( temp_arg.find("--NEWCONFIG") != std::string::npos ){
       //m_new_config_format = atoi(temp_val.c_str()) > 0);
-      BoolValue(temp_val, m_new_config_format);
+      AnalysisUtils::BoolValue(temp_val, m_new_config_format);
     } 
 
     else if( temp_arg.find("--NEWSAMPLECONFIG") != std::string::npos ){
       //m_new_sample_format = (atoi(temp_val.c_str()) > 0);
-      BoolValue(temp_val, m_new_sample_format);
+      AnalysisUtils::BoolValue(temp_val, m_new_sample_format);
     } 
     else if( temp_arg.find("--NEWVARIABLECONFIG") != std::string::npos ){
       //m_new_variable_format = (atoi(temp_val.c_str()) > 0);
-      BoolValue(temp_val, m_new_variable_format);
+      AnalysisUtils::BoolValue(temp_val, m_new_variable_format);
     } 
     else if( temp_arg.find("--NEWSTYLECONFIG") != std::string::npos ){
       //m_new_style_format = (atoi(temp_val.c_str()) > 0);
-      BoolValue(temp_val, m_new_style_format);
+      AnalysisUtils::BoolValue(temp_val, m_new_style_format);
     } 
     else if( temp_arg.find("--NEWFILELIST") != std::string::npos ){
       //m_new_filelist_format = (atoi(temp_val.c_str()) > 0);
-      BoolValue(temp_val, m_new_filelist_format);
+      AnalysisUtils::BoolValue(temp_val, m_new_filelist_format);
     } 
-
-
+    else if( temp_arg.find("--WRITEHISTOS") != std::string::npos ){
+      //m_do1DPlots = (atoi(temp_val.c_str()) > 0);
+      AnalysisUtils::BoolValue(temp_val, m_write_histos);
+    } 
     else if( temp_arg.find("--DO1DPLOTS") != std::string::npos ){
       //m_do1DPlots = (atoi(temp_val.c_str()) > 0);
-      BoolValue(temp_val, m_do1DPlots);
+      AnalysisUtils::BoolValue(temp_val, m_do1DPlots);
     } 
     else if( temp_arg.find("--DOPROJ") != std::string::npos ){
       //m_doProjections = (atoi(temp_val.c_str()) > 0);
-      BoolValue(temp_val, m_doProjections);
+      AnalysisUtils::BoolValue(temp_val, m_doProjections);
     } 
     else if( temp_arg.find("--DOEFF") != std::string::npos ){
       //m_doEff = (atoi(temp_val.c_str()) > 0);
-      BoolValue(temp_val, m_doEff);
+      AnalysisUtils::BoolValue(temp_val, m_doEff);
     } 
     else if( temp_arg.find("--RESMIN") != std::string::npos ){
       m_resmin = atof(temp_val.c_str());
@@ -223,7 +219,7 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     } 
     else if( temp_arg.find("--SHOWYIELDS") != std::string::npos ){
       //m_show_yields = (atoi(temp_val.c_str()) > 0);
-      BoolValue(temp_val, m_show_yields);
+      AnalysisUtils::BoolValue(temp_val, m_show_yields);
     } 
     else if( temp_arg.find("--LEGOPT") != std::string::npos ){
       m_legopt = temp_val;
@@ -297,6 +293,7 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_new_variable_format    = " << m_new_variable_format  << std::endl;
     std::cout << " m_new_style_format       = " << m_new_style_format     << std::endl;
     std::cout << " m_new_filelist_format    = " << m_new_filelist_format  << std::endl;
+    std::cout << " m_write_histos           = " << m_write_histos         << std::endl;
     std::cout << " m_do1DPlots              = " << m_do1DPlots            << std::endl;
     std::cout << " m_doProjections          = " << m_doProjections        << std::endl;
     std::cout << " m_doEff                  = " << m_doEff                << std::endl;

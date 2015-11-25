@@ -3,6 +3,7 @@
 
 #include <string>
 #include "IFAETopFramework/OptionsBase.h"
+#include "IFAETopFramework/AnalysisUtils.h"
 
 class Plotter_Options : public OptionsBase {
     
@@ -12,7 +13,6 @@ public:
     Plotter_Options( const Plotter_Options & );
     ~Plotter_Options();
     virtual void PrintOptions();
-    static bool BoolValue(std::string& arg_val, bool& bin_val);
 
     inline const std::string& ConfigSample() const { return m_config_sample; }
     inline const std::string& ConfigVariable() const { return m_config_variable; }
@@ -48,6 +48,7 @@ public:
     inline double XMin(){ return m_xmin; }
     inline double XMax(){ return m_xmax; }
     inline bool ShowYields(){ return m_show_yields; }
+    inline bool WriteHistos(){ return m_write_histos; }
     inline bool Do1DPlots(){ return m_do1DPlots; }
     inline bool DoProjections(){ return m_doProjections; }
     inline bool DoEff(){ return m_doEff; }
@@ -90,6 +91,7 @@ private:
     bool m_new_variable_format;
     bool m_new_style_format;
     bool m_new_filelist_format;
+    bool m_write_histos; 
     bool m_do1DPlots;
     bool m_doProjections;
     bool m_doEff;

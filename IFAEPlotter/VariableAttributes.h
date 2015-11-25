@@ -6,7 +6,8 @@
 class VariableAttributes{
  public:
   VariableAttributes(const std::string& name, const std::string& label, const std::string& do_scale
-		     , bool do_width=false, bool draw_stack=false, std::string draw_res="", bool isLog=false
+		     , bool do_width=false, bool draw_stack=false, const std::string& draw_res="", const std::string& draw_res_err=""
+		     , bool isLogY=false, bool isLogX=false
 		     , const std::string& ylabel="", const std::string& reslabel=""
 		     , bool has_resmin=false, bool has_resmax=false, double resmin=0.5, double resmax=1.5
 		     , bool has_ymin=false, bool has_ymax=false, double ymin=0., double ymax=0.
@@ -22,11 +23,13 @@ class VariableAttributes{
   void SetLabel(const std::string& label){ m_label = label; }
   void SetYLabel(const std::string& ylabel){ m_ylabel = ylabel; }
   void SetResLabel(const std::string& reslabel){ m_reslabel = reslabel; }
-  void SetIsLog(bool isLog){ m_is_log = isLog; }
+  void SetIsLogY(bool isLogY){ m_is_logY = isLogY; }
+  void SetIsLogX(bool isLogX){ m_is_logX = isLogX; }
   void SetRebin(int rebin){ m_rebin = rebin; }
   void SetDoScale(const std::string& do_scale){ m_do_scale = do_scale; }
   void SetDrawStack(bool draw_stack){ m_draw_stack = draw_stack; }
   void SetDrawRes(const std::string& draw_res){ m_draw_res = draw_res; }
+  void SetDrawResErr(const std::string& draw_res_err){ m_draw_res_err = draw_res_err; }
   void SetDoWidth(bool do_width){ m_do_width = do_width; }
   void SetResDrawOpt(const std::string& resdrawopt){ m_resdrawopt = resdrawopt; }
   void SetBlinding(const std::string& blinding){ m_blinding = blinding; }
@@ -62,7 +65,9 @@ class VariableAttributes{
   const std::string& DoScale(){ return m_do_scale; }
   bool DrawStack(){ return m_draw_stack; }
   const std::string& DrawRes(){ return m_draw_res; }
-  bool IsLog(){ return m_is_log; }
+  const std::string& DrawResErr(){ return m_draw_res_err; }
+  bool IsLogY(){ return m_is_logY; }
+  bool IsLogX(){ return m_is_logX; }
   int Rebin(){ return m_rebin; }
   bool DoWidth(){ return m_do_width; }
   double ResMin(){ return m_resmin; }
@@ -100,7 +105,9 @@ class VariableAttributes{
   int m_draw_stack;
   std::string m_do_scale;
   std::string m_draw_res;
-  bool m_is_log;
+  std::string m_draw_res_err;
+  bool m_is_logY;
+  bool m_is_logX;
   int m_rebin;
   bool m_do_width;
   double m_resmin;

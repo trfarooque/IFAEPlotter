@@ -42,9 +42,6 @@ class PlotManager{
   bool m_new_style_format;
   bool m_new_filelist_format;
 
-  void TrimString(std::string& str, const std::string& whitespace=" \t");
-  std::string::size_type ParseString(std::string& base, std::string& piece, const std::string& delim); 
-
 
   int ParseConfigFile_New(const std::string& config_file, std::vector<std::map<std::string, std::string> >& ret_map, const std::string& delim=" : ");
   int ParseConfigFile_Old(const std::string& config_file, std::vector<std::map<std::string, std::string> >& ret_map, const std::string& delim=" : ");
@@ -60,6 +57,7 @@ class PlotManager{
   void makeEfficiencyHistograms();
   void ProjectByBin();
   void FillHistManager();
+  void WriteHistogramsToFile();
 
 };
 

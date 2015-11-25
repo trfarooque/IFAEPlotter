@@ -37,12 +37,12 @@ int main(int argc, char** argv){
 
 
   //std::string dsID = "";
-  m_dir_sel = "e_jets"; //input
+  m_dir_sel = "ejets"; //input
   m_xsec_map_loc = "/afs/cern.ch/work/f/farooque/TTHNtupleAna/XSection-MC15-13TeV-fromSusyGrp.data.txt"; //input - fixed from TDP
   //m_ds_map_loc = "/afs/cern.ch/work/f/farooque/TTHNtupleAna/sample_DSID_map.txt"; //input - fixed by MC15.py from TDP (perhaps write script to make this)
   m_MC15_TDP = "/afs/cern.ch/work/f/farooque/TTHNtupleAna/MC15.py"; 
-  m_listloc = "/afs/cern.ch/work/f/farooque/TTHNtupleAna/inputlist.txt"; //input
-  m_hist_file_prefix = "/afs/cern.ch/work/f/farooque/TTHNtupleAna/HISTLISTS/HistListTESTDATMC"; //input
+  m_listloc = "/afs/cern.ch/work/f/farooque/TTHNtupleAna/inputlist_TEST.txt"; //input
+  m_hist_file_prefix = "/afs/cern.ch/work/f/farooque/TTHNtupleAna/HISTLISTS_NEW/HistListTESTDATMC"; //input
 
   int i_sample = 0;
   int i_variable = 0;

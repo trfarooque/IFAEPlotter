@@ -1,7 +1,8 @@
 #include "IFAEPlotter/VariableAttributes.h"
 
 VariableAttributes::VariableAttributes(const std::string& name, const std::string& label, const std::string& do_scale
-				       , bool do_width, bool draw_stack, std::string draw_res, bool isLog
+				       , bool do_width, bool draw_stack, const std::string& draw_res, const std::string& draw_res_err
+				       , bool isLogY, bool isLogX
 				       , const std::string& ylabel, const std::string& reslabel
 				       , bool has_resmin, bool has_resmax, double resmin, double resmax
 				       , bool has_ymin, bool has_ymax, double ymin, double ymax
@@ -16,7 +17,9 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
   m_draw_stack(draw_stack),
   m_do_scale(do_scale),
   m_draw_res(draw_res),
-  m_is_log(isLog),
+  m_draw_res_err(draw_res_err),
+  m_is_logY(isLogY),
+  m_is_logX(isLogX),
   m_rebin(rebin),
   m_do_width(do_width),
   m_resmin(resmin),
@@ -53,7 +56,9 @@ VariableAttributes::VariableAttributes(VariableAttributes& q){
   m_draw_stack     = q.m_draw_stack;
   m_do_scale       = q.m_do_scale;
   m_draw_res       = q.m_draw_res;
-  m_is_log         = q.m_is_log;
+  m_draw_res_err   = q.m_draw_res_err;
+  m_is_logY        = q.m_is_logY;
+  m_is_logX        = q.m_is_logX;
   m_rebin          = q.m_rebin;
   m_do_width       = q.m_do_width;
   m_resmin         = q.m_resmin;
