@@ -94,6 +94,14 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   bool var_hasYMax = false;
   bool var_hasXMin = false;
   bool var_hasXMax = false;
+  bool var_modXRange = false;
+  //bool var_modYRange = false;
+  int var_nbinx = 0;
+  double var_xmin = 0.;
+  double var_xmax = 0.;
+
+  double var_ymin = 0.;
+  double var_ymax = 0.;
 
   bool ds_draw_stack = false;
   int ds_res_opt = -1;
@@ -117,7 +125,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   v_hstack_a.clear();
   VariableAttributesMap* var_loop_map = (projopt == "HIST") ? &m_var_map_proj : &m_var_map;
   for(VariableAttributesMap::iterator va_it = var_loop_map->begin(); va_it != var_loop_map->end(); ++va_it){
-
 
     const std::string& var_blinding = (va_it->second->Blinding() != "") ?  va_it->second->Blinding() : m_opt->Blinding();
     bool var_drawBlinder = m_drawBlinder && (var_blinding.find("BIN") != std::string::npos);
@@ -146,13 +153,18 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     var_hasResMax      = va_it->second->HasResMax();
     var_hasYMin        = va_it->second->HasYMin();
     var_hasYMax        = va_it->second->HasYMax();
-
     var_hasXMin        = va_it->second->HasXMin();
     var_hasXMax        = va_it->second->HasXMax();
 
-    int nbinx = 0; 
-    double xr_min = 0.; 
-    double xr_max = 0.;
+    var_modXRange      = var_hasXMin || var_hasXMax || opt_hasXMin || opt_hasXMax;
+    //var_modYRange      = var_hasYMin || var_hasYMax || opt_hasYMin || opt_hasYMax;
+
+    var_xmin = 0.; 
+    var_xmax = 0.; 
+    var_ymin = 0.; 
+    var_ymax = 0.; 
+
+    var_nbinx = 0; 
 
     std::string hname_sum = m_drawSum ? var_name + "_" + m_attrbt_map["SUM"]->Suffix() : "";
     std::string hname_blinder = m_drawBlinder ? var_name + "_" + m_attrbt_map["BLINDER"]->Suffix() : "";
@@ -230,6 +242,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     v_drawopt_nostack.clear();
     v_yield_nostack.clear();
     */
+    bool firstsample = true;
     for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
       if( var_isShape && !var_draw_stack && at_it->first == "SUM" ){continue;}
       if( (m_samples_noshape != NULL) && var_isShape && (std::find(m_samples_noshape->begin(), m_samples_noshape->end(), at_it->first) != m_samples_noshape->end()) ){continue;}
@@ -255,6 +268,22 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       std::string hist_name = var_name + "_" + ds_suffix;
       SetStyleHist(hist_name, ds_stylekey);
       TH1D* hist_a = m_hstMngr->GetTH1D(hist_name);
+
+      if(var_modXRange){
+	std::cout<<"var_modXRange"<<std::endl;
+	if(firstsample){
+	  var_nbinx = hist_a->GetNbinsX();
+	  if(var_hasXMin){ var_xmin = va_it->second->XMin(); }
+	  else if(opt_hasXMin){ var_xmin = m_opt->XMin(); }
+	  else{ var_xmin = hist_a->GetXaxis()->GetBinLowEdge(1); }
+	
+	  if(var_hasXMax){ var_xmax = va_it->second->XMax(); }
+	  else if(opt_hasXMax){ var_xmax = m_opt->XMax(); }
+	  else{ var_xmax = hist_a->GetXaxis()->GetBinUpEdge(var_nbinx); }
+	}
+	std::cout<<" var_xmin = "<<var_xmin<<" var_xmax = "<<var_xmax<<std::endl;
+	hist_a->SetAxisRange(var_xmin, var_xmax);
+      }
 
       if(ds_leglabel != ""){
 	if(ds_legopt != ""){
@@ -306,7 +335,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       }//if not a BLINDER
 
       //Clear strings
-      hist_name.clear();
+      hist_name.clear(); firstsample = false;
     }//sample loop
 
     if(hs_stack_a && v_hstack_a.size() > 0){
@@ -319,15 +348,15 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
 
     //Draw the THStack in the top panel, set the x and y axis labels
-    double c_min = 0.; double c_max = 0.;
+    var_ymin = 0.; var_ymax = 0.;
     double stretch_min = 1.; double stretch_max = 1.;
 
-    if(var_hasYMin){c_min = va_it->second->YMin();}
-    else if(opt_hasYMin){c_min = m_opt->YMin();}
+    if(var_hasYMin){var_ymin = va_it->second->YMin();}
+    else if(opt_hasYMin){var_ymin = m_opt->YMin();}
     else{ stretch_min = var_isLogY ? 1.E-2 : 0.5; }
 
-    if(var_hasYMax){c_max = va_it->second->YMax();}
-    else if(opt_hasYMax){c_max = m_opt->YMax();}
+    if(var_hasYMax){var_ymax = va_it->second->YMax();}
+    else if(opt_hasYMax){var_ymax = m_opt->YMax();}
     else{ stretch_max = var_isLogY ? 1.E3 : 1.35; }
 
     TPad* curpad = (TPad*)(canv_a->cd(1));
@@ -335,43 +364,29 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     if(var_isLogX){curpad->SetLogx();}
 
     if(var_draw_stack){
+
       hs_stack_a->Draw();
-      if(hs_nostack_a->GetNhists() > 0){
-      	hs_nostack_a->Draw("samenostack");
-      }
+      if(hs_nostack_a->GetNhists() > 0){hs_nostack_a->Draw("samenostack");}
+
+      if(var_modXRange){ hs_stack_a->GetXaxis()->SetRangeUser(var_xmin, var_xmax); }
 
       if(!var_hasYMax && !opt_hasYMax){
-	c_max = hs_stack_a->GetHistogram()->GetMaximum();
+	var_ymax = hs_stack_a->GetHistogram()->GetMaximum();
 	if(hs_nostack_a->GetNhists() > 0){
-	  c_max = max(c_max, hs_nostack_a->GetHistogram()->GetMaximum());
+	  var_ymax = max(var_ymax, hs_nostack_a->GetHistogram()->GetMaximum());
 	}
-	c_max *= stretch_max;
+	var_ymax *= stretch_max;
       }
       if(!var_hasYMin && !opt_hasYMin){
-	c_min = hs_stack_a->GetHistogram()->GetMinimum();
+	var_ymin = hs_stack_a->GetHistogram()->GetMinimum();
 	if(hs_nostack_a->GetNhists() > 0){
-	  c_min = min(c_min, hs_nostack_a->GetHistogram()->GetMinimum());
+	  var_ymin = min(var_ymin, hs_nostack_a->GetHistogram()->GetMinimum());
 	}
-	c_min *= stretch_min;
+	var_ymin *= stretch_min;
       }
-      if(var_isLogY && c_min <= 1.e-10){ c_min = 1.e-10; }
-      hs_stack_a->SetMinimum(c_min);
-      hs_stack_a->SetMaximum(c_max);
-
-      nbinx = hs_stack_a->GetHistogram()->GetNbinsX();
-
-
-      if(var_hasXMin || opt_hasXMin || var_hasXMax || opt_hasXMax){
-	if(var_hasXMin){ xr_min = va_it->second->XMin(); }
-	else if(opt_hasXMin){ xr_min = m_opt->XMin(); }
-	else{ xr_min = hs_stack_a->GetHistogram()->GetXaxis()->GetBinLowEdge(1); }
-
-	if(var_hasXMax){ xr_max = va_it->second->XMax(); }
-	else if(opt_hasXMax){ xr_max = m_opt->XMax(); }
-	else{ xr_max = hs_stack_a->GetHistogram()->GetXaxis()->GetBinUpEdge(nbinx); }
-
-	hs_stack_a->GetXaxis()->SetRangeUser(xr_min, xr_max);
-      }
+      if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
+      hs_stack_a->SetMinimum(var_ymin);
+      hs_stack_a->SetMaximum(var_ymax);
 
       if(var_ylabel != ""){ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle(var_ylabel.c_str()); }
       else{ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_stack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
@@ -382,8 +397,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
       int ndig = 0.;
       if( var_isLogY ){ndig = 2;}
-      else if(c_min < 0.0001 || c_max > 100000.){ndig = 6; }
-      else if(c_min < 0.01 || c_max > 1000.){ndig = 4; }
+      else if(var_ymin < 0.0001 || var_ymax > 100000.){ndig = 6; }
+      else if(var_ymin < 0.01 || var_ymax > 1000.){ndig = 4; }
       else {ndig = 3; }
 
       if( ndig<=3 ){ yoff = 0.7; }
@@ -409,31 +424,21 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     }//if var_draw_stack
     else{
       hs_nostack_a->Draw("nostack"); 
+      if(var_modXRange){ hs_nostack_a->GetXaxis()->SetRangeUser(var_xmin, var_xmax); }
+
+
       if(!var_hasYMax && !opt_hasYMax){
-	c_max = hs_nostack_a->GetHistogram()->GetMaximum();
-	c_max *= stretch_max;
+	var_ymax = hs_stack_a->GetHistogram()->GetMaximum();
+	var_ymax *= stretch_max;
       }
       if(!var_hasYMin && !opt_hasYMin){
-	c_min = hs_nostack_a->GetHistogram()->GetMinimum();
-	c_min *= stretch_min;
+	var_ymin = hs_stack_a->GetHistogram()->GetMinimum();
+	var_ymin *= stretch_min;
       }
-      if(var_isLogY && c_min <= 1.e-10){ c_min = 1.e-10; }
+      if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
 
-      hs_nostack_a->SetMinimum(c_min);
-      hs_nostack_a->SetMaximum(c_max);
-
-      nbinx = hs_nostack_a->GetHistogram()->GetNbinsX();
-      if(var_hasXMin || opt_hasXMin || var_hasXMax || opt_hasXMax){
-	if(var_hasXMin){ xr_min = va_it->second->XMin(); }
-	else if(opt_hasXMin){ xr_min = m_opt->XMin(); }
-	else{ xr_min = hs_nostack_a->GetHistogram()->GetXaxis()->GetBinLowEdge(1); }
-
-	if(var_hasXMax){ xr_max = va_it->second->XMax(); }
-	else if(opt_hasXMax){ xr_max = m_opt->XMax(); }
-	else{ xr_max = hs_nostack_a->GetHistogram()->GetXaxis()->GetBinUpEdge(nbinx); }
-
-	hs_nostack_a->GetXaxis()->SetRangeUser(xr_min, xr_max);
-      }
+      hs_nostack_a->SetMinimum(var_ymin);
+      hs_nostack_a->SetMaximum(var_ymax);
 
       if(var_ylabel != ""){ hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle(var_ylabel.c_str()); }
       else{ hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_nostack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
@@ -444,8 +449,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
       int ndig = 0.;
       if( var_isLogY ){ndig = 2;}
-      else if(c_min < 0.0001 || c_max > 100000.){ndig = 6; }
-      else if(c_min < 0.01 || c_max > 1000.){ndig = 4; }
+      else if(var_ymin < 0.0001 || var_ymax > 100000.){ndig = 6; }
+      else if(var_ymin < 0.01 || var_ymax > 1000.){ndig = 4; }
       else {ndig = 3; }
 
       if( ndig<=3 ){ yoff = 0.7; }
@@ -473,7 +478,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     if(var_drawBlinder){
       TH1D* h_blinder = m_hstMngr->GetTH1D(hname_blinder);
       for(int b = 1; b <= h_blinder->GetNbinsX(); b++){
-	if(h_blinder->GetBinContent(b) > 0){h_blinder->SetBinContent(b, c_max);}
+	if(h_blinder->GetBinContent(b) > 0){h_blinder->SetBinContent(b, var_ymax);}
       }
       std::string blinder_drawopt = "same" + m_attrbt_map["BLINDER"]->DrawOpt();
       //canv_a->cd(1);
@@ -516,17 +521,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       else if(var_draw_res == "INVRATIO"){ r_max = 1.5;}
 
       hs_res_a->Draw("nostack");
-      if(var_hasXMin || opt_hasXMin || var_hasXMax || opt_hasXMax){
-	hs_res_a->GetXaxis()->SetRangeUser(xr_min, xr_max);
-      }
-      else{
-       nbinx = hs_res_a->GetHistogram()->GetNbinsX();
-       xr_min = hs_res_a->GetHistogram()->GetXaxis()->GetBinLowEdge(1);
-       xr_max = hs_res_a->GetHistogram()->GetXaxis()->GetBinUpEdge(nbinx);
-      }
+      if(var_modXRange){ hs_res_a->GetXaxis()->SetRangeUser(var_xmin, var_xmax); }
 
       double ry = ( (var_draw_res == "RESIDUAL") || (var_draw_res == "DIFF") ) ? 0. : 1.;
-      TLine* lnref = new TLine(xr_min, ry, xr_max, ry); // a reference line
+      TLine* lnref = new TLine(var_xmin, ry, var_xmax, ry); // a reference line
       lnref->SetLineStyle(2); //dashed line
 
       if(var_label != ""){ hs_res_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
