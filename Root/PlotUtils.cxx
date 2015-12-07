@@ -78,10 +78,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
   bool opt_hasResMin = (m_opt->OptStr().find("--RESMIN") != std::string::npos); 
   bool opt_hasResMax = (m_opt->OptStr().find("--RESMAX") != std::string::npos);
-  bool opt_hasYMin = (m_opt->OptStr().find("--YMIN") != std::string::npos);
-  bool opt_hasYMax = (m_opt->OptStr().find("--YMAX") != std::string::npos);
-  bool opt_hasXMin = (m_opt->OptStr().find("--XMIN") != std::string::npos);
-  bool opt_hasXMax = (m_opt->OptStr().find("--XMAX") != std::string::npos);
+  bool opt_hasYMin   = (m_opt->OptStr().find("--YMIN") != std::string::npos);
+  bool opt_hasYMax   = (m_opt->OptStr().find("--YMAX") != std::string::npos);
+  bool opt_hasXMin   = (m_opt->OptStr().find("--XMIN") != std::string::npos);
+  bool opt_hasXMax   = (m_opt->OptStr().find("--XMAX") != std::string::npos);
   
   bool var_draw_stack = 0;
   bool var_isLogY = false;
@@ -321,7 +321,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	  TH1D* hist_res_a = makeResidual(resname_a, hist_name, hbasename, var_draw_res, ds_res_erropt);
 	  string resdrawopt = ""; 
 	  if(ds_resdrawopt != ""){ resdrawopt = ds_resdrawopt; }
-	  else if(var_resdrawopt != ""){ resdrawopt = var_resdrawopt; }
+	  else if( (ds_res_opt != 1) && (var_resdrawopt != "") ){ resdrawopt = var_resdrawopt; }
 	  else if(ds_res_opt == 1){
 	    if(var_draw_res_err == "REFBAND"){ resdrawopt = "e2";}
 	    else{ resdrawopt = "E0"; hist_res_a->SetFillStyle(0); }
@@ -384,7 +384,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	}
 	var_ymin *= stretch_min;
       }
-      if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
+      if(!var_isLogY && var_ymin <= 1.e-5){var_ymin = 1.1e-5;}
+      else if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
       hs_stack_a->SetMinimum(var_ymin);
       hs_stack_a->SetMaximum(var_ymax);
 

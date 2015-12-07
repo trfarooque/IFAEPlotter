@@ -322,7 +322,6 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
     else{std::cout<<"Error : No name found for sample"<<std::endl;}
     if( keymap.find("SUFFIX") != keymap.end() ){ suffix = keymap["SUFFIX"]; }
     if( keymap.find("LEGLABEL") != keymap.end() ){ leglabel = keymap["LEGLABEL"]; }
-    else{std::cout<<"Error : No legend label for sample"<<std::endl;}
 
     if( keymap.find("STYLEKEY") != keymap.end() ){ stylekey = keymap["STYLEKEY"]; }
     if( keymap.find("DRAWOPT") != keymap.end() ){ drawopt = keymap["DRAWOPT"]; }
