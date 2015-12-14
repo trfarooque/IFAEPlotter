@@ -363,7 +363,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     if(var_isLogY){curpad->SetLogy();}
     if(var_isLogX){curpad->SetLogx();}
 
-    if(var_draw_stack){
+    if(var_draw_stack && (hs_stack_a->GetNhists() > 0)){
 
       hs_stack_a->Draw();
       if(hs_nostack_a->GetNhists() > 0){hs_nostack_a->Draw("samenostack");}
@@ -429,11 +429,11 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
 
       if(!var_hasYMax && !opt_hasYMax){
-	var_ymax = hs_stack_a->GetHistogram()->GetMaximum();
+	var_ymax = hs_nostack_a->GetHistogram()->GetMaximum();
 	var_ymax *= stretch_max;
       }
       if(!var_hasYMin && !opt_hasYMin){
-	var_ymin = hs_stack_a->GetHistogram()->GetMinimum();
+	var_ymin = hs_nostack_a->GetHistogram()->GetMinimum();
 	var_ymin *= stretch_min;
       }
       if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
@@ -553,12 +553,9 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
       //canv_a->cd(2)->Update();
       //canv_a->cd(2)->Modified();
-      //delete lnref;
+      delete lnref;
     }
 
-    if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" hs_stack_a->GetNhists() = "<<hs_stack_a->GetNhists()
-						   <<" hs_nostack_a->GetNhists() = "<<hs_nostack_a->GetNhists()
-						   <<" hs_res_a->GetNhists() = "<<hs_res_a->GetNhists();
     //Write to output file/ print to a png
     if(m_opt->OutputFormat().find("PNG") != std::string::npos){ 
       canv_a->SaveAs(Form("%s%s.png" ,m_opt->OutputFolder().c_str() ,canv_name.c_str())); 

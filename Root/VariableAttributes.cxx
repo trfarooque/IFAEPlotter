@@ -9,7 +9,7 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
 				       , bool has_xmin, bool has_xmax, double xmin, double xmax
 				       , bool has_ttl_xmin, bool has_ttl_xmax, double ttl_xmin, double ttl_xmax
 				       , bool has_ttl_ymin, bool has_ttl_ymax, double ttl_ymin, double ttl_ymax 
-				       , const std::string& resdrawopt, const std::string& extralabel, int rebin, const std::string& blinding) : 
+				       , const std::string& resdrawopt, const std::string& extralabel, int rebin, const std::string& rebinedges, const std::string& blinding) : 
   m_name(name),
   m_label(label),
   m_ylabel(ylabel),
@@ -21,6 +21,7 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
   m_is_logY(isLogY),
   m_is_logX(isLogX),
   m_rebin(rebin),
+  m_rebinedges(rebinedges),
   m_do_width(do_width),
   m_resmin(resmin),
   m_resmax(resmax),
@@ -44,8 +45,8 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
   m_has_ttl_ymax(has_ttl_ymax),
   m_nprojbin(-1),
   m_resdrawopt(resdrawopt),
-  m_extralabel(extralabel),
-  m_blinding(blinding)
+  m_blinding(blinding),
+  m_extralabel(extralabel)
 { }
 
 VariableAttributes::VariableAttributes(VariableAttributes& q){
@@ -60,6 +61,7 @@ VariableAttributes::VariableAttributes(VariableAttributes& q){
   m_is_logY        = q.m_is_logY;
   m_is_logX        = q.m_is_logX;
   m_rebin          = q.m_rebin;
+  m_rebinedges     = q.m_rebinedges;
   m_do_width       = q.m_do_width;
   m_resmin         = q.m_resmin;
   m_resmax         = q.m_resmax;

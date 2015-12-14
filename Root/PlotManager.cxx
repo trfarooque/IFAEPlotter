@@ -366,9 +366,9 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
 
   int sc = 0; 
   std::vector<std::map<std::string, std::string> > parsed_map;
+  std::cout<<" config_variable = "<<config_variable<<std::endl;
   int nline = ParseConfigFile(config_variable, parsed_map, delim, m_new_variable_format); 
   if(nline < 0){ std::cout<<"Variable configuration file could not be opened. Exiting"<<std::endl; return nline; }
-
   std::string name = "";
   std::string label = "";
   std::string ylabel = "";
@@ -383,6 +383,7 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
   bool isLogY = false;
   bool isLogX = false;
   int rebin = 0;
+  std::string rebinvar = "";
   bool do_width = false;
   std::string resdrawopt = "";
   double resmin = 0.5;
@@ -424,6 +425,7 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
     isLogY = false;
     isLogX = false;
     rebin = 0;
+    rebinvar = "";
     resdrawopt = "";
     resmin = 0.5;
     resmax = 1.5;
@@ -467,6 +469,7 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
  
 
     if( keymap.find("REBIN") != keymap.end() ){ rebin = atoi(keymap["REBIN"].c_str());}
+    if( keymap.find("REBINVAR") != keymap.end() ){ rebinvar = keymap["REBINVAR"];}
     if( keymap.find("DOSCALE") != keymap.end() ){ do_scale = keymap["DOSCALE"].c_str();}
     if( keymap.find("DOWIDTH") != keymap.end() ){ AnalysisUtils::BoolValue(keymap["DOWIDTH"], do_width); }
     if( keymap.find("RESDRAWOPT") != keymap.end() ){ resdrawopt = keymap["RESDRAWOPT"].c_str();}
@@ -520,7 +523,7 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
 							, has_ymin, has_ymax, ymin, ymax, has_xmin, has_xmax, xmin, xmax
 							, has_ttl_xmin, has_ttl_xmax, ttl_xmin, ttl_xmax 
 							, has_ttl_ymin, has_ttl_ymax, ttl_ymin, ttl_ymax 
-							, resdrawopt, extralabel, rebin, blinding);
+							, resdrawopt, extralabel, rebin, rebinvar, blinding);
     if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" Adding variable "<<name<<std::endl;
     m_var_map[name] = varObj;
     keymap.clear();
@@ -733,6 +736,13 @@ void PlotManager::FillHistManager(){
   for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
     const std::string& var_name = varit->second->Name();
     int var_rebin = varit->second->Rebin();
+    const std::string& var_rebinedges = varit->second->RebinEdges();
+    double* var_rebinedges_ptr = 0;
+    if( (var_rebin > 0) && (var_rebinedges != "") ){ 
+      var_rebinedges_ptr = new double[var_rebin]();
+      ParseRebinEdges(var_rebin, var_rebinedges, var_rebinedges_ptr);
+    }
+
     const std::string& var_doScale = varit->second->DoScale(); 
     bool b_var_isShape = (var_doScale == "SHAPE");
     bool var_draw_stack = varit->second->DrawStack();
@@ -825,7 +835,10 @@ void PlotManager::FillHistManager(){
 
       //Scaling
       if( b_var_isShape && (std::find(m_multi_extra.begin(), m_multi_extra.end(), samit->first) != m_multi_extra.end()) ){continue;}
-      if(var_rebin > 0){hsample->Rebin(var_rebin);}
+      if(var_rebin > 0){
+	if(var_rebinedges_ptr != NULL){ VariableRebinning(key, hsample, var_rebin, var_rebinedges_ptr); }
+	else{ hsample->Rebin(var_rebin); }
+      }
       if( b_var_isShape || (ds_drawScale == "SHAPE") ){
 	double intgl = hsample->Integral();
 	double sc = 1.; 
@@ -856,6 +869,8 @@ void PlotManager::FillHistManager(){
     if(!makeBlinder){m_hstMngr->ClearTH1(blinder_key);}
     blinder_key.clear();
   
+    delete var_rebinedges_ptr;
+
   }//variable loop
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::FillHistManager end"<<std::endl; 
@@ -1000,8 +1015,6 @@ int PlotManager::ReadHistogramsFromFile(int dim){
     std::vector<std::string>::iterator v_it = (fn_it->second).begin();
     unsigned int fnum_int = 0;
     for( ; v_it != (fn_it->second).end(); ++v_it){
-      //std::cout << " fn_it->first = "<<fn_it->first<<"  *v_it = "<<*v_it<<" found : "<<(m_attr_map.find(*v_it) != m_attr_map.end())<<std::endl;
-
       infile = TFile::Open( (*v_it).c_str(), "READ" );
       if(infile == NULL){ 
 	std::cout<<"ERROR: File "<<(*v_it)<<" can not be found"<<std::endl; 
@@ -1098,10 +1111,8 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	}//if multi
 	else{
 	  const std::string& samp = fn_it->first;
-	  //std::cout<<"samp = "<<samp<<std::endl;
 	  bool b_samp_scale = (m_attr_map[samp]->DrawScale() != "NONE");
 	  double sc = m_filescale_map[samp].at(fnum_int);
-	  //std::cout<<" samp = "<<samp<<std::endl;
 	  std::string key = var_name + "_" + m_attr_map[samp]->Suffix();
 	  if(dim == 1){
 	    h1key = m_hstMngr->GetTH1D(key);
@@ -1256,3 +1267,47 @@ void PlotManager::ProjectByBin(){
 
   return;
 }
+
+void PlotManager::ParseRebinEdges(const int nbin, const std::string& bindef, double* xbins_new_ptr){
+
+  //Parse bindef
+  std::string parseString = bindef;
+  std::string sparse = ""; int nedge = 0;
+  std::string::size_type pos = 0;
+  std::string delim_in = ",";
+  do{
+    pos = AnalysisUtils::ParseString(parseString, sparse, delim_in);
+    double xedge = atof(sparse.c_str());
+    xbins_new_ptr[nedge] = xedge;
+    nedge++;
+  } while(pos != std::string::npos); //all edges
+  
+  if(nedge != nbin+1){
+    return;
+  }
+
+  return;
+
+}
+
+TH1D* PlotManager::VariableRebinning(const std::string& histname, int nbin, const double* binedges){
+
+  TH1D* hnew = VariableRebinning( histname, m_hstMngr->GetTH1D(histname), nbin, binedges);
+  return hnew;
+
+}
+
+TH1D* PlotManager::VariableRebinning(const std::string& histname, TH1D* horig, int nbin, const double* binedges){
+
+  std::string histname_temp = histname + "_temp_rebin";
+  horig->Rebin(nbin, histname_temp.c_str(), binedges);
+
+  TH1D* hnew = (TH1D*)(gDirectory->Get(histname_temp.c_str()));
+  m_hstMngr->ReplaceTH1D(histname, hnew);
+  hnew->SetName(histname.c_str());
+
+  histname_temp.clear();
+  return 0;
+
+}
+

@@ -14,7 +14,8 @@ class VariableAttributes{
 		     , bool has_xmin=false, bool has_xmax=false, double xmin=0., double xmax=0.
 		     , bool has_ttl_xmin=false, bool has_ttl_xmax=false, double ttl_xmin=0., double ttl_xmax=0.
 		     , bool has_ttl_ymin=false, bool has_ttl_ymax=false, double ttl_ymin=0., double ttl_ymax=0.   
-		     , const std::string& resdrawopt="", const std::string& extralabel="", int rebin=-1, const std::string& blinding="");
+		     , const std::string& resdrawopt="", const std::string& extralabel=""
+		     , int rebin=-1, const std::string& rebinedges="", const std::string& blinding="");
   VariableAttributes(VariableAttributes& q);
 
   ~VariableAttributes(){ }
@@ -26,6 +27,7 @@ class VariableAttributes{
   void SetIsLogY(bool isLogY){ m_is_logY = isLogY; }
   void SetIsLogX(bool isLogX){ m_is_logX = isLogX; }
   void SetRebin(int rebin){ m_rebin = rebin; }
+  void SetRebinEdges(const std::string& rebinedges){ m_rebinedges = rebinedges; }
   void SetDoScale(const std::string& do_scale){ m_do_scale = do_scale; }
   void SetDrawStack(bool draw_stack){ m_draw_stack = draw_stack; }
   void SetDrawRes(const std::string& draw_res){ m_draw_res = draw_res; }
@@ -53,8 +55,6 @@ class VariableAttributes{
   void SetHasTitleYMin(bool has_ttl_ymin){ m_has_ttl_ymin = has_ttl_ymin; }
   void SetHasTitleXMax(bool has_ttl_xmax){ m_has_ttl_xmax = has_ttl_xmax; }
   void SetHasTitleYMax(bool has_ttl_ymax){ m_has_ttl_ymax = has_ttl_ymax; }
-
-
   void SetNProjBin(int nprojbin){ m_nprojbin = nprojbin; }
   void SetExtraLabel(const std::string& extralabel){ m_extralabel = extralabel; }
 
@@ -69,6 +69,7 @@ class VariableAttributes{
   bool IsLogY(){ return m_is_logY; }
   bool IsLogX(){ return m_is_logX; }
   int Rebin(){ return m_rebin; }
+  const std::string& RebinEdges(){ return m_rebinedges; }
   bool DoWidth(){ return m_do_width; }
   double ResMin(){ return m_resmin; }
   double ResMax(){ return m_resmax; }
@@ -109,6 +110,7 @@ class VariableAttributes{
   bool m_is_logY;
   bool m_is_logX;
   int m_rebin;
+  std::string m_rebinedges;
   bool m_do_width;
   double m_resmin;
   double m_resmax; 

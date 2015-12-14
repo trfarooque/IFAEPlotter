@@ -7,6 +7,7 @@
 #include "IFAEPlotter/SampleAttributes.h"
 #include "IFAEPlotter/VariableAttributes.h"
 
+class TH1D;
 class Plotter_Options;
 class HistManager;
 class PlotUtils;
@@ -58,6 +59,11 @@ class PlotManager{
   void ProjectByBin();
   void FillHistManager();
   void WriteHistogramsToFile();
+
+  //const double* ParseRebinEdges( int nbin, const std::string& bindef);
+  void ParseRebinEdges( int nbin, const std::string& bindef, double* xbins_new_ptr);
+  TH1D* VariableRebinning(const std::string& histname, int nbin, const double* binedges);
+  TH1D* VariableRebinning(const std::string& histname, TH1D* hist, int nbin, const double* binedges);
 
 };
 

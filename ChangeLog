@@ -1,0 +1,4 @@
+2015-12-14 Trisha Farooque <farooque@cern.ch>
+	- Variable rebinning of histograms
+	- Check for existing configuration file before remaking in makeConfigurationFiles_TTH.cxx
+	- Fixed crash when DRAWSTACK is used with no sample in stack

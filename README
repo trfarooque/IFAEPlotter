@@ -1,8 +1,11 @@
-Current recommended version
+Currently recommended versions
 ----------------------------
+Stable tag:
+ svn+ssh://$USER@svn.cern.ch/reps/IfaeAnaRepo/IFAEanalysis/RunIITopTools/IFAEPlotter/tags/IFAEPlotter-00-01-05
+
+Latest features:
  svn+ssh://$USER@svn.cern.ch/reps/IfaeAnaRepo/IFAEanalysis/RunIITopTools/IFAEPlotter/trunk
 
-This version is currently under beta-testing. Please try it and report any problems to us.
 
 Help and support
 --------------------
@@ -149,7 +152,8 @@ residual by default. "REFBAND" chnages this to produce a statistical error band 
 in the residual panel.
 ISLOGY(DEFAULT=FALSE) : TRUE or FALSE. canv->SetLogY() on top panel if TRUE
 ISLOGX(DEFAULT=FALSE) : TRUE or FALSE. canv->SetLogY() on top panel if TRUE
-REBIN(DEFAULT=0) : Nothing done if 0. Else, the given integer is used to perform TH1::Rebin(). Variable bins will be implemented.
+REBIN(DEFAULT=0) : Nothing done if 0. Else, the given integer is used to perform TH1::Rebin().
+REBINVAR : The bin edges required for rebinning into variable-length bins, given as a comma separated list. There must be REBIN+1 edges given in this list.
 DOSCALE(DEFAULT=NONE) : SHAPE or NORM or NONE. 
 DOWIDTH(DEFAULT=FALSE) : TRUE or FALSE. TRUE can be used to draw bin content / bin width for histograms with irregular bin sizes.
 RESDRAWOPT : See global option

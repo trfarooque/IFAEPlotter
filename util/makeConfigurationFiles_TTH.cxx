@@ -7,7 +7,7 @@
 #include <TFile.h>
 #include <TH1.h>
 #include <TChain.h>
-
+#include "IFAETopFramework/AnalysisUtils.h"
 
 std::string m_dir_sel="";
 std::string m_xsec_map_loc="";
@@ -97,7 +97,9 @@ void makeFileLists(){
     return;
   }
 
-  std::ofstream file_list; file_list.open("ttH_file_list.txt");
+  std::ofstream file_list;
+  if(AnalysisUtils::FileExists("ttH_file_list.txt")){std::cout<<"Error: File list already exists. Exiting"<<std::endl; return;}
+  file_list.open("ttH_file_list.txt");
   file_list << std::endl << "BEGIN" << std::endl; 
   file_list << "KEY : FILE : SCALE" << std::endl;
   
@@ -192,7 +194,9 @@ void makeSampleConfigurationFile(){
   samp_label_map["SUM"] = "SM Total ";
 
 
-  std::ofstream sample_config; sample_config.open("ttH_sample_config.txt");
+  std::ofstream sample_config; 
+  if(AnalysisUtils::FileExists("ttH_sample_config.txt")){std::cout<<"Error: Sample configuration already exists. Exiting"<<std::endl; return;}
+  sample_config.open("ttH_sample_config.txt");
   sample_config << std::endl << "BEGIN" <<std::endl; 
 
   for(unsigned int s = 0; s < samp_list.size(); s++){
@@ -333,7 +337,9 @@ void makeVariableConfigurationFile(){
   reg_list.push_back("reg_boosted_tag_e_jets_2bin");
   reg_list.push_back("reg_boosted_tag_mu_jets_2bin");
   */
-  std::ofstream var_config; var_config.open("ttH_variable_config.txt");
+  std::ofstream var_config; 
+  if(AnalysisUtils::FileExists("ttH_variable_config.txt")){std::cout<<"Error: Variable configuration already exists. Exiting"<<std::endl; return;}
+  var_config.open("ttH_variable_config.txt");
   var_config << std::endl << "BEGIN" <<std::endl; 
 
   for(unsigned int r = 0; r < reg_list.size(); r++){
