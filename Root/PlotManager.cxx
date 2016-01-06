@@ -761,6 +761,7 @@ void PlotManager::FillHistManager(){
       blinder_key = makeBlinder ? var_name + "_" + m_attr_map["BLINDER"]->Suffix() : var_name + "_blinder";
       if(g_blind_sample != ""){
 	std::string blind_hist_key = var_name + "_" + m_attr_map[g_blind_sample]->Suffix();
+
 	h_blind_sample = m_hstMngr->GetTH1D( blind_hist_key ); 
       }
     }
@@ -774,7 +775,6 @@ void PlotManager::FillHistManager(){
     double intgl_sum = (hsum) ? hsum->Integral() : 1.;
     if(var_do_blind_threshold && (hsum==NULL)){std::cout<<" Cannot find SUM histogram required to calculate blinding threshold. Program will crash"<<std::endl;}
 
-    
     for(SampleAttributesMap::iterator samit = m_attr_map.begin(); samit != m_attr_map.end(); ++samit){
 
       if(samit->first == "BLINDER"){continue;}
@@ -850,7 +850,6 @@ void PlotManager::FillHistManager(){
       key.clear();
     }//sample loop
 
-
     //Blinding
     if( g_blind_sample != "" ){
       if(var_do_blind_bin){
@@ -866,9 +865,10 @@ void PlotManager::FillHistManager(){
 	if(h_blinder->Integral() > 0. ){ h_blind_sample->Reset(); }
       }
     }
-    if(!makeBlinder){m_hstMngr->ClearTH1(blinder_key);}
+
+    if(!makeBlinder && (blinder_key != "")){m_hstMngr->ClearTH1(blinder_key);}
     blinder_key.clear();
-  
+
     delete var_rebinedges_ptr;
 
   }//variable loop
