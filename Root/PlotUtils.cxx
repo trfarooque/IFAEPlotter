@@ -270,7 +270,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       TH1D* hist_a = m_hstMngr->GetTH1D(hist_name);
 
       if(var_modXRange){
-	std::cout<<"var_modXRange"<<std::endl;
 	if(firstsample){
 	  var_nbinx = hist_a->GetNbinsX();
 	  if(var_hasXMin){ var_xmin = va_it->second->XMin(); }
@@ -281,7 +280,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	  else if(opt_hasXMax){ var_xmax = m_opt->XMax(); }
 	  else{ var_xmax = hist_a->GetXaxis()->GetBinUpEdge(var_nbinx); }
 	}
-	std::cout<<" var_xmin = "<<var_xmin<<" var_xmax = "<<var_xmax<<std::endl;
 	hist_a->SetAxisRange(var_xmin, var_xmax);
       }
 
