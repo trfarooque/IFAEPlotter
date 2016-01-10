@@ -269,17 +269,17 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       SetStyleHist(hist_name, ds_stylekey);
       TH1D* hist_a = m_hstMngr->GetTH1D(hist_name);
 
-      if(var_modXRange){
-	if(firstsample){
-	  var_nbinx = hist_a->GetNbinsX();
-	  if(var_hasXMin){ var_xmin = va_it->second->XMin(); }
-	  else if(opt_hasXMin){ var_xmin = m_opt->XMin(); }
-	  else{ var_xmin = hist_a->GetXaxis()->GetBinLowEdge(1); }
+      if(firstsample){
+	var_nbinx = hist_a->GetNbinsX();
+	if(var_hasXMin){ var_xmin = va_it->second->XMin(); }
+	else if(opt_hasXMin){ var_xmin = m_opt->XMin(); }
+	else{ var_xmin = hist_a->GetXaxis()->GetBinLowEdge(1); }
 	
-	  if(var_hasXMax){ var_xmax = va_it->second->XMax(); }
-	  else if(opt_hasXMax){ var_xmax = m_opt->XMax(); }
-	  else{ var_xmax = hist_a->GetXaxis()->GetBinUpEdge(var_nbinx); }
-	}
+	if(var_hasXMax){ var_xmax = va_it->second->XMax(); }
+	else if(opt_hasXMax){ var_xmax = m_opt->XMax(); }
+	else{ var_xmax = hist_a->GetXaxis()->GetBinUpEdge(var_nbinx); }
+      }
+      if(var_modXRange){
 	hist_a->SetAxisRange(var_xmin, var_xmax);
       }
 
@@ -314,16 +314,16 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	  hs_nostack_a->Add(hist_a, ds_drawopt.c_str()); 
 	}//if this sample is not be be stacked
 
-	if(drawRes && (ds_res_opt != -1)){
+	if(drawRes && ( (ds_res_opt == 0) || ((ds_res_opt == 1) && (var_draw_res_err == "REFBAND")) ) ){
 	  std::string resname_a = var_name + "_" + ds_suffix + "_res_" + s_base_suffix;
 	  TH1D* hist_res_a = makeResidual(resname_a, hist_name, hbasename, var_draw_res, ds_res_erropt);
 	  string resdrawopt = ""; 
 	  if(ds_resdrawopt != ""){ resdrawopt = ds_resdrawopt; }
 	  else if( (ds_res_opt != 1) && (var_resdrawopt != "") ){ resdrawopt = var_resdrawopt; }
-	  else if(ds_res_opt == 1){
-	    if(var_draw_res_err == "REFBAND"){ resdrawopt = "e2";}
-	    else{ resdrawopt = "E0"; hist_res_a->SetFillStyle(0); }
-	  }
+	  else if( (ds_res_opt == 1) && (var_draw_res_err == "REFBAND") ){ resdrawopt = "e2"; }
+	    //if(var_draw_res_err == "REFBAND"){ resdrawopt = "e2";}
+	    //else{ resdrawopt = "E0"; hist_res_a->SetFillStyle(0); }
+	    //}
 	  else{ resdrawopt = ds_drawopt; }
 	  hs_res_a->Add(hist_res_a, resdrawopt.c_str());
 
