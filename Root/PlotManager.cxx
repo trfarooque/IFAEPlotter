@@ -4,12 +4,11 @@
 #include "IFAEPlotter/PlotUtils.h"
 #include "IFAEPlotter/StyleDictionary.h"
 
-//#include "TString.h"
+#include "TKey.h"
+#include "TSystem.h"
 
 #include <fstream>
 #include <algorithm>
-//#include <vector>
-
 
 
 PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
@@ -48,6 +47,7 @@ PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
   if(opt_has_filelistformat){ m_new_filelist_format = m_opt->NewFileListFormat(); }
   else if(opt_has_configformat){ m_new_filelist_format = m_opt->NewConfigFormat(); }
 
+  if(m_opt->OutputFolder() != ""){ gSystem->mkdir(m_opt->OutputFolder().c_str(), "TRUE"); }
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"Parsing sample configuration"<<std::endl; 
 
@@ -63,8 +63,21 @@ PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
   stat = ParseFileList( m_opt->FileList() );
   if(stat < 0){return;}
 
-  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"Parsing style library"<<std::endl; 
+  if( m_opt->AllFromFile() ){
+    const std::string& dist_file = (m_opt->DistributionsFile() != "") ? m_opt->DistributionsFile() : m_filename_map.begin()->second.at(0);
+    if(m_opt->MsgLevel() == Debug::DEBUG) std::cout << "Copying all distributions from file " << dist_file << std::endl;
+    CopyVariableListFromFile( dist_file ); 
+  }
+  else{
+    if( m_var_map.find("ALL") != m_var_map.end() ){
+      std::cout<<" WARNING: ALL keyword in variable configuration will be ignored because ALLFROMFILE=FALSE in globa; options"<<std::endl;
+      delete m_var_map["ALL"];
+      m_var_map.erase( m_var_map.find("ALL") );
+    }
+  }
+  if(stat < 0){return;}
 
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"Parsing style library"<<std::endl; 
   m_styleDict = new StyleDictionary("test");
   stat = ParseStyleConfig( m_opt->StyleLib() );
   if(stat < 0){return;}
@@ -297,6 +310,8 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
   int res_opt = -1;
   bool write = false;
   std::string outfile_name = "";
+  std::string in_suffix = "";
+  std::string in_prefix = "";
 
   for(int l = 0; l < nline; l++){
 
@@ -315,6 +330,8 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
     res_opt = -1;
     write = false;
     outfile_name = "";
+    in_suffix = "";
+    in_prefix = "";
 
     map<string, string> keymap = parsed_map.at(l);
 
@@ -342,14 +359,19 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
     if( keymap.find("YIELDFORMAT") != keymap.end() ){ yield_format = keymap["YIELDFORMAT"]; }
     if( keymap.find("WRITE") != keymap.end() ){ AnalysisUtils::BoolValue(keymap["WRITE"], write); }
     if( keymap.find("OUTFILENAME") != keymap.end() ){ outfile_name = keymap["OUTFILENAME"]; }
+    if( keymap.find("INSUFFIX") != keymap.end() ){ in_suffix = keymap["INSUFFIX"]; }
+    if( keymap.find("INPREFIX") != keymap.end() ){ in_prefix = keymap["INPREFIX"]; }
 
-    if(suffix == ""){suffix = name;}
+    if(suffix == ""){
+      if(in_suffix == "") {suffix = name;}
+      else{ suffix = in_suffix; }
+    }
 
     //---------- read all parameters------
     //Make a SampleAttribute object and add it to the map
     SampleAttributes* sampleObj = new SampleAttributes(name, suffix, leglabel, stylekey, drawopt, legopt, drawscale
 						       , draw_stack_sample, do_sum, res_opt, resdrawopt, blinding, yield_format
-						       , write, outfile_name);
+						       , write, outfile_name, in_suffix, in_prefix);
     if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" Adding sample "<<name<<std::endl;
     m_attr_map[name] = sampleObj;
     keymap.clear();
@@ -498,25 +520,6 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
     has_ttl_xmax = (keymap.find("TITLEXMAX") != keymap.end()) && (keymap["TITLEXMAX"] != "");
     has_ttl_ymax = (keymap.find("TITLEYMAX") != keymap.end()) && (keymap["TITLEYMAX"] != "");
 
-    /*
-    std::cout<<"nline = "<<l<<" name = "<<name<<" label = "<<label
-	     <<" ylabel = "<<ylabel<<" reslabel = "<<reslabel<<" extralabel = "<<extralabel
-	     <<" draw_stack = "<<draw_stack<<" draw_res = "<<draw_res
-	     <<" isLog = "<<isLog<<" rebin = "<<rebin
-	     <<" do_scale = "<<do_scale<<" do_width = "<<do_width
-	     <<" has_resmin = "<<has_resmin<<" has_resmax = "<<has_resmax
-	     <<" resmin = "<<resmin<<" resmax = "<<resmax<<" resdrawopt = "<<resdrawopt 
-	     <<" has_ymin = "<<has_ymin<<" has_ymax = "<<has_ymax
-	     <<" ymin = "<<xmin<<" ymax = "<<ymax
-	     <<" has_xmin = "<<has_xmin<<" has_xmax = "<<has_xmax
-	     <<" xmin = "<<xmin<<" xmax = "<<xmax
-	     <<" has_ttl_xmin = "<<has_ttl_xmin<<" has_ttl_xmax = "<<has_ttl_xmax
-	     <<" ttl_xmin = "<<ttl_xmin<<" xmax = "<<ttl_xmax
-	     <<" has_ttl_ymin = "<<has_ttl_ymin<<" has_ttl_ymax = "<<has_ttl_ymax
-	     <<" ttl_ymin = "<<ttl_ymin<<" xmax = "<<ttl_ymax
-
-	     <<std::endl;  
-    */
     VariableAttributes* varObj = new VariableAttributes(name, label, do_scale, do_width, draw_stack, draw_res, draw_res_err
 							, isLogY, isLogX
 							, ylabel, reslabel, has_resmin, has_resmax, resmin, resmax
@@ -529,12 +532,44 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
     keymap.clear();
   }
 
+
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::ParseVariableConfig : nline = "<<nline<<" m_var_map.size() = "<<m_var_map.size()<<std::endl; 
 
   parsed_map.clear();
   return sc;
   
 }
+
+int PlotManager::CopyVariableListFromFile(const std::string& dist_file){
+
+  int sc = 0;
+  VariableAttributes* varObj = (m_var_map.find("ALL") != m_var_map.end()) ? m_var_map["ALL"] : new VariableAttributes("ALL", "", "NONE");
+
+  TFile* fget = TFile::Open(dist_file.c_str(), "READ");
+  TIter next(fget->GetListOfKeys());
+  TKey *key=NULL;
+  std::string className = "";
+  std::string name = "";
+  while( (key = (TKey*)next()) ) {
+    className = (std::string)(key->GetClassName());
+    if( className.find("TH1") == std::string::npos ){ className.clear(); continue; }
+    className.clear();
+    VariableAttributes* varCopy = new VariableAttributes(*varObj);
+    name = (std::string)(key->GetName());
+    if(m_var_map.find(name) != m_var_map.end()){name.clear(); continue;}
+
+    varCopy->SetName( name );
+    m_var_map[name] = varCopy;
+    name.clear();
+  }
+  delete varObj;
+  if(m_var_map.find("ALL") != m_var_map.end()){ m_var_map.erase( m_var_map.find("ALL") ); }
+  delete fget;
+
+  return sc;
+}
+
+
 
 
 //-----------EDIT-------------------- 

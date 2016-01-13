@@ -13,7 +13,9 @@ class SampleAttributes{
 		   , const std::string& drawscale="NORM", bool draw_stack=false, bool do_sum=false
 		   , int res_opt=-1, const std::string& resdrawopt="" 
 		   , const std::string& blinding="NONE", const std::string& yield_format=""
-		   , bool write=false, const std::string& outfile_name = "");
+		   , bool write=false, const std::string& outfile_name = ""
+		   , const std::string& in_suffix = "", const std::string& in_prefix = "");
+  SampleAttributes(SampleAttributes& q);
   ~SampleAttributes(){}
 
  private:
@@ -28,6 +30,8 @@ class SampleAttributes{
   std::string m_blinding;
   std::string m_yield_format;
   std::string m_outfile_name;
+  std::string m_in_suffix;
+  std::string m_in_prefix;
 
   bool m_draw_stack;
   bool m_do_sum;
@@ -50,6 +54,8 @@ class SampleAttributes{
   void SetResOpt(int res_opt){ m_res_opt = res_opt; }
   void SetWrite(bool write){ m_write = write; }
   void SetOutFileName(const std::string& outfile_name){ m_outfile_name = outfile_name; }
+  void SetInSuffix(const std::string& in_suffix){ m_in_suffix = in_suffix; }
+  void SetInPrefix(const std::string& in_prefix){ m_in_prefix = in_prefix; }
 
   const std::string& Name(){ return m_name; }
   const std::string& Suffix(){ return m_suffix; }
@@ -62,6 +68,8 @@ class SampleAttributes{
   const std::string& Blinding(){ return m_blinding; }
   const std::string& YieldFormat(){ return m_yield_format; }
   const std::string& OutFileName(){ return m_outfile_name; }
+  const std::string& InSuffix(){ return m_in_suffix; }
+  const std::string& InPrefix(){ return m_in_prefix; }
   bool DrawStack(){ return m_draw_stack; }
   bool DoSum(){ return m_do_sum; }
   int ResOpt(){ return m_res_opt; }

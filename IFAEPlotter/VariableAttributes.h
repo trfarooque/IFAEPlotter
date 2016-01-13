@@ -15,7 +15,7 @@ class VariableAttributes{
 		     , bool has_ttl_xmin=false, bool has_ttl_xmax=false, double ttl_xmin=0., double ttl_xmax=0.
 		     , bool has_ttl_ymin=false, bool has_ttl_ymax=false, double ttl_ymin=0., double ttl_ymax=0.   
 		     , const std::string& resdrawopt="", const std::string& extralabel=""
-		     , int rebin=-1, const std::string& rebinedges="", const std::string& blinding="");
+		     , int rebin=0, const std::string& rebinedges="", const std::string& blinding="");
   VariableAttributes(VariableAttributes& q);
 
   ~VariableAttributes(){ }

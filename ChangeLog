@@ -1,3 +1,8 @@
+2016-01-13 Trisha Farooque <farooque@cern.ch>
+	- Added option to plot all histograms from input file
+	- Now making ouput directory as required
+
+	
 2015-12-14 Trisha Farooque <farooque@cern.ch>
 	- Variable rebinning of histograms
 	- Check for existing configuration file before remaking in makeConfigurationFiles_TTH.cxx

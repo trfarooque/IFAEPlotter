@@ -556,19 +556,19 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     //Write to output file/ print to a png
     if(m_opt->OutputFormat().find("PNG") != std::string::npos){ 
-      canv_a->SaveAs(Form("%s%s.png" ,m_opt->OutputFolder().c_str() ,canv_name.c_str())); 
+      canv_a->SaveAs(Form("%s/%s.png" ,m_opt->OutputFolder().c_str() ,canv_name.c_str())); 
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".png"<<std::endl;
     }
     if(m_opt->OutputFormat().find("EPS") != std::string::npos){ 
-      canv_a->SaveAs(Form("%s%s.eps" ,m_opt->OutputFolder().c_str() ,canv_name.c_str()));  
+      canv_a->SaveAs(Form("%s/%s.eps" ,m_opt->OutputFolder().c_str() ,canv_name.c_str()));  
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".eps"<<std::endl;
    }
     if(m_opt->OutputFormat().find("PDF") != std::string::npos){
-      canv_a->SaveAs(Form("%s%s.pdf" ,m_opt->OutputFolder().c_str() ,canv_name.c_str()));
+      canv_a->SaveAs(Form("%s/%s.pdf" ,m_opt->OutputFolder().c_str() ,canv_name.c_str()));
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".pdf"<<std::endl;
     }
     if(m_opt->OutputFormat().find("CPP") != std::string::npos){
-      canv_a->SaveAs(Form("%s%s.C" ,m_opt->OutputFolder().c_str() ,canv_name.c_str()));
+      canv_a->SaveAs(Form("%s/%s.C" ,m_opt->OutputFolder().c_str() ,canv_name.c_str()));
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists writing "<<canv_name<<".C"<<std::endl;
     }
     if(m_opt->OutputFormat().find("ROOT") != std::string::npos){ 

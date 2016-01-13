@@ -29,6 +29,8 @@ Plotter_Options::Plotter_Options():
   m_blind_sample(""),
   m_blind_criterion("SBYB"),
   m_yield_format("%4g"),
+  m_dist_file(""),
+
   m_new_config_format(false),
   m_new_sample_format(false),
   m_new_variable_format(false),
@@ -39,6 +41,8 @@ Plotter_Options::Plotter_Options():
   m_doProjections(false),
   m_doEff(false),
   m_show_yields(false),
+  m_all_from_file(false),
+
   m_resmin(0.),
   m_resmax(0.),
   m_ymin(0.),
@@ -73,6 +77,13 @@ OptionsBase(q)
   m_num_prefix           = q.m_num_prefix;
   m_den_prefix           = q.m_den_prefix;
   m_projopt              = q.m_projopt;
+  m_legopt               = q.m_legopt;
+  m_title                = q.m_title;
+  m_blinding             = q.m_blinding;
+  m_blind_sample         = q.m_blind_sample;
+  m_blind_criterion      = q.m_blind_criterion;
+  m_yield_format         = q.m_yield_format;
+  m_dist_file            = q.m_dist_file;
   m_new_config_format    = q.m_new_config_format;
   m_new_sample_format    = q.m_new_sample_format;
   m_new_variable_format  = q.m_new_variable_format;
@@ -82,19 +93,15 @@ OptionsBase(q)
   m_do1DPlots            = q.m_do1DPlots;
   m_doProjections        = q.m_doProjections;
   m_doEff                = q.m_doEff;
+  m_show_yields          = q.m_show_yields;
+  m_all_from_file        = q.m_all_from_file;
+
   m_resmin               = q.m_resmin;
   m_resmax               = q.m_resmax;
   m_ymin                 = q.m_ymin;
   m_ymax                 = q.m_ymax;
   m_xmin                 = q.m_xmin;
   m_xmax                 = q.m_xmax;
-  m_show_yields          = q.m_show_yields;
-  m_legopt               = q.m_legopt;
-  m_title                = q.m_title;
-  m_blinding             = q.m_blinding;
-  m_blind_sample         = q.m_blind_sample;
-  m_blind_criterion      = q.m_blind_criterion;
-  m_yield_format         = q.m_yield_format;
   m_titlexmin            = q.m_titlexmin;
   m_titleymin            = q.m_titleymin;
   m_titlexmax            = q.m_titlexmax;
@@ -162,11 +169,31 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     else if( temp_arg.find("--PROJOPT") != std::string::npos ){
       m_projopt = temp_val;
     } 
+    else if( temp_arg.find("--LEGOPT") != std::string::npos ){
+      m_legopt = temp_val;
+    } 
+    else if( temp_arg.find("--TITLE") != std::string::npos ){
+      m_title = temp_val;
+    } 
+    else if( temp_arg.find("--BLINDING") != std::string::npos ){
+      m_blinding = temp_val;
+    } 
+    else if( temp_arg.find("--BLINDSAMPLE") != std::string::npos ){
+      m_blind_sample = temp_val;
+    } 
+    else if( temp_arg.find("--BLINDCRITERION") != std::string::npos ){
+      m_blind_criterion = temp_val;
+    } 
+    else if( temp_arg.find("--YIELDFORMAT") != std::string::npos ){
+      m_yield_format = temp_val;
+    } 
+    else if( temp_arg.find("--DISTRIBUTIONFILE") != std::string::npos ){
+      m_dist_file = temp_val;
+    }
     else if( temp_arg.find("--NEWCONFIG") != std::string::npos ){
       //m_new_config_format = atoi(temp_val.c_str()) > 0);
       AnalysisUtils::BoolValue(temp_val, m_new_config_format);
     } 
-
     else if( temp_arg.find("--NEWSAMPLECONFIG") != std::string::npos ){
       //m_new_sample_format = (atoi(temp_val.c_str()) > 0);
       AnalysisUtils::BoolValue(temp_val, m_new_sample_format);
@@ -199,6 +226,13 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
       //m_doEff = (atoi(temp_val.c_str()) > 0);
       AnalysisUtils::BoolValue(temp_val, m_doEff);
     } 
+    else if( temp_arg.find("--SHOWYIELDS") != std::string::npos ){
+      //m_show_yields = (atoi(temp_val.c_str()) > 0);
+      AnalysisUtils::BoolValue(temp_val, m_show_yields);
+    } 
+    else if( temp_arg.find("--ALLFROMFILE") != std::string::npos ){
+      AnalysisUtils::BoolValue(temp_val, m_all_from_file);
+    } 
     else if( temp_arg.find("--RESMIN") != std::string::npos ){
       m_resmin = atof(temp_val.c_str());
     } 
@@ -217,13 +251,6 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     else if( temp_arg.find("--XMAX") != std::string::npos ){
       m_xmax = atof(temp_val.c_str());
     } 
-    else if( temp_arg.find("--SHOWYIELDS") != std::string::npos ){
-      //m_show_yields = (atoi(temp_val.c_str()) > 0);
-      AnalysisUtils::BoolValue(temp_val, m_show_yields);
-    } 
-    else if( temp_arg.find("--LEGOPT") != std::string::npos ){
-      m_legopt = temp_val;
-    } 
     else if( temp_arg.find("--TITLEXMIN") != std::string::npos ){
       m_titlexmin = atof(temp_val.c_str());
     } 
@@ -236,26 +263,11 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     else if( temp_arg.find("--TITLEYMAX") != std::string::npos ){
       m_titleymax = atof(temp_val.c_str());
     } 
-    else if( temp_arg.find("--TITLE") != std::string::npos ){
-      m_title = temp_val;
-    } 
-    else if( temp_arg.find("--BLINDING") != std::string::npos ){
-      m_blinding = temp_val;
-    } 
-    else if( temp_arg.find("--BLINDSAMPLE") != std::string::npos ){
-      m_blind_sample = temp_val;
-    } 
     else if( temp_arg.find("--GLOBALSCALE") != std::string::npos ){
       m_global_scale = atof(temp_val.c_str());
     } 
     else if( temp_arg.find("--BLINDTHRESHOLD") != std::string::npos ){
       m_blind_threshold = atof(temp_val.c_str());
-    } 
-    else if( temp_arg.find("--BLINDCRITERION") != std::string::npos ){
-      m_blind_criterion = temp_val;
-    } 
-    else if( temp_arg.find("--YIELDFORMAT") != std::string::npos ){
-      m_yield_format = temp_val;
     } 
     else {
       return false;
@@ -284,10 +296,15 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_den_suffix             = " << m_den_suffix           << std::endl;
     std::cout << " m_num_prefix             = " << m_num_prefix           << std::endl;
     std::cout << " m_den_prefix             = " << m_den_prefix           << std::endl;
+    std::cout << " m_projopt                = " << m_projopt              << std::endl;
     std::cout << " m_legopt                 = " << m_legopt               << std::endl;
     std::cout << " m_title                  = " << m_title                << std::endl;
     std::cout << " m_blinding               = " << m_blinding             << std::endl;
     std::cout << " m_blind_sample           = " << m_blind_sample         << std::endl;
+    std::cout << " m_blind_criterion        = " << m_blind_criterion      << std::endl;
+    std::cout << " m_yield_format           = " << m_yield_format         << std::endl;
+    std::cout << " m_dist_file              = " << m_dist_file            << std::endl;
+
     std::cout << " m_new_config_format      = " << m_new_config_format    << std::endl;
     std::cout << " m_new_sample_format      = " << m_new_sample_format    << std::endl;
     std::cout << " m_new_variable_format    = " << m_new_variable_format  << std::endl;
@@ -298,6 +315,8 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_doProjections          = " << m_doProjections        << std::endl;
     std::cout << " m_doEff                  = " << m_doEff                << std::endl;
     std::cout << " m_show_yields            = " << m_show_yields          << std::endl;
+    std::cout << " m_all_from_file          = " << m_all_from_file        << std::endl;
+
     std::cout << " m_resmin                 = " << m_resmin               << std::endl;
     std::cout << " m_resmax                 = " << m_resmax               << std::endl;
     std::cout << " m_ymin                   = " << m_ymin                 << std::endl;
@@ -310,8 +329,6 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_titleymax              = " << m_titleymax            << std::endl;
     std::cout << " m_global_scale           = " << m_global_scale         << std::endl;
     std::cout << " m_blind_threshold        = " << m_blind_threshold      << std::endl;
-    std::cout << " m_blind_criterion        = " << m_blind_criterion      << std::endl;
-    std::cout << " m_yield_format           = " << m_yield_format         << std::endl;
 
     std::cout << "============================================="          << std::endl;
     std::cout << "" << std::endl;

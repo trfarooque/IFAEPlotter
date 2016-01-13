@@ -54,6 +54,8 @@ class PlotManager{
   int ParseStyleConfig(const std::string& config_style, const std::string& delim=" : ");
   int ParseFileList(const std::string& filelist, const std::string& delim=" : ");
 
+  int CopyVariableListFromFile(const std::string& dist_file);
+
   int ReadHistogramsFromFile(int dim);
   void makeEfficiencyHistograms();
   void ProjectByBin();

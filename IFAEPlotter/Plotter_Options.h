@@ -35,6 +35,7 @@ public:
     inline const std::string& BlindSample(){ return m_blind_sample; }
     inline const std::string& BlindCriterion(){ return m_blind_criterion; }
     inline const std::string& YieldFormat(){ return m_yield_format; } 
+    inline const std::string& DistributionsFile() { return m_dist_file; }
 
     inline bool NewConfigFormat(){ return m_new_config_format; }
     inline bool NewSampleFormat(){ return m_new_sample_format; }
@@ -58,6 +59,7 @@ public:
     inline double TitleYMax(){ return m_titleymax; }
     inline double GlobalScale(){ return m_global_scale; }
     inline double BlindThreshold(){ return m_blind_threshold; }
+    inline bool AllFromFile(){ return m_all_from_file; }
 
 protected:
     virtual bool IdentifyOption( const std::string &, const std::string & );
@@ -85,6 +87,7 @@ private:
     std::string m_blind_sample;
     std::string m_blind_criterion;
     std::string m_yield_format;
+    std::string m_dist_file;
 
     bool m_new_config_format;
     bool m_new_sample_format;
@@ -96,6 +99,7 @@ private:
     bool m_doProjections;
     bool m_doEff;
     bool m_show_yields;
+    bool m_all_from_file;
 
     double m_resmin;
     double m_resmax;
