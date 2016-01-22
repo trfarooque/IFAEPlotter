@@ -1,3 +1,9 @@
+2016-01-22 Trisha Farooque <farooque@cern.ch>
+	- Added FileKeyAttributes class
+	- Optimised configuration file parsing
+	- Added NoShape option
+
+	
 2016-01-13 Trisha Farooque <farooque@cern.ch>
 	- Added option to plot all histograms from input file
 	- Now making ouput directory as required

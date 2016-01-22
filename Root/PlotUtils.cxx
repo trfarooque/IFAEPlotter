@@ -14,8 +14,7 @@
 #include "TLine.h"
 #include <algorithm>
 
-PlotUtils::PlotUtils(Plotter_Options* opt, HistManager* hstMngr, SampleAttributesMap& attrbt_map, VariableAttributesMap& var_map, StyleDictionary* style_dict
-		     , std::vector<std::string>* samples_noshape ) : 
+PlotUtils::PlotUtils(Plotter_Options* opt, HistManager* hstMngr, SampleAttributesMap& attrbt_map, VariableAttributesMap& var_map, StyleDictionary* style_dict ) : 
   m_opt(opt),
   m_hstMngr(hstMngr),
   m_attrbt_map(attrbt_map),
@@ -43,7 +42,7 @@ PlotUtils::PlotUtils(Plotter_Options* opt, HistManager* hstMngr, SampleAttribute
 
   m_drawSum = (m_attrbt_map.find("SUM") != m_attrbt_map.end());
   m_drawBlinder = (m_attrbt_map.find("BLINDER") != m_attrbt_map.end());
-  m_samples_noshape = samples_noshape;
+
   if(m_opt->OutputFormat().find("ROOT") != std::string::npos){
     m_outfile = TFile::Open(Form("%s%s.root", m_opt->OutputFolder().c_str(), m_opt->OutputFile().c_str()), "RECREATE");
   }
@@ -233,19 +232,14 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       if(glob_ttl != ""){ ttlbox->AddText(glob_ttl.c_str()); }
       if(var_extralabel != ""){ ttlbox->AddText(var_extralabel.c_str());}
     }
-    /*
-    v_label_stack.clear();
-    v_drawopt_stack.clear();
-    v_yield_stack.clear();
 
-    v_label_nostack.clear();
-    v_drawopt_nostack.clear();
-    v_yield_nostack.clear();
-    */
     bool firstsample = true;
     for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
-      if( var_isShape && !var_draw_stack && at_it->first == "SUM" ){continue;}
-      if( (m_samples_noshape != NULL) && var_isShape && (std::find(m_samples_noshape->begin(), m_samples_noshape->end(), at_it->first) != m_samples_noshape->end()) ){continue;}
+      if( var_isShape ){
+	if( !var_draw_stack && ( (at_it->first == "SUM")  || at_it->second->NoShape() ) ){continue;}
+      }
+
+      //if( (m_samples_noshape != NULL) && var_isShape && (std::find(m_samples_noshape->begin(), m_samples_noshape->end(), at_it->first) != m_samples_noshape->end()) ){continue;}
       if(at_it->first == "BLINDER" && !var_drawBlinder){continue;}
 
       const std::string& ds_name = at_it->second->Name();

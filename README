@@ -129,7 +129,7 @@ SBYB values are always calulated assuming SUM to be the total background.
 YIELDFORMAT : Printf style formatting string used to print yield in legend.
 WRITE : TRUE or FALSE. All histograms for sample written to file with name OUTFILENAME if WRITEHISTOS is TRUE in global options.
 OUTFILENAME : Name of file to which histograms for sample can be written.
-
+NOSHAPE (DEFAULT=FALSE) : TRUE or FALSE. When TRUE, this sample will not be drawn when drawing non-stacked shape plots.
 **NOTE** The keyword SUM can be used to draw a sum of all samples with DOSUM=TRUE with a statistical error band. Add it as 
 just another sample in the sample configuration file. 
 

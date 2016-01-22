@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 class SampleAttributes{
 
@@ -14,9 +15,9 @@ class SampleAttributes{
 		   , int res_opt=-1, const std::string& resdrawopt="" 
 		   , const std::string& blinding="NONE", const std::string& yield_format=""
 		   , bool write=false, const std::string& outfile_name = ""
-		   , const std::string& in_suffix = "", const std::string& in_prefix = "");
+		   , const std::string& in_suffix = "", const std::string& in_prefix = "", bool no_shape=false);
   SampleAttributes(SampleAttributes& q);
-  ~SampleAttributes(){}
+  ~SampleAttributes();
 
  private:
   std::string m_name;
@@ -37,6 +38,7 @@ class SampleAttributes{
   bool m_do_sum;
   int m_res_opt;
   bool m_write;
+  bool m_no_shape;
 
  public:
   void SetName(const std::string& name){ m_name = name; }
@@ -56,6 +58,7 @@ class SampleAttributes{
   void SetOutFileName(const std::string& outfile_name){ m_outfile_name = outfile_name; }
   void SetInSuffix(const std::string& in_suffix){ m_in_suffix = in_suffix; }
   void SetInPrefix(const std::string& in_prefix){ m_in_prefix = in_prefix; }
+  void SetNoShape(bool no_shape){ m_no_shape = no_shape; }
 
   const std::string& Name(){ return m_name; }
   const std::string& Suffix(){ return m_suffix; }
@@ -74,9 +77,11 @@ class SampleAttributes{
   bool DoSum(){ return m_do_sum; }
   int ResOpt(){ return m_res_opt; }
   bool Write(){ return m_write; }
+  bool NoShape(){ return m_no_shape; }
 
 };
 
 typedef std::map<std::string, SampleAttributes*> SampleAttributesMap;
+typedef std::vector<SampleAttributes*> SampleAttributesVector;
 
 #endif

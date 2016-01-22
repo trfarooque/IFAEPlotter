@@ -3,8 +3,12 @@
 
 #include <string>
 #include <map>
+#include <vector>
+
 class VariableAttributes{
  public:
+
+  VariableAttributes();
   VariableAttributes(const std::string& name, const std::string& label, const std::string& do_scale
 		     , bool do_width=false, bool draw_stack=false, const std::string& draw_res="", const std::string& draw_res_err=""
 		     , bool isLogY=false, bool isLogX=false
@@ -140,6 +144,7 @@ class VariableAttributes{
 };
 
 typedef std::map<std::string, VariableAttributes*> VariableAttributesMap;
+typedef std::vector<VariableAttributes*> VariableAttributesVector;
  
 
 #endif

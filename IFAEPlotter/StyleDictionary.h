@@ -31,6 +31,7 @@ class StyleDictionary{
   void AddStyle(const std::string& key, const std::string& val_lnCol, int val_lnStyle, int val_lnWdt
 		, const std::string& val_markCol, int val_markStyle, int val_markWdt
 		, const std::string& val_fillCol, int val_fillStyle); 
+  void RemoveStyle(const std::string& key); 
 
   void SetLineColour(const std::string &key, const std::string &value);
   void SetLineColour(const std::string &key, Color_t colour);
@@ -66,7 +67,7 @@ class StyleDictionary{
   Style_t MarkerStyle(const std::string& key);
   Size_t MarkerSize(const std::string& key);
   unsigned int NStyles(){ return m_style_map.size(); }
-  Color_t ParseColourString(const std::string& value);
+  static Color_t ParseColourString(const std::string& value);
 
 
  private:

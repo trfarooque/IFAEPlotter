@@ -1,15 +1,12 @@
 #include "IFAEPlotter/SampleAttributes.h"
 
 
-SampleAttributes::SampleAttributes(){
-}
-
 SampleAttributes::SampleAttributes(const std::string& name, const std::string& suffix, const std::string& leglabel, const std::string& stylekey
 				   , const std::string& drawopt, const std::string& legopt, const std::string& drawscale
 				   , bool draw_stack, bool do_sum, int res_opt, const std::string& resdrawopt
 				   , const std::string& blinding, const std::string& yield_format
 				   , bool write, const std::string& outfile_name
-				   , const std::string& in_suffix, const std::string& in_prefix) : 
+				   , const std::string& in_suffix, const std::string& in_prefix, bool no_shape) : 
   m_name(name),
   m_suffix(suffix),
   m_leglabel(leglabel),
@@ -26,8 +23,11 @@ SampleAttributes::SampleAttributes(const std::string& name, const std::string& s
   m_draw_stack(draw_stack),
   m_do_sum(do_sum),
   m_res_opt(res_opt),
-  m_write(write)
+  m_write(write),
+  m_no_shape(no_shape)
 {}
+
+SampleAttributes::SampleAttributes() : SampleAttributes("", "", "", ""){}
 
 SampleAttributes::SampleAttributes(SampleAttributes& q){
 
@@ -48,6 +48,8 @@ SampleAttributes::SampleAttributes(SampleAttributes& q){
   m_do_sum           = q.m_do_sum;
   m_res_opt          = q.m_res_opt;
   m_write            = q.m_write;
-
+  m_no_shape         = q.m_no_shape;
 
 }
+
+SampleAttributes::~SampleAttributes(){}

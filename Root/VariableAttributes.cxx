@@ -49,6 +49,8 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
   m_extralabel(extralabel)
 { }
 
+VariableAttributes::VariableAttributes() : VariableAttributes("", "", "NONE"){}
+
 VariableAttributes::VariableAttributes(VariableAttributes& q){
   m_name           = q.m_name;
   m_label          = q.m_label;

@@ -20,7 +20,7 @@ class PlotUtils{
 
  public:
   PlotUtils(Plotter_Options* opt, HistManager* hstMngr, SampleAttributesMap& attrbt_map, VariableAttributesMap& var_map
-	    , StyleDictionary* style_dict, std::vector<std::string>* samples_noshape = NULL );
+	    , StyleDictionary* style_dict );
   ~PlotUtils();
 
   void OverlayHists(const std::string& projopt);
@@ -41,7 +41,6 @@ class PlotUtils{
   bool m_drawBlinder;
   Plotter_Options* m_opt; //not owned
   HistManager* m_hstMngr; //not owned
-  std::vector<std::string>* m_samples_noshape; //not owned
   SampleAttributesMap m_attrbt_map; //not owned
   VariableAttributesMap m_var_map; //not owned 
   VariableAttributesMap m_var_map_proj; //owned 

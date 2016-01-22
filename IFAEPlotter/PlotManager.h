@@ -4,14 +4,15 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "IFAEPlotter/SampleAttributes.h"
-#include "IFAEPlotter/VariableAttributes.h"
 
 class TH1D;
 class Plotter_Options;
 class HistManager;
 class PlotUtils;
 class StyleDictionary;
+class SampleAttributes;
+class VariableAttributes;
+class FileKeyAttributes;
 
 class PlotManager{
 
@@ -29,20 +30,23 @@ class PlotManager{
   Plotter_Options* m_opt; //not owned
   HistManager* m_hstMngr; //owned
   PlotUtils* m_plotUtils; //owned
-  SampleAttributesMap m_attr_map; //owned
-  VariableAttributesMap m_var_map; //owned
+  std::map<std::string, SampleAttributes*> m_attr_map; //owned
+  std::map<std::string, VariableAttributes*> m_var_map; //owned
   StyleDictionary* m_styleDict; //owned
+  std::map<std::string, FileKeyAttributes*> m_filekey_map; //owned
+
+  /*
   std::map<std::string, std::vector<std::string> > m_filename_map;
   std::map<std::string, bool > m_filekey_multi_map;
+  std::map<std::string, bool > m_filekey_multiname_map;
   std::map<std::string, std::vector<std::string> > m_filekey_samples;
-  std::map<std::string, std::vector<double> > m_filescale_map;
-  std::vector<std::string> m_multi_extra;
+  */
+  //std::map<std::string, std::vector<double> > m_filescale_map; -> In SampleAttributes now
 
   bool m_new_sample_format;
   bool m_new_variable_format;
   bool m_new_style_format;
   bool m_new_filelist_format;
-
 
   int ParseConfigFile_New(const std::string& config_file, std::vector<std::map<std::string, std::string> >& ret_map, const std::string& delim=" : ");
   int ParseConfigFile_Old(const std::string& config_file, std::vector<std::map<std::string, std::string> >& ret_map, const std::string& delim=" : ");
