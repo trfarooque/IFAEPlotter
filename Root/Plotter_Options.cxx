@@ -122,7 +122,7 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
   std::string temp_arg = argument;
   std::string temp_val = value;
 
-  if(!OptionsBase::IdentifyOption(argument, value)){
+  if(!OptionsBase::IdentifyOption(argument, value)){ 
     if( temp_arg.find("--SAMPLES") != std::string::npos ){
       m_config_sample = temp_val;
     } 
@@ -171,9 +171,6 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     } 
     else if( temp_arg.find("--LEGOPT") != std::string::npos ){
       m_legopt = temp_val;
-    } 
-    else if( temp_arg.find("--TITLE") != std::string::npos ){
-      m_title = temp_val;
     } 
     else if( temp_arg.find("--BLINDING") != std::string::npos ){
       m_blinding = temp_val;
@@ -262,6 +259,9 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     } 
     else if( temp_arg.find("--TITLEYMAX") != std::string::npos ){
       m_titleymax = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--TITLE") != std::string::npos ){
+      m_title = temp_val;
     } 
     else if( temp_arg.find("--GLOBALSCALE") != std::string::npos ){
       m_global_scale = atof(temp_val.c_str());
