@@ -214,11 +214,11 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
       if(va_it->second->HasTitleYMin()){ ttl_ymin = va_it->second->TitleYMin(); }
       else if(m_opt->OptStr().find("TITLEYMIN") != std::string::npos){ ttl_ymin = m_opt->TitleYMin(); }
-      else{ std::cout<<"Warning: No min. y coordinate give for title boy"<<std::endl; } 
+      else{ std::cout<<"Warning: No min. y coordinate give for title box"<<std::endl; } 
 
       if(va_it->second->HasTitleYMax()){ ttl_ymax = va_it->second->TitleYMax(); }
       else if(m_opt->OptStr().find("TITLEYMAX") != std::string::npos){ ttl_ymax = m_opt->TitleYMax(); }
-      else{ std::cout<<"Warning: No max. y coordinate give for title boy"<<std::endl; } 
+      else{ std::cout<<"Warning: No max. y coordinate give for title box"<<std::endl; } 
 
 
       ttlbox = new TPaveText(ttl_xmin, ttl_ymin, ttl_xmax, ttl_ymax, "NBNDC");
