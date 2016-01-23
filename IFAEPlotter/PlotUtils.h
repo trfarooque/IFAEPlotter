@@ -46,7 +46,7 @@ class PlotUtils{
   VariableAttributesMap m_var_map_proj; //owned 
   StyleDictionary* m_style_dict; //not owned
   TFile* m_outfile; //only if ROOT is specified in output format
-
+  std::string m_output_dir;
   //std::vector<std::string> m_dist_list;
 };
 

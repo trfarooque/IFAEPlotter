@@ -43,8 +43,12 @@ PlotUtils::PlotUtils(Plotter_Options* opt, HistManager* hstMngr, SampleAttribute
   m_drawSum = (m_attrbt_map.find("SUM") != m_attrbt_map.end());
   m_drawBlinder = (m_attrbt_map.find("BLINDER") != m_attrbt_map.end());
 
+  if(m_opt->OutputFolder() != ""){ 
+    m_output_dir = m_opt->OutputFolder(); 
+    if(m_output_dir.substr(m_output_dir.size()-1) != "/"){m_output_dir += "/";}
+  }
   if(m_opt->OutputFormat().find("ROOT") != std::string::npos){
-    m_outfile = TFile::Open(Form("%s%s.root", m_opt->OutputFolder().c_str(), m_opt->OutputFile().c_str()), "RECREATE");
+    m_outfile = TFile::Open(Form("%s%s.root", m_output_dir.c_str(), m_opt->OutputFile().c_str()), "RECREATE");
   }
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::PlotUtils end"<<std::endl; 
@@ -550,19 +554,19 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     //Write to output file/ print to a png
     if(m_opt->OutputFormat().find("PNG") != std::string::npos){ 
-      canv_a->SaveAs(Form("%s/%s.png" ,m_opt->OutputFolder().c_str() ,canv_name.c_str())); 
+      canv_a->SaveAs(Form("%s%s.png" ,m_output_dir.c_str() ,canv_name.c_str())); 
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".png"<<std::endl;
     }
     if(m_opt->OutputFormat().find("EPS") != std::string::npos){ 
-      canv_a->SaveAs(Form("%s/%s.eps" ,m_opt->OutputFolder().c_str() ,canv_name.c_str()));  
+      canv_a->SaveAs(Form("%s%s.eps" ,m_output_dir.c_str() ,canv_name.c_str()));  
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".eps"<<std::endl;
    }
     if(m_opt->OutputFormat().find("PDF") != std::string::npos){
-      canv_a->SaveAs(Form("%s/%s.pdf" ,m_opt->OutputFolder().c_str() ,canv_name.c_str()));
+      canv_a->SaveAs(Form("%s%s.pdf" ,m_output_dir.c_str() ,canv_name.c_str()));
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".pdf"<<std::endl;
     }
     if(m_opt->OutputFormat().find("CPP") != std::string::npos){
-      canv_a->SaveAs(Form("%s/%s.C" ,m_opt->OutputFolder().c_str() ,canv_name.c_str()));
+      canv_a->SaveAs(Form("%s%s.C" ,m_output_dir.c_str() ,canv_name.c_str()));
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists writing "<<canv_name<<".C"<<std::endl;
     }
     if(m_opt->OutputFormat().find("ROOT") != std::string::npos){ 
