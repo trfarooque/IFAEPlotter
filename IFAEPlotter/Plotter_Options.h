@@ -23,7 +23,7 @@ public:
     inline const std::string& ResLabel(){ return m_reslabel; }
     inline const std::string& ResDrawOpt(){ return m_resdrawopt; }
     inline const std::string& PrefixList(){ return m_prefixlist; }
-    inline const std::string& SuffixList(){ return m_prefixlist; }
+    inline const std::string& SuffixList(){ return m_suffixlist; }
     inline const std::string& NumSuffix(){ return m_num_suffix; }
     inline const std::string& DenSuffix(){ return m_den_suffix; }
     inline const std::string& NumPrefix(){ return m_num_prefix; }

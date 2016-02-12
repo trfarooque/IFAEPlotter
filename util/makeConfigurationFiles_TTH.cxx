@@ -8,6 +8,7 @@
 #include <TH1.h>
 #include <TChain.h>
 #include "IFAETopFramework/AnalysisUtils.h"
+#include "IFAETopFramework/SampleInfo.h"
 
 std::string m_dir_sel="";
 std::string m_xsec_map_loc="";
@@ -15,6 +16,10 @@ std::string m_ds_map_loc="";
 std::string m_MC15_TDP="";
 std::string m_listloc="";
 std::string m_hist_file_prefix="";
+std::string m_sample_info = "";
+std::string m_input_pattern = "";
+std::string m_output_pattern = "";
+
 int m_cutflow_weight=1;
 bool m_make_file_list = false;
 bool m_make_sample_config = false;
@@ -24,15 +29,16 @@ double GetXSec(const std::string& dsID);
 double GetSumWgtFromTrees(const std::string& fileloc);
 double GetSumWgtFromHists(const std::string& fileloc);
 
+//void ParseSampleDat(const std::string& dsID, std::string& sample_name, std::string& sumwgt, std::string& xsec);
+
 std::string GetSampleID(const std::string& dsID);
 std::string GetSampleIDFromTDP(const std::string& dsID);
-std::string::size_type ParseString(std::string& base, std::string& piece, const std::string& delim );
-void TrimString(std::string& str, const std::string& whitespace=" \t\n\r");
 
 void makeSampleConfigurationFile();
 void makeVariableConfigurationFile();
-void makeFileLists();
-
+void makeFileLists(); //directly from sample_info.dat
+void makeFileLists_OLD(); 
+void makeFileLists_NEW(); //using the output list from TTHAnalysis
 int main(int argc, char** argv){
 
 
@@ -43,6 +49,10 @@ int main(int argc, char** argv){
   m_MC15_TDP = "/afs/cern.ch/work/f/farooque/TTHNtupleAna/MC15.py"; 
   m_listloc = "/afs/cern.ch/work/f/farooque/TTHNtupleAna/inputlist_TEST.txt"; //input
   m_hist_file_prefix = "/afs/cern.ch/work/f/farooque/TTHNtupleAna/HISTLISTS_NEW/HistListTESTDATMC"; //input
+  m_sample_info = "/afs/cern.ch/work/f/farooque/RunIIArea/DEVAREA/samples_info_TTH.dat"; //input
+  //m_input_pattern = "/nfs/at3/scratch2/rodina/TTHAnalysisOutput_2016_01_22_1518/outrunTTH_%DSID%._%SYS%_0Hist.root";
+  m_input_pattern = "outrunTTH_%DSID%._%SYS%_0Hist.root";
+  m_output_pattern = "ttH";
 
   int i_sample = 0;
   int i_variable = 0;
@@ -56,6 +66,7 @@ int main(int argc, char** argv){
     else if(sw == "--makeSampleConfig"){optind++;  ss.str(""); ss << argv[optind]; ss >> i_sample;}
     else if(sw == "--makeVariableConfig"){optind++;  ss.str(""); ss << argv[optind]; ss >> i_variable;}
 
+    else if     (sw == "--sample_info"){optind++; ss.str(""); ss << argv[optind]; ss >> m_sample_info;}  
     else if     (sw == "--dir_sel"){optind++; ss.str(""); ss << argv[optind]; ss >> m_dir_sel;}
     else if     (sw == "--xsec_map_loc"){optind++; ss.str(""); ss << argv[optind]; ss >> m_xsec_map_loc;}
     else if     (sw == "--ds_map_loc"){optind++; ss.str(""); ss << argv[optind]; ss >> m_ds_map_loc;}
@@ -63,6 +74,8 @@ int main(int argc, char** argv){
     else if     (sw == "--listloc"){optind++; ss.str(""); ss << argv[optind]; ss >> m_listloc;}
     else if     (sw == "--hist_file_prefix"){optind++; ss.str(""); ss << argv[optind]; ss >> m_hist_file_prefix;}
     else if     (sw == "--cutflow_weight"){optind++; ss.str(""); ss << argv[optind]; ss >> m_cutflow_weight;}
+    else if     (sw == "--input_pattern"){optind++; ss.str(""); ss << argv[optind]; ss >> m_input_pattern;}
+    else if     (sw == "--output_pattern"){optind++; ss.str(""); ss << argv[optind]; ss >> m_output_pattern;}
     //else if(sw == "--dsID"){optind++; ss.str(""); ss << argv[optind]; ss >> dsID;}
     else std::cout<<"Unknown switch "<<argv[optind]<<" sw = "<<sw<<std::endl;
     
@@ -74,17 +87,20 @@ int main(int argc, char** argv){
   m_make_sample_config = (i_sample>0);
   m_make_variable_config = (i_variable>0);
 
-  std::cout<<" m_make_file_list = "<<m_make_file_list<<" m_make_sample_config = "<<m_make_sample_config<<" m_make_variable_config = "<<m_make_variable_config<<std::endl;
+  std::cout<<" m_make_file_list = "<<m_make_file_list
+	   <<" m_make_sample_config = "<<m_make_sample_config
+	   <<" m_make_variable_config = "<<m_make_variable_config
+	   <<std::endl;
 
   if(m_make_sample_config){ makeSampleConfigurationFile();}
   if(m_make_variable_config){ makeVariableConfigurationFile(); }
-  if(m_make_file_list){ makeFileLists(); }
+  if(m_make_file_list){ makeFileLists_NEW(); }
   
   return 0;
 }
 
 
-void makeFileLists(){
+void makeFileLists_OLD(){
 
   double nev_tot = 0.;
   double xsec = 0.;
@@ -97,9 +113,11 @@ void makeFileLists(){
     return;
   }
 
+  std::string flist_name = m_output_pattern + "_file_list.txt";
+
   std::ofstream file_list;
-  if(AnalysisUtils::FileExists("ttH_file_list.txt")){std::cout<<"Error: File list already exists. Exiting"<<std::endl; return;}
-  file_list.open("ttH_file_list.txt");
+  if(AnalysisUtils::FileExists(flist_name)){std::cout<<"Error: File list already exists. Exiting"<<std::endl; return;}
+  file_list.open(flist_name.c_str());
   file_list << std::endl << "BEGIN" << std::endl; 
   file_list << "KEY : FILE : SCALE" << std::endl;
   
@@ -125,7 +143,7 @@ void makeFileLists(){
    weight = 0.;
    //--------------   
    
-   TrimString(f_line);
+   AnalysisUtils::TrimString(f_line);
    if( f_line.empty() ){ continue; }
    size_t lnsize = f_line.size();
    int beg_pos = lnsize - sufsize - idsize;
@@ -156,6 +174,8 @@ void makeFileLists(){
    
   }
   file_list << std::endl << "END" << std::endl;
+  file_list.close();
+  flist_name.clear();
 
   return;
 }
@@ -195,8 +215,9 @@ void makeSampleConfigurationFile(){
 
 
   std::ofstream sample_config; 
-  if(AnalysisUtils::FileExists("ttH_sample_config.txt")){std::cout<<"Error: Sample configuration already exists. Exiting"<<std::endl; return;}
-  sample_config.open("ttH_sample_config.txt");
+  std::string conf_name = m_output_pattern + "_sample_config.txt";
+  if(AnalysisUtils::FileExists(conf_name)){std::cout<<"Error: Sample configuration already exists. Exiting"<<std::endl; return;}
+  sample_config.open(conf_name.c_str());
   sample_config << std::endl << "BEGIN" <<std::endl; 
 
   for(unsigned int s = 0; s < samp_list.size(); s++){
@@ -246,7 +267,7 @@ void makeSampleConfigurationFile(){
 
   sample_config << std::endl << "END" << std::endl;
   sample_config.close();
-
+  conf_name.clear();
 
   return;
 }
@@ -337,9 +358,10 @@ void makeVariableConfigurationFile(){
   reg_list.push_back("reg_boosted_tag_e_jets_2bin");
   reg_list.push_back("reg_boosted_tag_mu_jets_2bin");
   */
-  std::ofstream var_config; 
-  if(AnalysisUtils::FileExists("ttH_variable_config.txt")){std::cout<<"Error: Variable configuration already exists. Exiting"<<std::endl; return;}
-  var_config.open("ttH_variable_config.txt");
+  std::ofstream var_config;
+  std::string conf_name = m_output_pattern + "_variable_config.txt";
+  if(AnalysisUtils::FileExists(conf_name)){std::cout<<"Error: Variable configuration already exists. Exiting"<<std::endl; return;}
+  var_config.open(conf_name.c_str());
   var_config << std::endl << "BEGIN" <<std::endl; 
 
   for(unsigned int r = 0; r < reg_list.size(); r++){
@@ -367,9 +389,216 @@ void makeVariableConfigurationFile(){
 
   var_config << std::endl << "END" << std::endl;
   var_config.close();
+  conf_name.clear();
+
   return; 
 }
 
+void makeFileLists_NEW(){
+
+  std::string::size_type dsID_start = m_input_pattern.find("%DSID%");
+  if(dsID_start == std::string::npos){std::cout<<" ERROR: Cannot find %DSID% in given file name name pattern."<<std::endl;}
+  std::string prefix = m_input_pattern.substr(0, dsID_start);
+
+  std::ofstream file_list;
+  std::string flist_name = m_output_pattern + "_file_list.txt";
+  if(AnalysisUtils::FileExists(flist_name)){std::cout<<"Error: File list already exists. Exiting"<<std::endl; return;}
+  file_list.open(flist_name.c_str());
+  file_list << std::endl << "BEGIN" << std::endl; 
+  file_list << "KEY : FILE : SCALE" << std::endl;
+
+  SampleInfo* sampleReader = new SampleInfo();
+  std::string::size_type dsID_end = 0;
+  std::string fname = "", dsID = "";
+  std::ifstream dslist(m_listloc.c_str());
+  while(getline(dslist, fname)){
+    //find the dataset ID and pass into SampleInfo
+    dsID_start = fname.find(prefix);
+    if(dsID_start == std::string::npos){
+      std::cout<<" ERROR : File path "<<fname<<" does not match given pattern "<<m_input_pattern<<std::endl;
+      continue;
+    }
+    dsID_start += prefix.size();
+    dsID = fname.substr( dsID_start );
+    dsID_end = fname.find(".");
+    if(dsID_end == std::string::npos){std::cout<<" ERROR : Dataset ID in the file name must end in '.'. Ask Loic why this must be. "<<std::endl;}
+    dsID = dsID.substr(0, dsID.find("."));
+    sampleReader->ReadSample(dsID, m_sample_info);
+    if(!sampleReader->Ready()){std::cout<<" WARNING : DSID "<<dsID<<" could not be found in "<<m_sample_info<<". Ignoring"<<std::endl; continue;}
+    file_list << sampleReader->SampleName() << " : " << fname << " : " << sampleReader->NormFactor() << std::endl;
+  }
+  file_list << std::endl << "END" << std::endl;
+  file_list.close();
+  delete sampleReader;
+  flist_name.clear();
+
+  return;
+}
+
+void makeFileLists(){
+
+  std::ofstream file_list;
+  std::string flist_name = m_output_pattern + "_file_list.txt";
+  if(AnalysisUtils::FileExists(flist_name)){std::cout<<"Error: File list already exists. Exiting"<<std::endl; return;}
+  file_list.open(flist_name.c_str());
+  file_list << std::endl << "BEGIN" << std::endl; 
+  file_list << "KEY : FILE : SCALE" << std::endl;
+  
+  //opposite direction, it has to be. loop over samples_info.dat and build your file names.
+  //m_input_pattern; //--> How to make a list out of this in C++? DO we even need to?
+  //Also, how do we list systematics and read them in? 
+
+
+  std::ifstream dslist(m_sample_info.c_str());
+  if(!dslist){
+    std::cout<<"Error : File containing sample information "<<m_sample_info<<" not found. Exiting."<<std::endl;
+    return;
+  }
+
+  std::string f_line = "";
+
+  std::string sampleID = "";
+  std::string dsID = "";
+  std::string histFileName="";
+
+  double dswgt = 0.;
+  double xsec = 0.;
+  double sumwgt = 0.;
+
+  std::string paramString="";
+  std::string param="";
+  int nparam = 0;
+  std::vector<std::string> vparam; vparam.clear();
+  std::string::size_type pos = 0;
+
+  while( getline(dslist, f_line) ){
+
+    sampleID.clear();
+    dsID.clear();
+    histFileName.clear();
+
+    dswgt = 0.;
+    xsec = 0.;
+    sumwgt = 0.;
+ 
+    paramString.clear();
+    param.clear();
+    nparam = 0;
+    pos = 0;
+    vparam.clear();
+
+    AnalysisUtils::TrimString(f_line);
+
+    if( f_line.empty() ){ continue; }
+   //--------------   
+
+    paramString = f_line;
+    do{
+      pos = AnalysisUtils::ParseString(paramString, param, " ");
+      AnalysisUtils::TrimString(param);
+      if(!param.empty()){
+	vparam.push_back(param);
+	nparam++;
+      }
+    }while( (!paramString.empty()) && (pos != std::string::npos) );//read all given parameters
+
+    if(nparam != 4 ){
+      std::cout<<"Given parameter line :" << f_line << " : does not conform to expectation of four parts"<<std::endl;
+      std::cout<<" Number of parts = "<<nparam<<std::endl; 
+      for(unsigned int t = 0; t < vparam.size(); t++){
+	std::cout<<" vparam.at("<<t<<") = "<<vparam.at(t)<<"-E"<<std::endl; 
+      }
+    }
+    else{
+      //void ParseSampleDat(const std::string& dsID, std::string& sample_name, std::string& sumwgt, std::string& xsec);
+      dsID = vparam.at(0);
+      sumwgt = atof(vparam.at(1).c_str());
+      xsec = atof(vparam.at(2).c_str());
+      sampleID = vparam.at(3);
+    }
+
+    histFileName = AnalysisUtils::ReplaceString(m_input_pattern, "%DSID%", dsID);
+    histFileName = AnalysisUtils::ReplaceString(m_input_pattern, "%SYS%", "nominal");
+
+    dswgt = (sumwgt > 0.) ? xsec / sumwgt : 0.;
+
+    file_list << sampleID <<" : "<<histFileName<<" : "<<dswgt << std::endl;
+
+  }//loop over lines in sample.dat file
+
+  file_list << std::endl << "END" << std::endl;
+  file_list.close();
+  flist_name.clear();
+
+  return;
+}
+
+
+void ParseSampleDat(const std::string& dsID, std::string& sample_name, std::string& sumwgt, std::string& xsec){
+  
+  std::string conf_line="";
+  std::string paramString="";
+  std::string param="";
+  int nparam = 0;
+  std::vector<std::string> vparam; vparam.clear();
+  std::string::size_type pos = 0;
+
+  std::ifstream dslist(m_sample_info.c_str());
+  if(!dslist){
+    std::cout<<"Error : File containing sample information "<<m_sample_info<<" not found. Exiting."<<std::endl;
+    return;
+  }
+
+  while( getline(dslist, conf_line) ){
+
+    paramString.clear();
+    param.clear();
+    nparam = 0;
+    pos = 0;
+    vparam.clear();
+
+    AnalysisUtils::TrimString(conf_line);
+
+    if( conf_line.empty() || (conf_line.find(dsID) == std::string::npos) ){ continue; }
+    if(conf_line.find(dsID) != std::string::npos){
+      //1st part - dsID
+      //2nd part - sumwgt
+      //3rd part - xsec
+      //4th part - sample name
+      paramString = conf_line;
+      do{
+	pos = AnalysisUtils::ParseString(paramString, param, " ");
+	AnalysisUtils::TrimString(param);
+	if(!param.empty()){
+	  vparam.push_back(param);
+	  nparam++;
+	}
+
+      }while( (!paramString.empty()) && (pos != std::string::npos) );//read all given parameters
+
+      if(nparam != 4 || (vparam.at(0) != dsID) ){
+	std::cout<<"Given parameter line :" << conf_line << " : does not conform to expectation of four parts"<<std::endl;
+	std::cout<<" Number of parts = "<<nparam<<std::endl; 
+	for(unsigned int t = 0; t < vparam.size(); t++){
+	  std::cout<<" vparam.at("<<t<<") = "<<vparam.at(t)<<"-E"<<std::endl; 
+	}
+      }
+      else{
+	//void ParseSampleDat(const std::string& dsID, std::string& sample_name, std::string& sumwgt, std::string& xsec);
+	//dsID = vparam.at(0);
+	sample_name = vparam.at(3);
+	sumwgt = vparam.at(1);
+	xsec = vparam.at(2);
+      }
+      break;
+    }//if found dsID on line
+
+  }//loop over lines
+
+  dslist.close();
+  return;
+
+}
 
 double GetXSec(const std::string& dsID){
 
@@ -396,7 +625,7 @@ double GetXSec(const std::string& dsID){
     pos = 0;
     vparam.clear();
 
-    TrimString(conf_line);
+    AnalysisUtils::TrimString(conf_line);
 
     if( conf_line.empty() || (conf_line.find(dsID) == std::string::npos) ){ continue; }
     if(conf_line.find(dsID) != std::string::npos){
@@ -405,8 +634,8 @@ double GetXSec(const std::string& dsID){
       //3rd part - kfactor
       paramString = conf_line;
       do{
-	pos = ParseString(paramString, param, " ");
-	TrimString(param);
+	pos = AnalysisUtils::ParseString(paramString, param, " ");
+	AnalysisUtils::TrimString(param);
 	if(!param.empty()){
 	  vparam.push_back(param);
 	  nparam++;
@@ -489,15 +718,15 @@ std::string GetSampleID(const std::string& dsID){
     pos = 0;
     vparam.clear();
 
-    TrimString(conf_line);
+    AnalysisUtils::TrimString(conf_line);
     if( conf_line.empty() || (conf_line.find(dsID) == std::string::npos) ){ continue; }
     if(conf_line.find(dsID) != std::string::npos){
       //1st part - sampleID
       //2nd part - dsID
       paramString = conf_line;
       do{
-	pos = ParseString(paramString, param, " ");
-	TrimString(param);
+	pos = AnalysisUtils::ParseString(paramString, param, " ");
+	AnalysisUtils::TrimString(param);
 	vparam.push_back(param);
 	nparam++;
       }while(pos != std::string::npos);//read all given parameters
@@ -563,27 +792,4 @@ double GetSumWgtFromTrees(const std::string& fileloc){
   delete fChain;
 
   return nev_tot;
-}
-
-std::string::size_type ParseString(std::string& base, std::string& piece, const std::string& delim ){
-
-  std::string::size_type pos = base.find(delim);
-  if(pos != std::string::npos ){
-    piece = base.substr(0, pos);
-    base = base.substr(pos + delim.size());
-  }
-  else {piece = base;}
-  return pos;
-
-}
-
-void TrimString(std::string& str, const std::string& whitespace){
-  std::string::size_type strBegin = str.find_first_not_of(whitespace);
-  if(strBegin == std::string::npos){ str = ""; }  // no content
-  else{
-    const auto strEnd = str.find_last_not_of(whitespace);
-    const auto strRange = strEnd - strBegin + 1;
-    str = str.substr(strBegin, strRange);
-  }
-  return;
 }

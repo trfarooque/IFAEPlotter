@@ -104,6 +104,8 @@ Options can be concatenated. Overriden by variable configuration.
 			       NSIG = Number of events in SIGNAL sample. 
 --GLOBALSCALE : A global constant by which all histograms are scaled. Multiplied to the individual sample scales.
 --YIELDFORMAT : Printf style formatting string used to print yield in legends. Overriden by sample configuration.
+--DISTRIBUTIONFILE : Single file from which all distributions can be read.
+--ALLFROMFILE(DEFAULT=FALSE) : TRUE or FALSE. All distributions from the input files will be plotted when TRUE.
 
 ***Other global options exist***
 
@@ -132,6 +134,9 @@ OUTFILENAME : Name of file to which histograms for sample can be written.
 NOSHAPE (DEFAULT=FALSE) : TRUE or FALSE. When TRUE, this sample will not be drawn when drawing non-stacked shape plots.
 **NOTE** The keyword SUM can be used to draw a sum of all samples with DOSUM=TRUE with a statistical error band. Add it as 
 just another sample in the sample configuration file. 
+INSUFFIX : Suffix to be appended to name of histogram (NAME in Variable attribute) when reading from file
+INPREFIX : Prefix to be added to name of histogram (NAME in Variable attribute) when reading from file
+
 
 3. Variable attributes:
 

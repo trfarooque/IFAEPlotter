@@ -5,6 +5,7 @@
 #include "IFAEPlotter/StyleDictionary.h"
 #include "IFAEPlotter/SampleAttributes.h"
 #include "IFAEPlotter/VariableAttributes.h"
+#include "IFAEPlotter/SystematicsAttributes.h"
 #include "IFAEPlotter/FileKeyAttributes.h"
 
 #include "TKey.h"
@@ -21,13 +22,8 @@ PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
 
   m_attr_map.clear();
   m_var_map.clear();
+  m_sys_map.clear();
   m_filekey_map.clear(); 
-
-  //m_filename_map.clear();
-  //m_filekey_multi_map.clear();
-  //m_filekey_samples.clear();
-  //m_filescale_map.clear();
-  //m_multi_extra.clear();
 
   m_new_sample_format = false;
   m_new_variable_format = false;
@@ -76,7 +72,7 @@ PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
   }
   else{
     if( m_var_map.find("ALL") != m_var_map.end() ){
-      std::cout<<" WARNING: ALL keyword in variable configuration will be ignored because ALLFROMFILE=FALSE in globa; options"<<std::endl;
+      std::cout<<" WARNING: ALL keyword in variable configuration will be ignored because ALLFROMFILE=FALSE in global options"<<std::endl;
       delete m_var_map["ALL"];
       m_var_map.erase( m_var_map.find("ALL") );
     }
@@ -87,8 +83,6 @@ PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
   m_styleDict = new StyleDictionary("test");
   stat = ParseStyleConfig( m_opt->StyleLib() );
   if(stat < 0){return;}
-
-  //std::vector<std::string>* ptr_extra = (m_multi_extra.size() > 0) ? &m_multi_extra : NULL; 
 
   m_plotUtils = new PlotUtils(m_opt, m_hstMngr, m_attr_map, m_var_map, m_styleDict);
 
@@ -111,6 +105,11 @@ PlotManager::~PlotManager(){
   for(VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
     delete varit->second;
     m_var_map.erase(varit);
+  }
+
+  for(SystematicsAttributesMap::iterator sysit = m_sys_map.begin(); sysit != m_sys_map.end(); ++sysit){
+    delete sysit->second;
+    m_sys_map.erase(sysit);
   }
 
   for(FileKeyAttributesMap::iterator fkit = m_filekey_map.begin(); fkit != m_filekey_map.end(); ++fkit){
@@ -160,11 +159,6 @@ void PlotManager::Terminate(){
   m_hstMngr->ClearAllTH2();
   m_hstMngr->ClearAllTH3();
   m_plotUtils->Terminate();
-
-  //m_filename_map.clear();
-  //m_filekey_multi_map.clear();
-  //m_filekey_samples.clear();
-  //m_filescale_map.clear();
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::Terminate end"<<std::endl; 
 
@@ -252,7 +246,7 @@ int PlotManager::ParseConfigFile_Old(const std::string& config_file, std::vector
     AnalysisUtils::TrimString(param);
     std::transform(param.begin(), param.end(), param.begin(), ::toupper);
     paramSeq[nparam] = param;
-    if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" nparam = "<<nparam<<" param = "<<param<<std::endl; 
+    //if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" nparam = "<<nparam<<" param = "<<param<<std::endl; 
     nparam++;
   }while(pos != std::string::npos);
 
@@ -303,65 +297,25 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
   int nline = ParseConfigFile(config_sample, parsed_map, delim, m_new_sample_format); 
   if(nline < 0){ std::cout<<"Sample configuration file could not be opened. Exiting"<<std::endl; return nline; }
   std::string name = "";
-  /*
-  //mandatory information
-  std::string suffix = "";
-  std::string leglabel = "";
-  //optional information
-  std::string drawopt = "";
-  std::string resdrawopt = "";
-  std::string legopt = "";
-  std::string stylekey = "";
-  std::string drawscale = "";
-  std::string blinding = "NONE";
-  std::string yield_format = "";
-  bool draw_stack_sample = false;
-  bool do_sum = false;
-  int res_opt = -1;
-  bool write = false;
-  std::string outfile_name = "";
-  std::string in_suffix = "";
-  std::string in_prefix = "";
-  bool no_shape = false;
-  */
+
   for(int l = 0; l < nline; l++){
     name = "";
-    /*
-    suffix = "";
-    leglabel = "";
-    drawopt = "hist";
-    resdrawopt="";
-    legopt = "";
-    stylekey = "";
-    drawscale = "NORM";
-    blinding = "NONE";
-    yield_format = "";
-    draw_stack_sample = false;
-    do_sum = false;
-    res_opt = -1;
-    write = false;
-    outfile_name = "";
-    in_suffix = "";
-    in_prefix = "";
-    no_shape = false;
-    */
+
     map<string, string> keymap = parsed_map.at(l);
 
-    SampleAttributes* sampleObj = new SampleAttributes();
-    if( keymap.find("NAME") != keymap.end() ){ 
-      name = keymap["NAME"];
-      sampleObj->SetName( name ); 
-    }
-    else{
-      std::cout<<"Error : No name found for sample on line "<<l<<". Ignoring."<<std::endl; 
-      delete sampleObj; 
+    if( keymap.find("NAME") == keymap.end() ){ 
+      std::cout<<"Error : No name found for sample in block "<<l<<". Ignoring."<<std::endl; 
       continue;
     }
+    SampleAttributes* sampleObj = new SampleAttributes();
+    name = keymap["NAME"];
+    sampleObj->SetName( name ); 
+
+
     if( keymap.find("INSUFFIX") != keymap.end() ){ sampleObj->SetInSuffix(keymap["INSUFFIX"]); }
     if( keymap.find("INPREFIX") != keymap.end() ){ sampleObj->SetInPrefix(keymap["INPREFIX"]); }
 
     if( keymap.find("SUFFIX") != keymap.end() ){ sampleObj->SetSuffix(keymap["SUFFIX"]); }
-    else if( sampleObj->InSuffix() != "" ){ sampleObj->SetSuffix( sampleObj->InSuffix() ); }
     else{ sampleObj->SetSuffix( name ); }
 
     if( keymap.find("LEGLABEL") != keymap.end() ){ sampleObj->SetLegLabel(keymap["LEGLABEL"]); }
@@ -389,10 +343,6 @@ int PlotManager::ParseSampleConfig(const std::string& config_sample, const std::
 
 
     //---------- read all parameters------
-    //Make a SampleAttribute object and add it to the map
-    //SampleAttributes* sampleObj = new SampleAttributes(name, suffix, leglabel, stylekey, drawopt, legopt, drawscale
-    //						       , draw_stack_sample, do_sum, res_opt, resdrawopt, blinding, yield_format
-    //						       , write, outfile_name, in_suffix, in_prefix, no_shape);
     if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" Adding sample "<<name<<std::endl;
     m_attr_map[name] = sampleObj;
     keymap.clear();
@@ -409,107 +359,24 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
 
   int sc = 0; 
   std::vector<std::map<std::string, std::string> > parsed_map;
-  std::cout<<" config_variable = "<<config_variable<<std::endl;
   int nline = ParseConfigFile(config_variable, parsed_map, delim, m_new_variable_format); 
   if(nline < 0){ std::cout<<"Variable configuration file could not be opened. Exiting"<<std::endl; return nline; }
 
   std::string name = "";
-  /*
-  std::string label = "";
-  std::string ylabel = "";
-  std::string reslabel = "";
-  std::string extralabel = "";
-  std::string blinding = "";
 
-  bool draw_stack = false;
-  std::string draw_res = "";
-  std::string draw_res_err = "";
-  std::string do_scale = "NONE";
-  bool isLogY = false;
-  bool isLogX = false;
-  int rebin = 0;
-  std::string rebinvar = "";
-  bool do_width = false;
-  std::string resdrawopt = "";
-  double resmin = 0.5;
-  double resmax = 1.5;
-  bool has_resmin = false;
-  bool has_resmax = false;
-  double ymin = 0.;
-  double ymax = 0.;
-  bool has_ymin = false;
-  bool has_ymax = false;
-  double xmin = 0.;
-  double xmax = 0.;
-  bool has_xmin = false;
-  bool has_xmax = false;
-
-  double ttl_xmin = 0.;
-  double ttl_ymin = 0.;
-  double ttl_xmax = 0.;
-  double ttl_ymax = 0.;
-  bool has_ttl_xmin = false;
-  bool has_ttl_ymin = false;
-  bool has_ttl_xmax = false;
-  bool has_ttl_ymax = false;
-  */
   for(int l = 0; l < nline; l++){
     name = "";
-    /*
-    label = "";
-    ylabel = "";
-    reslabel = "";
-    extralabel = "";
-    blinding = "";
-
-    draw_stack = 0;
-    draw_res = "";
-    draw_res_err = "";
-    do_scale = "NONE";
-    do_width = false;
-    isLogY = false;
-    isLogX = false;
-    rebin = 0;
-    rebinvar = "";
-    resdrawopt = "";
-    resmin = 0.5;
-    resmax = 1.5;
-    has_resmin = false;
-    has_resmax = false;
-
-    ymin = 0.;
-    ymax = 0.;
-    has_ymin = false;
-    has_ymax = false;
-
-    xmin = 0.;
-    xmax = 0.;
-    has_xmin = false;
-    has_xmax = false;
-
-    ttl_xmin = 0.;
-    ttl_ymin = 0.;
-    ttl_xmax = 0.;
-    ttl_ymax = 0.;
-    has_ttl_xmin = false;
-    has_ttl_ymin = false;
-    has_ttl_xmax = false;
-    has_ttl_ymax = false;
-    */
-
-    VariableAttributes* varObj = new VariableAttributes();
 
     std::map<std::string, std::string> keymap = parsed_map.at(l);
 
-    if( keymap.find("NAME") != keymap.end() ){ 
-      name = keymap["NAME"];
-      varObj->SetName(name);
-    }
-    else{
-      std::cout<<"Error : No name found for variable"<<std::endl;
-      delete varObj;
+    if( keymap.find("NAME") == keymap.end() ){ 
+      std::cout<<"Error : No name found for variable in block "<<l<<". Ignoring."<<std::endl;
       continue;
     }
+    VariableAttributes* varObj = new VariableAttributes();
+    name = keymap["NAME"];
+    varObj->SetName(name);
+
     if( keymap.find("LABEL") != keymap.end() ){ varObj->SetLabel(keymap["LABEL"]); }
     if( keymap.find("YLABEL") != keymap.end() ){ varObj->SetYLabel(keymap["YLABEL"]); }
     if( keymap.find("RESLABEL") != keymap.end() ){ varObj->SetResLabel(keymap["RESLABEL"]);}
@@ -572,15 +439,6 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
       varObj->SetHasTitleYMax(true);
     }
 
-    /*
-    VariableAttributes* varObj = new VariableAttributes(name, label, do_scale, do_width, draw_stack, draw_res, draw_res_err
-							, isLogY, isLogX
-							, ylabel, reslabel, has_resmin, has_resmax, resmin, resmax
-							, has_ymin, has_ymax, ymin, ymax, has_xmin, has_xmax, xmin, xmax
-							, has_ttl_xmin, has_ttl_xmax, ttl_xmin, ttl_xmax 
-							, has_ttl_ymin, has_ttl_ymax, ttl_ymin, ttl_ymax 
-							, resdrawopt, extralabel, rebin, rebinvar, blinding);
-    */
     if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" Adding variable "<<name<<std::endl;
     m_var_map[name] = varObj;
     keymap.clear();
@@ -635,29 +493,9 @@ int PlotManager::ParseStyleConfig(const std::string& config_style, const std::st
   if(nline < 0){ std::cout<<"Style configuration file could not be opened. Exiting"<<std::endl; return nline; }
 
   std::string key = "";
-  /*
-  std::string linecolour = "";
-  int linestyle = 1;
-  int linewidth = 2;
-  std::string fillcolour = "";
-  int fillstyle = 0;
-  std::string markercolour = "";
-  int markerstyle = 1;
-  int markersize = 1;
-  */
   for(int l = 0; l < nline; l++){
 
     key = "";
-    /*
-    linecolour = "";
-    linestyle = 1;
-    linewidth = 2;
-    fillcolour = "";
-    fillstyle = 0;
-    markercolour = "";
-    markerstyle = 1;
-    markersize = 1;
-    */
     std::map<std::string, std::string> keymap = parsed_map.at(l);
 
     if( keymap.find("KEY") != keymap.end() ){ key = keymap["KEY"];}
@@ -694,12 +532,6 @@ int PlotManager::ParseStyleConfig(const std::string& config_style, const std::st
 
 
     if( keymap.find("COLOR") != keymap.end() ){ std::cout<<"Field COLOR not recognised. Did you mean COLOUR? #GODSAVETHEQUEEEN"<<std::endl; }
-    /*
-    std::cout<<"nline = "<<l<<" key = "<<key<<" linecolour = "<<linecolour<<" linestyle = "<<linestyle<<" linewidth = "<<linewidth
-	     <<" fillcolour = "<<fillcolour<<" fillstyle = "<<fillstyle
-	     <<" markercolour = "<<markercolour<<" markerstyle = "<<markerstyle<<" markersize = "<<markersize<<std::endl;
-    */
-    //m_styleDict->AddStyle(key, linecolour, linestyle, linewidth, markercolour, markerstyle, markersize, fillcolour, fillstyle); 
     keymap.clear();
   }
 
@@ -712,6 +544,7 @@ int PlotManager::ParseStyleConfig(const std::string& config_style, const std::st
 //-----------EDIT END-------------------- 
 
 int PlotManager::ParseFileList(const std::string& filelist, const std::string& delim){
+
   int sc = 0; 
   std::vector<std::map<std::string, std::string> > parsed_map;
   int nline = ParseConfigFile(filelist, parsed_map, delim, m_new_filelist_format); 
@@ -720,47 +553,57 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
   std::string key = "";
   std::string fileloc = "";
 
+  std::string keybase = "";
+  std::string scalebase = "";
+  std::string syst_name = "";
   const std::string delim_in = ",";
   for(int l = 0; l < nline; l++){
 
     std::map<std::string, std::string> keymap = parsed_map.at(l);
-    std::string keybase = "";
-    std::string scalebase = "";
+    keybase = "";
+    scalebase = "";
+    syst_name = "";
     if( keymap.find("KEY") != keymap.end() ){keybase = keymap["KEY"];}
     else{std::cout<<"Error : No sample key found for file name"<<std::endl; continue;}
     if( keymap.find("SCALE") != keymap.end() ){scalebase = keymap["SCALE"];}
     if( keymap.find("FILE") == keymap.end() ){std::cout<<"Error : No file name given for sample key "<<keymap["KEY"]<<std::endl; continue; }
+    if( keymap.find("SYST") != keymap.end() ){syst_name = keymap["SYST"];}
 
     bool b_multi = (keybase.find(delim_in) != std::string::npos);      
-    bool firstfile = (m_filekey_map.find(keymap["KEY"]) == m_filekey_map.end());
+    bool b_multiscale = (scalebase.find(delim_in) != std::string::npos);
+
+    bool b_firstfile = (m_filekey_map.find(keymap["KEY"]) == m_filekey_map.end());
+
+    bool b_sys = (syst_name != "");
+    bool b_firstfile_systs = ( b_sys && ( b_firstfile || (m_filekey_map[keybase]->SystFileList()==NULL) ) );
+    bool b_firstfile_syst_this = ( b_sys && ( b_firstfile_systs || 
+					      (m_filekey_map[keybase]->SystFileList()->find(syst_name) 
+					       == m_filekey_map[keybase]->SystFileList()->end()) ) );
 
     FileKeyAttributes* fkey=NULL;
 
-    if(firstfile){
-      //Make a fileattribute and put it in 
+    //===== FIRST FILE FOR KEY ==================
+    if(b_firstfile){
       std::vector<std::string> *vfile = new std::vector<std::string>; vfile->clear();
-      //std::vector<std::string>* vsample=NULL; 
-      //if(b_multi){ vsample = new std::vector<std::string>; }
-      fkey = new FileKeyAttributes(keybase, vfile, b_multi);
+      fkey = new FileKeyAttributes(keybase, vfile, b_multi, b_multiscale);
       m_filekey_map[keybase] = fkey;
    
       //Only check the sample key for multiple samples if it is the first file
-      //Put this in a struct
-      //m_filekey_multi_map[keybase] = b_multi;
-      //m_filekey_multiname_map[keybase] = false;
-      //std::vector<std::string>* vfile = new std::vector<std::string>; 
-      //vfile->clear();
-      //m_filename_map[ keybase ] = vfile; 
-      
       if(b_multi){
 	std::string parseString = keybase;
 	std::string sparse = "";
 	std::string::size_type pos = 0;
 	bool b_multiname = false;
 
-	std::vector< std::vector<double> >* vscales = new std::vector< std::vector<double> >; vscales->clear();
+	std::vector< std::vector<double> >* vscales = NULL; 
+	if(b_multiscale){
+	  vscales = new std::vector< std::vector<double> >; vscales->clear();
+	  fkey->SetSampleScales( vscales );
+	}
+	else{ fkey->SetSingleSampleScales( new std::vector<double> ); }
 
 	SampleAttributesVector* v_samp = new SampleAttributesVector; v_samp->clear();
+	fkey->SetSampleList(v_samp);
 	do{
 	  pos = AnalysisUtils::ParseString(parseString, sparse, delim_in);
 	  if( m_attr_map.find(sparse) == m_attr_map.end() ){ 
@@ -769,32 +612,26 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
 	  }
 	  SampleAttributes* cur_samp = m_attr_map[sparse];
 	  v_samp->push_back( cur_samp );
-	  std::vector<double> vscale_samp; vscale_samp.clear();
-	  vscales->push_back( vscale_samp);
-
-	  if( !b_multiname && ( (cur_samp->InSuffix() != "") || (cur_samp->InPrefix() != "") ) ){
-	    b_multiname = true;
-	    //m_filekey_map[keybase]=true;
+	  if(b_multiscale){
+	    //std::vector<double> vscale_samp; vscale_samp.clear();
+	    vscales->push_back( std::vector<double>() );
 	  }
-	  //if(cur_samp->FileScales() == NULL){
-	    //}
-	  //m_filescale_map[ sparse ] = vscale; 
+	  if( !b_multiname && ( (cur_samp->InSuffix() != "") || (cur_samp->InPrefix() != "") ) ){
+	    b_multiname = true; fkey->SetMultiName(true);
+	  }
 	} while(pos != std::string::npos); //subsamples
 
-	fkey->SetSampleList(v_samp);
-	fkey->SetSampleScales( vscales );
-	
-	//m_filekey_samples[keybase] = v_samp;
+	//fkey->SetSampleList(v_samp);
+	//if(b_multiscale){ fkey->SetSampleScales( vscales ); }
+	//else{ key->SetSingleSampleScales( new std::vector<double> );	}
       }//if multi
       else{ 
 	if( m_attr_map.find(keybase) == m_attr_map.end() ){ 
 	  std::cout<<"WARNING:: Sample "<<keybase<<" is not in sample list. Ignoring"<<std::endl; continue; 
 	  continue;
 	}
-	fkey->SetSingleSample(m_attr_map[keybase]);
-	std::vector<double>* vscale = new std::vector<double>; vscale->clear();
-	fkey->SetSingleSampleScales( vscale );
 
+	fkey->SetSingleSample(m_attr_map[keybase]);
       }//if not multi
 
       m_filekey_map[keybase] = fkey;
@@ -802,11 +639,50 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
     }//if first file of key
     else{ fkey = m_filekey_map[keybase]; }
 
-    //m_filename_map[ keybase ].push_back( keymap["FILE"] );
-    fkey->FileList()->push_back( keymap["FILE"] );
+    //===== FIRST SYST FILE ==================
+    if(b_firstfile_systs){
 
+      fkey->SetSystFileList( new std::map<std::string, std::vector<std::string> > );
+      if(!b_multiscale){ fkey->SetSystSingleSampleScales( new std::map<std::string, std::vector<double> > ); }
+      else{
+	fkey->SetSystSampleScales( new std::map<std::string, std::vector<std::vector<double> > > ); 
+      }
+
+    }
+
+    //===== FIRST SYST FILE FOR KEY ==================
+    if(b_firstfile_syst_this){
+
+      fkey->SystFileList() -> insert( std::pair<std::string, std::vector<std::string> >() );
+      if(!b_multiscale){ fkey -> SystSingleSampleScales() -> insert( std::pair<std::string, std::vector<double> >( syst_name, std::vector<double>()  ) ); }
+      else{   
+	fkey -> SystSampleScales() -> insert( std::pair<std::string, std::vector< std::vector<double> > >( syst_name, std::vector<std::vector<double> >() ) ); 
+	std::vector<std::vector<double> >&  syst_samp_scales = fkey->SystSampleScales(syst_name);
+	//for( SampleAttributes*  : *(fkey ->SampleList()) ){ 
+	for(SampleAttributesVector::iterator samp_it = fkey->SampleList()->begin()
+	      ; samp_it != fkey->SampleList()->end(); ++samp_it) { syst_samp_scales.push_back( std::vector<double>() ); }
+
+      }
+
+    }// set up all the vectors for this systematic
+
+    //=================================================
+
+    //==========Add files to the nominal or systmatics list
+    if(!b_sys){ fkey->FileList()->push_back( keymap["FILE"] ); }
+    else{
+      std::map<std::string, std::vector<std::string> >* syst_file_list = fkey->SystFileList();
+      if( syst_file_list -> find(syst_name) == syst_file_list -> end() ){
+	syst_file_list -> insert( std::pair<std::string, std::vector<std::string> >( syst_name, std::vector<std::string>() ) );
+      }
+      syst_file_list->at(syst_name).push_back(keymap["FILE"]);
+   
+
+    }
+
+    //==========Add scales to the nominal or systematics list
     if(scalebase != ""){
-      if(b_multi){
+      if( b_multi && b_multiscale){
 	std::string parseString = scalebase;
 	std::string sparse = ""; int nsamp = 0;
 	std::string::size_type pos = 0;
@@ -814,19 +690,22 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
 	  pos = AnalysisUtils::ParseString(parseString, sparse, delim_in);
 	  double sc = atof(sparse.c_str());
 	  if(m_opt->OptStr().find("--GLOBALSCALE") != std::string::npos){ sc *= m_opt->GlobalScale(); }
-	  fkey->SampleScales()->at(nsamp).push_back(sc);
-	  //(fkey->GetSamples()->at(nsamp))->GetFileScales()->push_back(sc);
-	  //m_attr_map[ m_filekey_samples[keybase]->GetSamples().at(nsamp) ]->GetFileScales()->push_back(sc); 
+
+	  if(b_sys){ fkey->SystSampleScales()->at(syst_name).at(nsamp).push_back(sc); }
+	  else{ fkey->SampleScales()->at(nsamp).push_back(sc); }
+
 	  nsamp++;
 	} while(pos != std::string::npos); //subsamples
 
-      }//if multi
+      }//if multiple scales given for each sample
       else{ 
 	double sc = atof(scalebase.c_str());
 	if(m_opt->OptStr().find("--GLOBALSCALE") != std::string::npos){ sc *= m_opt->GlobalScale(); }
-	fkey->SingleSampleScales()->push_back( sc );
+
+	if(b_sys){ fkey->SystSingleSampleScales()->at(syst_name).push_back( sc ); }
+	else{ fkey->SingleSampleScales()->push_back( sc ); }
+
       } 
-	
     }//if scale
     
     keymap.clear();
@@ -843,12 +722,10 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
 void PlotManager::WriteHistogramsToFile(){
 
     for(SampleAttributesMap::iterator samit = m_attr_map.begin(); samit != m_attr_map.end(); ++samit){
-      std::cout<<" samit->first = "<<samit->first<<" write = "<<samit->second->Write()<<std::endl; 
       if( !samit->second->Write() ){ continue; }
       const std::string& ds_suffix = samit->second->Suffix();
       const std::string& ds_outfile_name = (samit->second->OutFileName() != "" ) ? samit->second->OutFileName() : m_opt->OutputFile();
       TFile* ds_outfile = TFile::Open(ds_outfile_name.c_str(), "UPDATE");
-      std::cout<<" samit->first = "<<samit->first<<" write = "<<samit->second->Write()<<" ds_outfile = "<<ds_outfile_name<<std::endl; 
 
       ds_outfile->cd();
       for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
@@ -920,9 +797,8 @@ void PlotManager::FillHistManager(){
     }
     double intgl_sum = (hsum) ? hsum->Integral() : 1.;
     if(var_do_blind_threshold && (hsum==NULL)){std::cout<<" Cannot find SUM histogram required to calculate blinding threshold. Program will crash"<<std::endl;}
-
     for(SampleAttributesMap::iterator samit = m_attr_map.begin(); samit != m_attr_map.end(); ++samit){
-
+      if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" Sample : "<<samit->first<<std::endl; 
       if(samit->first == "BLINDER"){continue;}
 
 
@@ -980,8 +856,6 @@ void PlotManager::FillHistManager(){
       }//signal sample for blinding thresh
 
       //Scaling
-      //if( b_var_isShape && (std::find(m_multi_extra.begin(), m_multi_extra.end(), samit->first) != m_multi_extra.end()) ){continue;}
-
       if( b_var_isShape && !var_draw_stack && samit->second->NoShape() ){continue;}
       if(var_rebin > 0){
 	if(var_rebinedges_ptr != NULL){ VariableRebinning(key, hsample, var_rebin, var_rebinedges_ptr); }
@@ -1034,8 +908,7 @@ void PlotManager::makeEfficiencyHistograms(){
   int fnum = 0;
 
   std::string var_name_num = ""; std::string var_name_den = "";
-  //std::map<std::string, std::vector<std::string> >::iterator fn_it = m_filename_map.begin();
-  //for( ; fn_it != m_filename_map.end(); ++fn_it){
+
   for(FileKeyAttributesMap::iterator fn_it = m_filekey_map.begin(); fn_it != m_filekey_map.end(); ++fn_it){
     std::vector<std::string>::iterator v_it = (fn_it->second->FileList())->begin();
     int fnum_int = 0;
@@ -1080,25 +953,26 @@ void PlotManager::makeEfficiencyHistograms(){
 
 	hkey_num = m_hstMngr->GetTH1D(key_num);
 	if(hkey_num == NULL){hkey_num = m_hstMngr->CloneTH1D(key_num, hkey_seq_num, true); }
-	hkey_seq_num->Scale( fn_it->second->SingleSampleScales()->at(fnum_int) ); //m_filescale_map[samp].at(fnum_int));
+	hkey_seq_num->Scale( fn_it->second->SingleSampleScales()->at(fnum_int) );
 	hkey_num->Add(hkey_seq_num);
 
 	hkey_den = m_hstMngr->GetTH1D(key_den);
 	if(hkey_den == NULL){hkey_den = m_hstMngr->CloneTH1D(key_den, hkey_seq_den, true); }
-	hkey_seq_den->Scale( fn_it->second->SingleSampleScales()->at(fnum_int) );//	hkey_seq_den->Scale(m_filescale_map[samp].at(fnum_int));
+	hkey_seq_den->Scale( fn_it->second->SingleSampleScales()->at(fnum_int) );
 	hkey_den->Add(hkey_seq_den);
 
 	key_num.clear(); key_den.clear();
 
 	m_hstMngr->ClearTH1(key_seq_num);
 	m_hstMngr->ClearTH1(key_seq_den);
+
 	key_seq_num.clear();
 	key_seq_den.clear();
 
       }//Variables
 
       infile->Close();
-      delete infile; //infile_map.erase(infile_map.begin() + fnum);
+      delete infile;
 
       fnum++; fnum_int++;
     }//File loop
@@ -1147,66 +1021,268 @@ void PlotManager::makeEfficiencyHistograms(){
   return;
 }
 
-/*
-int PlotManager::ReadHistogramsFromFile(int dim){
 
-  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::ReadHistogramsFromFile start"<<std::endl; 
-  TFile* infile = NULL;
-  int fnum = 0;
-  bool makeSum = m_attr_map.find("SUM") != m_attr_map.end();
-
-  for(FileKeyAttributesMap::iterator fn_it = m_filekey_map.begin(); fn_it != m_filekey_map.end(); ++fn_it){
-    //bool b_multi = m_filekey_multi_map[fn_it->first];
-
-	//1. Decide - does this key need different prefixes or suffixes?
-    //if(b_multi){}
+//Only implemented right now for a SINGLE sample, SINGLE scale
+//fk_att must be associated to ONLY ONE SampleAttribute
+//and also have only one file
+//Also assume that everything is scaled, there is no such thing as blinding, and no such thing as stacking
+//Read all the histograms, and put them in the hist manager
+//
 
 
 
+int PlotManager::ReadAllSystematics(FileKeyAttributes* fk_att){
 
-    std::vector<std::string>::iterator v_it = (fn_it->second->FileList())->begin();
-    unsigned int fnum_int = 0;
-    for( ; v_it != (fn_it->second->FileList())->end(); ++v_it){
-      infile = TFile::Open( (*v_it).c_str(), "READ" );
-      if(infile == NULL){ 
-	std::cout<<"ERROR: File "<<(*v_it)<<" can not be found"<<std::endl; 
+  if( fk_att->MultiSample() || fk_att->MultiScale() || fk_att->MultiName() ){
+    std::cout<<"Multiple samples for systematics calculations are not yet supported. Please try to be less fancy"<<std::endl;
+    return -1;
+  }
+  if( fk_att->FileList()->size() != 1){ 
+    std::cout<< "Please enter only one file for the nominal and weight systematics" << std::endl; 
+    return -1;
+  }
+
+  const std::string& nom_fname = fk_att->FileList()->at(0);
+  SampleAttributes* samp = fk_att->SingleSample();
+  TFile* infile_nom  = TFile::Open(nom_fname.c_str(), "READ");
+
+  //input names 
+  std::string var_in_syst_up="";
+  std::string var_in_syst_down="";
+
+  //output names
+  std::string var_nominal="";
+  std::string var_syst_up="";
+  std::string var_syst_down="";
+  std::string var_up="";
+  std::string var_down="";
+
+
+  for(std::pair<std::string, VariableAttributes*> var_pair : m_var_map){
+    VariableAttributes* variable = var_pair.second;
+    const std::string& var_name = variable->Name();
+    var_nominal = var_name + samp->Suffix();
+    TH1D* h_nominal = m_hstMngr->ReadTH1D(var_name, infile_nom, var_nominal);
+
+    var_up = var_name + samp->Suffix() + "_" + "_SYSUP";
+    m_hstMngr->CloneTH1D(var_up, var_nominal, true);
+    //TH1D* h_up = m_hstMngr->CloneTH1D(var_up, var_nominal, true);
+
+    var_down = var_name + samp->Suffix() + "_" + "_SYSDOWN";
+    m_hstMngr->CloneTH1D(var_down, var_nominal, true);
+    //TH1D* h_down = m_hstMngr->CloneTH1D(var_down, var_nominal, true);
+
+    for(std::pair<std::string, SystematicsAttributes*> syst_pair : m_sys_map){
+      SystematicsAttributes* syst = syst_pair.second;
+      if(syst->NewFile()) continue;
+
+      if(syst->OneSided()){
+	var_in_syst_up = var_name + "_" + syst->Name();
+	var_syst_up = var_name + samp->Suffix() + syst->Name();
+	m_hstMngr->ReadTH1D(var_in_syst_up, infile_nom, var_syst_up );
+	m_hstMngr->GetTH1D(var_syst_up)->Add(h_nominal, -1.);
+	QuadraticHistSum(var_up, var_syst_up);
+
+	if(syst->Symmetrisation() != ""){
+	  var_syst_down = var_name + samp->Suffix() + syst->Name() + "_OPP";
+	  m_hstMngr->CloneTH1D(var_syst_down, var_syst_up);
+	  QuadraticHistSum(var_down, var_syst_down);
+	}
+      }
+      else{
+	var_in_syst_up = var_name + "_" + syst->NameUp();
+	var_syst_up = var_name + samp->Suffix() + syst->NameUp();
+	m_hstMngr->ReadTH1D(var_in_syst_up, infile_nom, var_syst_up );
+	m_hstMngr->GetTH1D(var_syst_up)->Add(h_nominal, -1.);
+	QuadraticHistSum(var_up, var_syst_up);
+
+	var_in_syst_down = var_name + "_" + syst->NameDown();
+	var_syst_down = var_name + samp->Suffix() + syst->NameDown();
+	m_hstMngr->ReadTH1D(var_in_syst_down, infile_nom, var_syst_down );
+	m_hstMngr->GetTH1D(var_syst_down)->Add(h_nominal, -1.);
+	QuadraticHistSum(var_down, var_syst_down);
+      }
+
+      //Clear the histograms
+      m_hstMngr->ClearTH1(var_syst_up);
+      m_hstMngr->ClearTH1(var_syst_down);
+
+      var_in_syst_up.clear();
+      var_in_syst_down.clear();
+
+    }//weight systematics loop
+    var_nominal.clear();
+
+  }//variables loop
+
+  infile_nom->Close();
+  delete infile_nom;
+
+  //--------------- Now read the object systematics
+  TFile* infile_syst_up = NULL;
+  TFile* infile_syst_down = NULL;
+
+  //input names 
+  var_in_syst_up="";
+  var_in_syst_down="";
+
+  //output names
+  var_nominal="";
+  var_syst_up="";
+  var_syst_down="";
+  var_up="";
+  var_down="";
+  
+  for(std::pair<std::string, SystematicsAttributes*> syst_pair : m_sys_map){
+    SystematicsAttributes* syst = syst_pair.second;
+    if(!syst->NewFile()) continue;
+
+    infile_syst_up = NULL;
+    infile_syst_down = NULL;
+
+    if(syst->OneSided()){
+
+      if ( fk_att->SystFileList()->find(syst->Name()) == fk_att->SystFileList()->end() ) { 
+	std::cout << "ERROR:: File list for systematic "<<syst->Name()<<" not found in FileAttribute "<<fk_att->Key()<<std::endl;
 	continue;
       }
-      if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager ::ReadHistogramsFromFile , opened file "<<(*v_it)<<std::endl;
-      for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
+      if ( fk_att->SystFileList(syst->Name()).size() != 1 ){
+	std::cout << "Please enter only one file for object systematic "<<syst->Name() << std::endl;
+	continue;
+      }
+      
+      infile_syst_up = TFile::Open( fk_att->SystFileList()->at(syst->Name()).at(0).c_str(), "READ" );
+
+    }// One-sided
+    else{
+
+      if ( fk_att->SystFileList()->find(syst->NameUp()) == fk_att->SystFileList()->end() ) { 
+	std::cout << "ERROR:: File list for systematic "<<syst->NameUp()<<" not found in FileAttribute "<<fk_att->Key()<<std::endl;
+	continue;
+      }
+      if ( fk_att->SystFileList(syst->NameUp()).size() != 1 ){
+	std::cout << "Please enter only one file for object systematic "<<syst->NameUp() << std::endl;
+	continue;
+      }
+
+      if ( fk_att->SystFileList()->find(syst->NameDown()) == fk_att->SystFileList()->end() ) { 
+	std::cout << "ERROR:: File list for systematic "<<syst->NameDown()<<" not found in FileAttribute "<<fk_att->Key()<<std::endl;
+	continue;
+      }
+      if ( fk_att->SystFileList(syst->NameDown()).size() != 1 ){
+	std::cout << "Please enter only one file for object systematic "<<syst->NameDown() << std::endl;
+	continue;
+      }
+      
+      infile_syst_up = TFile::Open( fk_att->SystFileList()->at(syst->NameUp()).at(0).c_str(), "READ" );
+      infile_syst_down = TFile::Open( fk_att->SystFileList()->at(syst->NameDown()).at(0).c_str(), "READ" );
+
+    }//Not one-sided
 
 
+    for(std::pair<std::string, VariableAttributes*> var_pair : m_var_map){
+      VariableAttributes* variable = var_pair.second;
+      const std::string& var_name = variable->Name();
+      var_nominal = var_name + samp->Suffix();
+      TH1D* h_nom = m_hstMngr->GetTH1D(var_nominal);
+
+      var_up = var_name + samp->Suffix() + "_" + "_SYSUP";
+      m_hstMngr->GetTH1D(var_up);
+      //TH1D* h_up = m_hstMngr->GetTH1D(var_up);
+      
+      var_down = var_name + samp->Suffix() + "_" + "_SYSDOWN";
+      m_hstMngr->GetTH1D(var_down);
+      //TH1D* h_down = m_hstMngr->GetTH1D(var_down);
+      
+      if(syst->OneSided()){
+	var_syst_up = var_name + samp->Suffix() + syst->Name();
+      }
+      else{var_syst_up = var_name + samp->Suffix() + syst->NameUp();}
+      m_hstMngr->ReadTH1D(var_name, infile_syst_up, var_syst_up );
+      m_hstMngr->GetTH1D(var_syst_up)->Add(h_nom, -1.);
+      QuadraticHistSum(var_up, var_syst_up);
+
+      if(!syst->OneSided()){
+	var_syst_down = var_name + samp->Suffix() + syst->NameDown();
+	m_hstMngr->ReadTH1D(var_name, infile_syst_down, var_syst_down );
+	m_hstMngr->GetTH1D(var_syst_down)->Add(h_nom, -1.);
+	QuadraticHistSum(var_down, var_syst_down);
+      }//Two-sided
+      else{
+	if(syst->Symmetrisation() != ""){
+	  var_syst_down = var_name + samp->Suffix() + syst->Name() + "_OPP";
+	  m_hstMngr->CloneTH1D(var_syst_down, var_syst_up);
+	  QuadraticHistSum(var_down, var_syst_down);
+	}
+      }//One-sided
 
 
+      //Clear the histograms
+      m_hstMngr->ClearTH1(var_syst_up);
+      m_hstMngr->ClearTH1(var_syst_down);
+      
+      //And the strings
+      var_nominal.clear();
+      var_up.clear();
+      var_down.clear();
+      var_syst_up.clear();
+      var_syst_down.clear();
+      
+    }//Variable loop
 
 
+    infile_syst_up->Close();
+    infile_syst_down->Close();
 
+    delete infile_syst_up;
+    delete infile_syst_down;
 
+  }//object systematics loop
 
+  //At this point, should have the total systematic up and down variations for each variable for each 
+  //sample.
 
-
-
-
-
-
-
-
-
-
-
-
-
-      }//variable loop
-
-    }//file loop
-
-  }//key loop
-
-
+  return 0;
 
 }
-*/
 
+void PlotManager::QuadraticHistSum(const std::string& h_orig_name, const std::string& h_add_name){
+
+  TH1D* h_orig = m_hstMngr->GetTH1D(h_orig_name);
+  TH1D* h_add = m_hstMngr->GetTH1D(h_add_name);
+  if( ( h_orig == NULL) || (h_add == NULL) ){ 
+    std::cout << "ERROR: Histogram " << h_orig << " or " << h_add 
+	      << " for quadratic sum not found. " << std::endl;
+    return;
+  }
+
+  QuadraticHistSum(h_orig, h_add);
+
+  return;
+}
+
+void PlotManager::QuadraticHistSum(TH1D* h_orig, TH1D* h_add){
+
+  if(h_orig->GetNbinsX() != h_add->GetNbinsX()){
+    std::cout << "ERROR : Different bins for h_orig and h_add" << std::endl;
+    return;
+  }
+
+  for( int b = 1; b <= h_orig->GetNbinsX(); b++ ){
+
+    double bc_orig = h_orig->GetBinContent(b);
+    double bc_add = h_orig->GetBinContent(b);
+
+    h_orig -> SetBinContent( b, sqrt(bc_orig*bc_orig + bc_add*bc_add) ); 
+    h_orig -> SetBinError( b, 0. );
+  }
+
+  return;
+
+}
+
+
+//--------------------------------------------------------------------------------------------------------------------
 int PlotManager::ReadHistogramsFromFile(int dim){
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::ReadHistogramsFromFile start"<<std::endl; 
@@ -1215,15 +1291,16 @@ int PlotManager::ReadHistogramsFromFile(int dim){
   int fnum = 0;
   bool makeSum = m_attr_map.find("SUM") != m_attr_map.end();
 
-  //std::map<std::string, std::vector<std::string> >::iterator fn_it = m_filename_map.begin();
-  //for( ; fn_it != m_filename_map.end(); ++fn_it){
-  
-
   for(FileKeyAttributesMap::iterator fn_it = m_filekey_map.begin(); fn_it != m_filekey_map.end(); ++fn_it){
-    bool b_multi = (fn_it->second)->MultiSample();//m_filekey_multi_map[fn_it->first];
+    bool b_multi = (fn_it->second)->MultiSample();
+    bool b_multiscale = (fn_it->second)->MultiScale();
+    bool b_multiname = (fn_it->second)->MultiName();
+    //bool b_syst = (fn_it->second)->HasSyst();
 
     std::vector<std::string>::iterator v_it = (fn_it->second->FileList())->begin();
     unsigned int fnum_int = 0;
+
+    //============= NOMINAL FILES ========================================= 
     for( ; v_it != (fn_it->second->FileList())->end(); ++v_it){
       infile = TFile::Open( (*v_it).c_str(), "READ" );
       if(infile == NULL){ 
@@ -1241,6 +1318,14 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	bool b_var_isShape = (var_doScale == "SHAPE");
 	bool var_draw_stack = varit->second->DrawStack();
 
+	//Even if makeSum is false, the sum histogram will be required for normalisation when
+	//drawing a stacked shape plot
+	bool var_makesum = makeSum || (b_var_isShape && var_draw_stack);
+
+	std::string keysum = "";
+	if(var_makesum){
+	  keysum = makeSum ? var_name + "_" + m_attr_map["SUM"]->Suffix() : var_name + "_sum";
+	}
 
 	TH1D* h1key_seq = NULL;
 	TH1D* h1sum = NULL;
@@ -1250,33 +1335,26 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	TH2D* h2sum = NULL;
 	TH2D* h2key = NULL;
 	
-	//std::string key = var_name + "_TEMP";
 	std::string key_seq = Form("%s_%i", var_name.c_str(), fnum);
-
-	if(dim == 1){
-	  m_hstMngr->ReadTH1D(var_name, infile, key_seq);
-	  h1key_seq = m_hstMngr->GetTH1D(key_seq);
+	if(!b_multiname){
+	  if(dim == 1){ h1key_seq = m_hstMngr->ReadTH1D(var_name, infile, key_seq); }
+	  else if(dim == 2){ h2key_seq = m_hstMngr->ReadTH2D(var_name, infile, key_seq); }
+	  if(var_makesum){
+	    std::string keysum = makeSum ? var_name + "_" + m_attr_map["SUM"]->Suffix() : var_name + "_sum";
+	    if(dim == 1){
+	      h1sum = m_hstMngr->GetTH1D(keysum);
+	      if(h1sum == NULL){h1sum = m_hstMngr->CloneTH1D(keysum, h1key_seq, true); }
+	    }
+	    else if(dim == 2){
+	      h2sum = m_hstMngr->GetTH2D(keysum);
+	      if(h2sum == NULL){h2sum = m_hstMngr->CloneTH2D(keysum, h2key_seq, true); }
+	    }
+	    keysum.clear();
+	  }//Sum histogram created
 	}
-	else if(dim == 2){
-	  m_hstMngr->ReadTH2D(var_name, infile, key_seq);
-	  h2key_seq = m_hstMngr->GetTH2D(key_seq);
-	} 
-	if(makeSum || (b_var_isShape && var_draw_stack)){
-	  std::string keysum = makeSum ? var_name + "_" + m_attr_map["SUM"]->Suffix() : var_name + "_sum";
-	  if(dim == 1){
-	    h1sum = m_hstMngr->GetTH1D(keysum);
-	    if(h1sum == NULL){h1sum = m_hstMngr->CloneTH1D(keysum, h1key_seq, true); }
-	  }
-	  else if(dim == 2){
-	    h2sum = m_hstMngr->GetTH2D(keysum);
-	    if(h2sum == NULL){h2sum = m_hstMngr->CloneTH2D(keysum, h2key_seq, true); }
-	  }
-	  keysum.clear();
-	}//Sum histogram created
-
 	if(b_multi){
 
-	  SampleAttributesVector* vsamp = fn_it->second->SampleList();//m_filekey_samples[fn_it->first];
+	  SampleAttributesVector* vsamp = fn_it->second->SampleList();
 	  for(unsigned int js = 0; js < vsamp->size(); js++){
 	    SampleAttributes* samp = vsamp->at(js);
 	    bool b_samp_scale = (samp->DrawScale() != "NONE");
@@ -1285,33 +1363,33 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	    TH1D* h1key_seq_samp = NULL; 
 	    TH2D* h2key_seq_samp = NULL; 
 	    double sc = 1;
-	    if(b_var_scale && b_samp_scale){ 
-	      sc = (fn_it->second)->SampleScales()->at(js).at(fnum_int);
-	      /*
-	      if( (m_filescale_map.find(samp) != m_filescale_map.end()) 
-		  && (m_filescale_map[samp].size() > fnum_int) ) 
-		{
-		  sc = m_filescale_map[samp].at(fnum_int);
-		}
-	      */
 
+	    if(b_var_scale && b_samp_scale){ 
+	      if(b_multiscale){ sc = (fn_it->second)->SampleScales()->at(js).at(fnum_int); }
+	      else{ sc = (fn_it->second)->SingleSampleScales()->at(fnum_int); }
 	    }
 
-
 	    if(dim == 1){
+
+	      if(b_multiname){ h1key_seq_samp = m_hstMngr->ReadTH1D( samp->InPrefix() + var_name + samp->InSuffix(), infile, key_seq_samp); }
+	      else{ h1key_seq_samp = m_hstMngr->CloneTH1D(key_seq_samp, h1key_seq); }
+
 	      h1key = m_hstMngr->GetTH1D(key);
-	      if(h1key == NULL){h1key = m_hstMngr->CloneTH1D(key, h1key_seq, true); }
-	      h1key_seq_samp = m_hstMngr->CloneTH1D(key_seq_samp, h1key_seq);
+	      if(h1key == NULL){h1key = m_hstMngr->CloneTH1D(key, h1key_seq_samp, true); }
 	      if(b_var_scale && b_samp_scale){ h1key_seq_samp->Scale(sc); }
 
 	      h1key->Add(h1key_seq_samp); 
 	      if(h1sum && samp->DoSum()){ h1sum->Add(h1key_seq_samp); }
+
 	      m_hstMngr->ClearTH1(key_seq_samp);
+
 	    }
 	    else if(dim == 2){
+	      if(b_multiname){ h2key_seq_samp = m_hstMngr->ReadTH2D( samp->InPrefix() + var_name + samp->InSuffix(), infile, key_seq_samp); }
+	      else{ h2key_seq_samp = m_hstMngr->CloneTH2D(key_seq_samp, h2key_seq); }
+
 	      h2key = m_hstMngr->GetTH2D(key);
-	      if(h2key == NULL){h2key = m_hstMngr->CloneTH2D(key, h2key_seq, true); }
-	      h2key_seq_samp = m_hstMngr->CloneTH2D(key_seq_samp, h2key_seq);
+	      if(h2key == NULL){h2key = m_hstMngr->CloneTH2D(key, h2key_seq_samp, true); }
 	      if(b_var_scale && b_samp_scale){ h2key_seq_samp->Scale(sc); }
 
 	      h2key->Add(h2key_seq_samp); 
@@ -1323,11 +1401,17 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 
 	  }//subsample loop
 
+	  if(!b_multiname){
+	    if(dim == 1){ m_hstMngr->ClearTH1(key_seq); }
+	    else if(dim == 2){ m_hstMngr->ClearTH2(key_seq); }
+	  }
+
 	}//if multi
 	else{
+
 	  SampleAttributes* samp = (fn_it->second)->SingleSample();
 	  bool b_samp_scale = (samp->DrawScale() != "NONE");
-	  double sc = (fn_it->second)->SingleSampleScales()->at(fnum_int); //m_filescale_map[samp].at(fnum_int);
+	  double sc = (fn_it->second)->SingleSampleScales()->at(fnum_int);
 	  std::string key = var_name + "_" + samp->Suffix();
 	  if(dim == 1){
 	    h1key = m_hstMngr->GetTH1D(key);
@@ -1346,16 +1430,14 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	    if(h2sum && samp->DoSum()){ h2sum->Add(h2key_seq); }
 	  }
 	  key.clear();
-	}
 
-	if(dim == 1){ m_hstMngr->ClearTH1(key_seq); }
-	else if(dim == 2){ m_hstMngr->ClearTH2(key_seq); }
+	}//not multi
 	key_seq.clear();
 
       }//Variables
 
       infile->Close();
-      delete infile; //infile_map.erase(infile_map.begin() + fnum);
+      delete infile;
 
       fnum++; fnum_int++;
     }//File loop

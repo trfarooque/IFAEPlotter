@@ -1,3 +1,16 @@
+2016-02-09 Trisha Farooque <farooque@cer.ch>
+	- SystmaticsAttributes class added
+	- ParseConfigFiles made into static public functions
+	
+2016-01-30 Trisha Farooque <farooque@cern.ch>
+	- Added option to read single scale for files with multiple sample names
+	
+2016-01-27 Trisha Farooque <farooque@cern.ch>
+	- Adapted makeConfigurationFiles_TTH.cxx to make file lists from sample_info.dat files 
+
+2016-01-26 Trisha Farooque <farooque@cern.ch>
+	- Added option to read multiple samples from same file
+	
 2016-01-22 Trisha Farooque <farooque@cern.ch>
 	- Added FileKeyAttributes class
 	- Optimised configuration file parsing
