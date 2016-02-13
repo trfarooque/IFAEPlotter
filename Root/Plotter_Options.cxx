@@ -11,6 +11,7 @@ Plotter_Options::Plotter_Options():
   m_config_sample(""),
   m_config_variable(""),
   m_file_list(""),
+  m_systematics_list(""),
   m_style_lib("IFAEPlotter/share/test_style_config.txt"),
   m_output_format("png"),
   m_ylabel("Events"),
@@ -35,11 +36,13 @@ Plotter_Options::Plotter_Options():
   m_new_sample_format(false),
   m_new_variable_format(false),
   m_new_style_format(false),
+  m_new_systematics_format(false),
   m_new_filelist_format(false),
   m_write_histos(false),
   m_do1DPlots(true),
   m_doProjections(false),
   m_doEff(false),
+  m_doSystematics(false),
   m_show_yields(false),
   m_all_from_file(false),
 
@@ -65,6 +68,7 @@ OptionsBase(q)
   m_config_sample        = q.m_config_sample;
   m_config_variable      = q.m_config_variable;
   m_file_list            = q.m_file_list;
+  m_systematics_list     = q.m_systematics_list;
   m_style_lib            = q.m_style_lib;
   m_output_format        = q.m_output_format;
   m_ylabel               = q.m_ylabel;
@@ -84,15 +88,17 @@ OptionsBase(q)
   m_blind_criterion      = q.m_blind_criterion;
   m_yield_format         = q.m_yield_format;
   m_dist_file            = q.m_dist_file;
-  m_new_config_format    = q.m_new_config_format;
-  m_new_sample_format    = q.m_new_sample_format;
-  m_new_variable_format  = q.m_new_variable_format;
-  m_new_style_format     = q.m_new_style_format;
-  m_new_filelist_format  = q.m_new_filelist_format;
+  m_new_config_format      = q.m_new_config_format;
+  m_new_sample_format      = q.m_new_sample_format;
+  m_new_variable_format    = q.m_new_variable_format;
+  m_new_style_format       = q.m_new_style_format;
+  m_new_systematics_format = q.m_new_systematics_format;
+  m_new_filelist_format    = q.m_new_filelist_format;
   m_write_histos         = q.m_write_histos;
   m_do1DPlots            = q.m_do1DPlots;
   m_doProjections        = q.m_doProjections;
   m_doEff                = q.m_doEff;
+  m_doSystematics        = q.m_doSystematics;
   m_show_yields          = q.m_show_yields;
   m_all_from_file        = q.m_all_from_file;
 
@@ -131,6 +137,9 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     } 
     else if( temp_arg.find("--FILELIST") != std::string::npos ){
       m_file_list = temp_val;
+    } 
+    else if( temp_arg.find("--SYSTEMATICSLIST") != std::string::npos ){
+      m_systematics_list = temp_val;
     } 
     else if( temp_arg.find("--STYLELIB") != std::string::npos ){
       m_style_lib = temp_val;
@@ -203,6 +212,10 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
       //m_new_style_format = (atoi(temp_val.c_str()) > 0);
       AnalysisUtils::BoolValue(temp_val, m_new_style_format);
     } 
+    else if( temp_arg.find("--NEWSYSTEMATICSCONFIG") != std::string::npos ){
+      //m_new_style_format = (atoi(temp_val.c_str()) > 0);
+      AnalysisUtils::BoolValue(temp_val, m_new_systematics_format);
+    } 
     else if( temp_arg.find("--NEWFILELIST") != std::string::npos ){
       //m_new_filelist_format = (atoi(temp_val.c_str()) > 0);
       AnalysisUtils::BoolValue(temp_val, m_new_filelist_format);
@@ -222,6 +235,10 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     else if( temp_arg.find("--DOEFF") != std::string::npos ){
       //m_doEff = (atoi(temp_val.c_str()) > 0);
       AnalysisUtils::BoolValue(temp_val, m_doEff);
+    } 
+    else if( temp_arg.find("--DOSYSTEMATICS") != std::string::npos ){
+      //m_doEff = (atoi(temp_val.c_str()) > 0);
+      AnalysisUtils::BoolValue(temp_val, m_doSystematics);
     } 
     else if( temp_arg.find("--SHOWYIELDS") != std::string::npos ){
       //m_show_yields = (atoi(temp_val.c_str()) > 0);
@@ -285,6 +302,7 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_config_sample          = " << m_config_sample        << std::endl;
     std::cout << " m_config_variable        = " << m_config_variable      << std::endl;
     std::cout << " m_file_list              = " << m_file_list            << std::endl;
+    std::cout << " m_systematics_list       = " << m_systematics_list     << std::endl;
     std::cout << " m_style_lib              = " << m_style_lib            << std::endl;
     std::cout << " m_output_format          = " << m_output_format        << std::endl;
     std::cout << " m_ylabel                 = " << m_ylabel               << std::endl;
@@ -309,11 +327,13 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_new_sample_format      = " << m_new_sample_format    << std::endl;
     std::cout << " m_new_variable_format    = " << m_new_variable_format  << std::endl;
     std::cout << " m_new_style_format       = " << m_new_style_format     << std::endl;
+    std::cout << " m_new_systematics_format = " << m_new_systematics_format << std::endl;
     std::cout << " m_new_filelist_format    = " << m_new_filelist_format  << std::endl;
     std::cout << " m_write_histos           = " << m_write_histos         << std::endl;
     std::cout << " m_do1DPlots              = " << m_do1DPlots            << std::endl;
     std::cout << " m_doProjections          = " << m_doProjections        << std::endl;
     std::cout << " m_doEff                  = " << m_doEff                << std::endl;
+    std::cout << " m_doSystematics          = " << m_doSystematics        << std::endl;
     std::cout << " m_show_yields            = " << m_show_yields          << std::endl;
     std::cout << " m_all_from_file          = " << m_all_from_file        << std::endl;
 

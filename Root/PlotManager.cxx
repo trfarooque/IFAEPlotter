@@ -28,12 +28,14 @@ PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
   m_new_sample_format = false;
   m_new_variable_format = false;
   m_new_style_format = false;
+  m_new_systematics_format = false;
   m_new_filelist_format = false;
 
   bool opt_has_configformat = (m_opt->OptStr().find("--NEWCONFIG") != std::string::npos); 
   bool opt_has_sampleformat = (m_opt->OptStr().find("--NEWSAMPLECONFIG") != std::string::npos); 
   bool opt_has_variableformat = (m_opt->OptStr().find("--NEWVARIABLECONFIG") != std::string::npos); 
   bool opt_has_styleformat = (m_opt->OptStr().find("--NEWSTYLECONFIG") != std::string::npos); 
+  bool opt_has_systematicsformat = (m_opt->OptStr().find("--NEWSYSTEMATICSCONFIG") != std::string::npos); 
   bool opt_has_filelistformat = (m_opt->OptStr().find("--NEWFILELIST") != std::string::npos); 
 
   if(opt_has_sampleformat){ m_new_sample_format = m_opt->NewSampleFormat(); }
@@ -44,6 +46,9 @@ PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
 
   if(opt_has_styleformat){ m_new_style_format = m_opt->NewStyleFormat(); }
   else if(opt_has_configformat){ m_new_style_format = m_opt->NewConfigFormat(); }
+
+  if(opt_has_systematicsformat){ m_new_systematics_format = m_opt->NewSystematicsFormat(); }
+  else if(opt_has_configformat){ m_new_systematics_format = m_opt->NewConfigFormat(); }
 
   if(opt_has_filelistformat){ m_new_filelist_format = m_opt->NewFileListFormat(); }
   else if(opt_has_configformat){ m_new_filelist_format = m_opt->NewConfigFormat(); }
@@ -64,6 +69,12 @@ PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
   stat = ParseFileList( m_opt->FileList() );
   if(stat < 0){return;}
 
+  if( m_opt->DoSystematics() ){
+    if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"Parsing systematics list"<<std::endl; 
+    stat = ParseSystematicsConfig( m_opt->SystematicsList() );
+    if(stat < 0){return;}
+  }
+
   if( m_opt->AllFromFile() ){
     const std::string& dist_file = (m_opt->DistributionsFile() != "") 
       ? m_opt->DistributionsFile() : (m_filekey_map.begin()->second)->FileList()->at(0);
@@ -79,13 +90,13 @@ PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
   }
   if(stat < 0){return;}
 
-  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"Parsing style library"<<std::endl; 
-  m_styleDict = new StyleDictionary("test");
-  stat = ParseStyleConfig( m_opt->StyleLib() );
-  if(stat < 0){return;}
-
-  m_plotUtils = new PlotUtils(m_opt, m_hstMngr, m_attr_map, m_var_map, m_styleDict);
-
+  if(!m_opt->DoSystematics()){
+    if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"Parsing style library"<<std::endl; 
+    m_styleDict = new StyleDictionary("test");
+    stat = ParseStyleConfig( m_opt->StyleLib() );
+    if(stat < 0){return;}
+    m_plotUtils = new PlotUtils(m_opt, m_hstMngr, m_attr_map, m_var_map, m_styleDict);
+  }
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager constructor end"<<std::endl; 
 
 }
@@ -142,9 +153,12 @@ void PlotManager::Execute(){
     FillHistManager(); 
     if( m_opt->Do1DPlots() ){ m_plotUtils->OverlayHists("NONE"); }
     if( m_opt->WriteHistos() ){ WriteHistogramsToFile(); }
-
   } 
+  else if( m_opt->DoSystematics() ){
 
+    ReadSystematicsFromFiles();
+    PrintSystematics();
+  }
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::Execute end"<<std::endl; 
 
@@ -158,7 +172,7 @@ void PlotManager::Terminate(){
   m_hstMngr->ClearAllTH1();
   m_hstMngr->ClearAllTH2();
   m_hstMngr->ClearAllTH3();
-  m_plotUtils->Terminate();
+  if(m_plotUtils) m_plotUtils->Terminate();
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::Terminate end"<<std::endl; 
 
@@ -287,6 +301,39 @@ int PlotManager::ParseConfigFile_Old(const std::string& config_file, std::vector
 
   return nline;
 
+}
+
+
+int PlotManager::ParseSystematicsConfig(const std::string& config_systematics, const std::string& delim ){
+
+  vector<map<string, string> > parsed_map;
+  int nline = ParseConfigFile(config_systematics, parsed_map, delim, m_new_systematics_format); 
+  if(nline < 0){ std::cout<<"Systematics configuration file could not be opened. Exiting"<<std::endl; return nline; }
+  std::string name = "";
+
+  for(int l = 0; l < nline; l++){
+    name="";
+    std::map<std::string, std::string> keymap = parsed_map.at(l);
+    if(keymap.find("NAME") == keymap.end()){ 
+      std::cout<<" Systematics in block "<<l<<" has no name. Ignoring."<<std::endl;
+      continue; 
+    }
+    name = keymap["NAME"];
+    SystematicsAttributes* sysObj = new SystematicsAttributes( name );
+    if( keymap.find("ONESIDED") != keymap.end() ){ sysObj->SetOneSided(AnalysisUtils::BoolValue(keymap["ONESIDED"], "ONESIDED")); }
+    if( keymap.find("NEWFILE") != keymap.end() ){ sysObj->SetNewFile(AnalysisUtils::BoolValue(keymap["NEWFILE"], "NEWFILE")); }
+    if( keymap.find("NAMEUP") != keymap.end() ){ sysObj->SetNameUp(keymap["NAMEUP"]); }
+    if( keymap.find("NAMEDOWN") != keymap.end() ){ sysObj->SetNameDown(keymap["NAMEDOWN"]); }
+    if( keymap.find("SUFFIX") != keymap.end() ){ sysObj->SetSuffix(keymap["SUFFIX"]); }
+    if( keymap.find("SYMMETRISATION") != keymap.end() ){ sysObj->SetSuffix(keymap["SYMMETRISATION"]); }
+
+    m_sys_map[name] = sysObj;
+    
+    keymap.clear();
+  }
+  parsed_map.clear();
+
+  return 0;
 }
 
 
@@ -557,6 +604,7 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
   std::string scalebase = "";
   std::string syst_name = "";
   const std::string delim_in = ",";
+
   for(int l = 0; l < nline; l++){
 
     std::map<std::string, std::string> keymap = parsed_map.at(l);
@@ -584,23 +632,23 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
 
     //===== FIRST FILE FOR KEY ==================
     if(b_firstfile){
+
       std::vector<std::string> *vfile = new std::vector<std::string>; vfile->clear();
       fkey = new FileKeyAttributes(keybase, vfile, b_multi, b_multiscale);
       m_filekey_map[keybase] = fkey;
    
       //Only check the sample key for multiple samples if it is the first file
+      std::vector< std::vector<double> >* vscales = NULL; 
+      if(b_multiscale){
+	vscales = new std::vector< std::vector<double> >; vscales->clear();
+	fkey->SetSampleScales( vscales );
+      }
+      else{ fkey->SetSingleSampleScales( new std::vector<double> ); }
       if(b_multi){
 	std::string parseString = keybase;
 	std::string sparse = "";
 	std::string::size_type pos = 0;
 	bool b_multiname = false;
-
-	std::vector< std::vector<double> >* vscales = NULL; 
-	if(b_multiscale){
-	  vscales = new std::vector< std::vector<double> >; vscales->clear();
-	  fkey->SetSampleScales( vscales );
-	}
-	else{ fkey->SetSingleSampleScales( new std::vector<double> ); }
 
 	SampleAttributesVector* v_samp = new SampleAttributesVector; v_samp->clear();
 	fkey->SetSampleList(v_samp);
@@ -676,8 +724,6 @@ int PlotManager::ParseFileList(const std::string& filelist, const std::string& d
 	syst_file_list -> insert( std::pair<std::string, std::vector<std::string> >( syst_name, std::vector<std::string>() ) );
       }
       syst_file_list->at(syst_name).push_back(keymap["FILE"]);
-   
-
     }
 
     //==========Add scales to the nominal or systematics list
@@ -1029,15 +1075,85 @@ void PlotManager::makeEfficiencyHistograms(){
 //Read all the histograms, and put them in the hist manager
 //
 
+//int PlotManager::WriteSystematicHistogramsToFile(){
 
+  //Here, also print out the systematic variations
+
+//}
+
+int PlotManager::PrintSystematics(){
+  TH1D* h_nominal = NULL;
+  TH1D* h_up = NULL;
+  TH1D* h_down = NULL;
+  std::string var_nominal = "";
+  std::string var_up = "";
+  std::string var_down = "";
+
+  for(std::pair<std::string, VariableAttributes*> var_pair : m_var_map){
+    VariableAttributes* variable = var_pair.second;
+    const std::string& var_name = variable->Name();
+    //var_nominal = var_name + samp->Suffix();
+
+    std::ofstream var_yield_stream(Form("Yields_SR_%s.txt", var_name.c_str()));
+    std::ofstream var_syst_stream(Form("Syst_SR_%s.txt", var_name.c_str()));
+
+    for(std::pair<std::string, SampleAttributes*> samp_pair : m_attr_map){
+    
+      SampleAttributes* sample = samp_pair.second;
+      var_nominal = var_name + sample->Suffix();
+      var_up = var_name + sample->Suffix() + "_" + "_SYSUP";
+      var_down = var_name + sample->Suffix() + "_" + "_SYSDOWN";
+
+      h_nominal = m_hstMngr->GetTH1D(var_nominal);
+      h_up      = m_hstMngr->GetTH1D(var_up);
+      h_down    = m_hstMngr->GetTH1D(var_down);
+
+      var_yield_stream << sample->Name();
+      var_syst_stream << sample->Name();
+      for(int b = 1; b <= h_nominal->GetNbinsX(); b++){
+	double bc_nominal = h_nominal->GetBinContent(b)*3029.;
+	double bc_up = h_up->GetBinContent(b)*3029.;
+	double bc_down = h_down->GetBinContent(b)*3029.;
+
+ 	double frac_up = bc_up/bc_nominal;
+ 	double frac_down = bc_down/bc_nominal;
+
+	var_yield_stream << " & " << bc_nominal;// << " & " << bc_nominal+bc_up << " & " << bc_nominal+bc_down ;
+	var_syst_stream << " & " << frac_up << " & " << frac_down ;
+
+      }
+      var_yield_stream << std::endl;
+      var_syst_stream << std::endl;
+
+      var_nominal.clear();
+      var_up.clear();
+      var_down.clear();
+    }
+
+    var_yield_stream.close();
+    var_syst_stream.close();
+
+  }
+
+  return 0;
+}
+
+int PlotManager::ReadSystematicsFromFiles(){
+
+  int stat = 0;
+  for(FileKeyAttributesMap::iterator fn_it = m_filekey_map.begin(); fn_it != m_filekey_map.end(); ++fn_it){
+    stat += ReadAllSystematics( fn_it->second );
+  }
+  return stat;
+}
 
 int PlotManager::ReadAllSystematics(FileKeyAttributes* fk_att){
-
   if( fk_att->MultiSample() || fk_att->MultiScale() || fk_att->MultiName() ){
     std::cout<<"Multiple samples for systematics calculations are not yet supported. Please try to be less fancy"<<std::endl;
     return -1;
   }
   if( fk_att->FileList()->size() != 1){ 
+    std::cout<<" Key "<<fk_att->Key() << " has "<<fk_att->FileList()->size() << " files associated to it. "<<std::endl;
     std::cout<< "Please enter only one file for the nominal and weight systematics" << std::endl; 
     return -1;
   }
@@ -1056,8 +1172,7 @@ int PlotManager::ReadAllSystematics(FileKeyAttributes* fk_att){
   std::string var_syst_down="";
   std::string var_up="";
   std::string var_down="";
-
-
+  
   for(std::pair<std::string, VariableAttributes*> var_pair : m_var_map){
     VariableAttributes* variable = var_pair.second;
     const std::string& var_name = variable->Name();
@@ -1073,6 +1188,7 @@ int PlotManager::ReadAllSystematics(FileKeyAttributes* fk_att){
     //TH1D* h_down = m_hstMngr->CloneTH1D(var_down, var_nominal, true);
 
     for(std::pair<std::string, SystematicsAttributes*> syst_pair : m_sys_map){
+
       SystematicsAttributes* syst = syst_pair.second;
       if(syst->NewFile()) continue;
 
@@ -1232,7 +1348,7 @@ int PlotManager::ReadAllSystematics(FileKeyAttributes* fk_att){
 
 
     infile_syst_up->Close();
-    infile_syst_down->Close();
+    if(infile_syst_down != NULL) infile_syst_down->Close();
 
     delete infile_syst_up;
     delete infile_syst_down;
@@ -1271,7 +1387,7 @@ void PlotManager::QuadraticHistSum(TH1D* h_orig, TH1D* h_add){
   for( int b = 1; b <= h_orig->GetNbinsX(); b++ ){
 
     double bc_orig = h_orig->GetBinContent(b);
-    double bc_add = h_orig->GetBinContent(b);
+    double bc_add = h_add->GetBinContent(b);
 
     h_orig -> SetBinContent( b, sqrt(bc_orig*bc_orig + bc_add*bc_add) ); 
     h_orig -> SetBinError( b, 0. );

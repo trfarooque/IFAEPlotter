@@ -54,9 +54,11 @@ class PlotManager{
   bool m_new_sample_format;
   bool m_new_variable_format;
   bool m_new_style_format;
+  bool m_new_systematics_format;
   bool m_new_filelist_format;
 
 
+  int ParseSystematicsConfig(const std::string& config_systematics, const std::string& delim=" : ");
   int ParseSampleConfig(const std::string& config_sample, const std::string& delim=" : ");
   int ParseVariableConfig(const std::string& config_variable, const std::string& delim=" : ");
   int ParseStyleConfig(const std::string& config_style, const std::string& delim=" : ");
@@ -70,6 +72,8 @@ class PlotManager{
   void FillHistManager();
   void WriteHistogramsToFile();
 
+  int PrintSystematics();
+  int ReadSystematicsFromFiles(); 
   int ReadAllSystematics(FileKeyAttributes* fk_att); 
   void QuadraticHistSum(const std::string& h_orig_name, const std::string& h_add_name);
   void QuadraticHistSum(TH1D* h_orig, TH1D* h_add);
