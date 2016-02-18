@@ -383,7 +383,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       if(!var_isLogY && var_ymin <= 1.e-5){var_ymin = 1.1e-5;}
       else if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
       hs_stack_a->SetMinimum(var_ymin);
-      //hs_stack_a->SetMaximum(var_ymax);
+      hs_stack_a->SetMaximum(var_ymax);
 
       if(var_ylabel != ""){ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle(var_ylabel.c_str()); }
       else{ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_stack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
@@ -435,7 +435,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
 
       hs_nostack_a->SetMinimum(var_ymin);
-      //hs_nostack_a->SetMaximum(var_ymax);
+      hs_nostack_a->SetMaximum(var_ymax);
 
       if(var_ylabel != ""){ hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle(var_ylabel.c_str()); }
       else{ hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_nostack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
@@ -488,18 +488,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       ResizeLegend(*leg_a, leg_yield->GetX1NDC(), leg_yield->GetY2NDC() );
     }
     else{ ResizeLegend(*leg_a, 0.89, 0.89 );}
-    if(hs_stack_a && (hs_stack_a->GetNhists() > 0)){
-      double max_stack = hs_stack_a->GetHistogram()->GetMaximum();
-      double max_nostack = 0.;
-      if(hs_stack_a && (hs_stack_a->GetNhists() > 0)){ max_nostack = hs_nostack_a->GetHistogram()->GetMaximum();}
-      max_stack = max(max_stack, max_nostack);
-      double maxlev = (1. - leg_a->GetY1NDC())*max_stack;
-
-      hs_stack_a->SetMaximum(maxlev);
-    }
-
-
-
     leg_a->DrawClone();
     if(leg_yield){ leg_yield->DrawClone(); }
     if(ttlbox){ ttlbox->Draw(); } 
