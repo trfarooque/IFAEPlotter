@@ -1094,6 +1094,7 @@ int PlotManager::PrintSystematics(){
     const std::string& var_name = variable->Name();
     //var_nominal = var_name + samp->Suffix();
 
+    std::ofstream var_yield_nominal_stream(Form("Yields_Nominal_SR_%s.txt", var_name.c_str()));
     std::ofstream var_yield_stream(Form("Yields_SR_%s.txt", var_name.c_str()));
     std::ofstream var_syst_stream(Form("Syst_SR_%s.txt", var_name.c_str()));
 
@@ -1108,20 +1109,24 @@ int PlotManager::PrintSystematics(){
       h_up      = m_hstMngr->GetTH1D(var_up);
       h_down    = m_hstMngr->GetTH1D(var_down);
 
+      var_yield_nominal_stream << sample->Name();
       var_yield_stream << sample->Name();
       var_syst_stream << sample->Name();
-      for(int b = 1; b <= h_nominal->GetNbinsX(); b++){
-	double bc_nominal = h_nominal->GetBinContent(b)*3029.;
-	double bc_up = h_up->GetBinContent(b)*3029.;
-	double bc_down = h_down->GetBinContent(b)*3029.;
+      for(int b = 5; b <= h_nominal->GetNbinsX(); b++){
+      //for(int b = 2; b <= 4; b++){
+	double bc_nominal = h_nominal->GetBinContent(b)*3209.;
+	double bc_up = h_up->GetBinContent(b)*3209.;
+	double bc_down = h_down->GetBinContent(b)*3209.;
 
  	double frac_up = bc_up/bc_nominal;
  	double frac_down = bc_down/bc_nominal;
 
-	var_yield_stream << " & " << bc_nominal;// << " & " << bc_nominal+bc_up << " & " << bc_nominal+bc_down ;
+	var_yield_nominal_stream << " & " << bc_nominal;
+	var_yield_stream << " & " << bc_nominal << " & " << bc_nominal+bc_up << " & " << bc_nominal-bc_down ;
 	var_syst_stream << " & " << frac_up << " & " << frac_down ;
 
       }
+      var_yield_nominal_stream << std::endl;
       var_yield_stream << std::endl;
       var_syst_stream << std::endl;
 
@@ -1130,6 +1135,7 @@ int PlotManager::PrintSystematics(){
       var_down.clear();
     }
 
+    var_yield_nominal_stream.close();
     var_yield_stream.close();
     var_syst_stream.close();
 
