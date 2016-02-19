@@ -527,7 +527,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(ttlbox){ ttlbox->Draw(); } 
     curpad->RedrawAxis();
-    curpad->SetGridy();
+    //curpad->SetGridy();
 
     leg_a->Draw();
     if(leg_yield){ leg_yield->Draw(); }

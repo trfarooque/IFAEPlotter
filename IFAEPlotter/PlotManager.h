@@ -26,6 +26,7 @@ class PlotManager{
   void Execute();
   void Terminate();
 
+  //----------------------- ANALYSISUTILS ------------------------------------ 
   static int ParseConfigFile_New(const std::string& config_file, std::vector<std::map<std::string, std::string> >& ret_map, const std::string& delim=" : ");
   static int ParseConfigFile_Old(const std::string& config_file, std::vector<std::map<std::string, std::string> >& ret_map, const std::string& delim=" : ");
 
@@ -57,7 +58,7 @@ class PlotManager{
   bool m_new_systematics_format;
   bool m_new_filelist_format;
 
-
+  //------------------- RESPECTIVE ATTRIBUTES CLASS-------------------------
   int ParseSystematicsConfig(const std::string& config_systematics, const std::string& delim=" : ");
   int ParseSampleConfig(const std::string& config_sample, const std::string& delim=" : ");
   int ParseVariableConfig(const std::string& config_variable, const std::string& delim=" : ");
@@ -66,12 +67,14 @@ class PlotManager{
 
   int CopyVariableListFromFile(const std::string& dist_file);
 
+  //------------------------ PLOTMANAGER ------------------
   int ReadHistogramsFromFile(int dim);
   void makeEfficiencyHistograms();
   void ProjectByBin();
   void FillHistManager();
   void WriteHistogramsToFile();
 
+  //----------------- SYST CALCULATION CLASS
   int PrintSystematics();
   int ReadSystematicsFromFiles(); 
   int ReadAllSystematics(FileKeyAttributes* fk_att); 
@@ -79,6 +82,7 @@ class PlotManager{
   void QuadraticHistSum(TH1D* h_orig, TH1D* h_add);
 
   //const double* ParseRebinEdges( int nbin, const std::string& bindef);
+  //----------------------- HISTMANAGER ---------------------------
   void ParseRebinEdges( int nbin, const std::string& bindef, double* xbins_new_ptr);
   TH1D* VariableRebinning(const std::string& histname, int nbin, const double* binedges);
   TH1D* VariableRebinning(const std::string& histname, TH1D* hist, int nbin, const double* binedges);
