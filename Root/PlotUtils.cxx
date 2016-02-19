@@ -1,3 +1,4 @@
+//////////// THIS SIDE UP ///////////////////////////////////////////////////////
 #include "IFAEPlotter/PlotUtils.h"
 #include "IFAEPlotter/StyleDictionary.h"
 #include "IFAEPlotter/Plotter_Options.h"
@@ -10,6 +11,7 @@
 #include "TPaveText.h"
 #include "TLegendEntry.h"
 //#include "TIter.h"
+#include "TList.h"
 #include "TLatex.h"
 #include "TLine.h"
 #include <algorithm>
@@ -105,6 +107,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
   double var_ymin = 0.;
   double var_ymax = 0.;
+  double var_ymax_legrange = 0.;
 
   bool ds_draw_stack = false;
   int ds_res_opt = -1;
@@ -166,6 +169,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     var_xmax = 0.; 
     var_ymin = 0.; 
     var_ymax = 0.; 
+    var_ymax_legrange = 0.; 
 
     var_nbinx = 0; 
 
@@ -196,8 +200,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     TLegend* leg_a = new TLegend();
     TLegend* leg_yield = (m_opt->ShowYields() && (!var_isShape || var_draw_stack) ) ? new TLegend() : NULL;
 
-    double textsize=0.03;
-    if(drawRes){textsize=0.03;}
+    double textsize=0.04;
+    if(drawRes){textsize=0.05;}
     SetStyleLegend(*leg_a, textsize);
     leg_a->Clear();
     if(leg_yield){
@@ -229,7 +233,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       ttlbox->SetFillColor(0);
       ttlbox->SetFillStyle(0);
       ttlbox->SetLineColor(0);
-      ttlbox->SetTextSize(0.03);
+      if(drawRes){ ttlbox->SetTextSize(0.05); }
+      else{ ttlbox->SetTextSize(0.04); }
       ttlbox->SetTextFont(42);
       ttlbox->SetShadowColor(0);
 
@@ -333,6 +338,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       //Clear strings
       hist_name.clear(); firstsample = false;
     }//sample loop
+    //================================================= AFTER SAMPLE LOOP ============================================
 
     if(hs_stack_a && v_hstack_a.size() > 0){
 
@@ -343,21 +349,84 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     }
 
 
-    //Draw the THStack in the top panel, set the x and y axis labels
+    if(leg_yield){
+      ResizeLegend(*leg_yield, 0.89, 0.89);
+      ResizeLegend(*leg_a, leg_yield->GetX1NDC(), leg_yield->GetY2NDC() );
+    }
+    else{ ResizeLegend(*leg_a, 0.89, 0.89 );}
+
+    //stretch_min = var_isLogY ? 1.E-2 : 0.5; 
+    //stretch_max = var_isLogY ? 1.E3 : 1.35; 
+
     var_ymin = 0.; var_ymax = 0.;
     double stretch_min = 1.; double stretch_max = 1.;
-
     if(var_hasYMin){var_ymin = va_it->second->YMin();}
     else if(opt_hasYMin){var_ymin = m_opt->YMin();}
-    else{ stretch_min = var_isLogY ? 1.E-2 : 0.5; }
+    else{
+      stretch_min = var_isLogY ? 1.E-2 : 0.5; 
+      var_ymin = (hs_nostack_a->GetNhists() > 0) ? hs_nostack_a->GetMinimum() : var_ymin;
+      if(var_draw_stack && (hs_stack_a->GetNhists() > 0)){
+	var_ymin = min(var_ymin, hs_stack_a->GetMinimum());
+      }
+      var_ymin = stretch_min*var_ymin;
+    }
 
     if(var_hasYMax){var_ymax = va_it->second->YMax();}
     else if(opt_hasYMax){var_ymax = m_opt->YMax();}
-    else{ stretch_max = var_isLogY ? 1.E3 : 1.35; }
+    else{ 
+      stretch_max = 1.35; 
+      var_ymax = (hs_nostack_a->GetNhists() > 0) ? hs_nostack_a->GetMaximum("nostack") : var_ymax;
+      if(var_draw_stack && (hs_stack_a->GetNhists() > 0)){
+	var_ymax = max(var_ymax, hs_stack_a->GetMaximum());
+      }
+
+      double stretch_max_leg = ( leg_a->GetY1NDC() > 0. ) ? 1./leg_a->GetY1NDC() : 1.35;
+
+      if(stretch_max_leg > stretch_max){
+
+	//The x-range of the legend
+	double fmin_leg = leg_a->GetX1NDC(); double fmax_leg = leg_a->GetX2NDC();
+	//Find the maximum of the nostack histograms in the axis range
+	TList* hlist = hs_nostack_a->GetHists();
+
+	double hleg_low = fmin_leg*var_xmax + (1.-fmin_leg)*var_xmin;
+	double hleg_up = fmax_leg*var_xmax + (1.-fmax_leg)*var_xmin;
+
+	TH1D* hcur = NULL;
+
+	for(int i = 0; i < hs_nostack_a->GetNhists(); i++){
+	  hcur = (TH1D*)(hlist->At(i));
+	  hcur->SetAxisRange(hleg_low, hleg_up);
+	  var_ymax_legrange = max(var_ymax_legrange, hcur->GetMaximum());
+	  hcur->SetAxisRange(var_xmin, var_xmax);
+	}
+
+	if(var_draw_stack && (hs_stack_a->GetNhists() > 0)){
+	  hcur = (TH1D*)(hs_stack_a->GetStack()->Last());
+	  hcur->SetAxisRange(hleg_low, hleg_up);
+	  var_ymax_legrange = max(var_ymax_legrange, hcur->GetMaximum());
+	  hcur->SetAxisRange(var_xmin, var_xmax);
+	}
+
+	if(var_isLogY){ var_ymax_legrange = pow(var_ymax_legrange, stretch_max_leg)/pow(var_ymin, stretch_max_leg -1.); }
+	else{ var_ymax_legrange = stretch_max_leg*var_ymax_legrange - (1. - stretch_max_leg)*var_ymin; }
+
+      }//if legend extent is more than default stretch factor
+
+      if(var_isLogY){ var_ymax = pow(var_ymax, stretch_max)/pow(var_ymin, stretch_max -1.); }
+      else{ var_ymax = stretch_max*var_ymax - (1. - stretch_max)*var_ymin; }
+      var_ymax = max(var_ymax, var_ymax_legrange);
+
+    }//if ymax coordinate not provided
+    if(!var_isLogY && var_ymin <= 1.e-5){var_ymin = 1.1e-5;}
+    else if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
+
+    //==================================================== Resizing done ======================================================================
 
     TPad* curpad = (TPad*)(canv_a->cd(1));
     if(var_isLogY){curpad->SetLogy();}
     if(var_isLogX){curpad->SetLogx();}
+
 
     if(var_draw_stack && (hs_stack_a->GetNhists() > 0)){
 
@@ -366,22 +435,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
       if(var_modXRange){ hs_stack_a->GetXaxis()->SetRangeUser(var_xmin, var_xmax); }
 
-      if(!var_hasYMax && !opt_hasYMax){
-	var_ymax = hs_stack_a->GetHistogram()->GetMaximum();
-	if(hs_nostack_a->GetNhists() > 0){
-	  var_ymax = max(var_ymax, hs_nostack_a->GetHistogram()->GetMaximum());
-	}
-	var_ymax *= stretch_max;
-      }
-      if(!var_hasYMin && !opt_hasYMin){
-	var_ymin = hs_stack_a->GetHistogram()->GetMinimum();
-	if(hs_nostack_a->GetNhists() > 0){
-	  var_ymin = min(var_ymin, hs_nostack_a->GetHistogram()->GetMinimum());
-	}
-	var_ymin *= stretch_min;
-      }
-      if(!var_isLogY && var_ymin <= 1.e-5){var_ymin = 1.1e-5;}
-      else if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
       hs_stack_a->SetMinimum(var_ymin);
       hs_stack_a->SetMaximum(var_ymax);
 
@@ -423,17 +476,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       hs_nostack_a->Draw("nostack"); 
       if(var_modXRange){ hs_nostack_a->GetXaxis()->SetRangeUser(var_xmin, var_xmax); }
 
-
-      if(!var_hasYMax && !opt_hasYMax){
-	var_ymax = hs_nostack_a->GetHistogram()->GetMaximum();
-	var_ymax *= stretch_max;
-      }
-      if(!var_hasYMin && !opt_hasYMin){
-	var_ymin = hs_nostack_a->GetHistogram()->GetMinimum();
-	var_ymin *= stretch_min;
-      }
-      if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
-
       hs_nostack_a->SetMinimum(var_ymin);
       hs_nostack_a->SetMaximum(var_ymax);
 
@@ -471,7 +513,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       }
 
     }//if !var_draw_stack
-
+    //===================================================== THStacks drawn =====================================
     if(var_drawBlinder){
       TH1D* h_blinder = m_hstMngr->GetTH1D(hname_blinder);
       for(int b = 1; b <= h_blinder->GetNbinsX(); b++){
@@ -483,17 +525,16 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       blinder_drawopt.clear();
     }
 
-    if(leg_yield){
-      ResizeLegend(*leg_yield, 0.89, 0.89);
-      ResizeLegend(*leg_a, leg_yield->GetX1NDC(), leg_yield->GetY2NDC() );
-    }
-    else{ ResizeLegend(*leg_a, 0.89, 0.89 );}
-    leg_a->DrawClone();
-    if(leg_yield){ leg_yield->DrawClone(); }
     if(ttlbox){ ttlbox->Draw(); } 
     curpad->RedrawAxis();
+    curpad->SetGridy();
+
+    leg_a->Draw();
+    if(leg_yield){ leg_yield->Draw(); }
+
     curpad->Update();
     curpad->Modified();
+    //====================================================== Top panel completed ===============================================
 
     if(drawRes){
       curpad = (TPad*)(canv_a->cd(2));
@@ -547,10 +588,9 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       curpad->Update();
       curpad->Modified();
 
-      //canv_a->cd(2)->Update();
-      //canv_a->cd(2)->Modified();
       delete lnref;
     }
+    //============================================= Bottom panel done ===========================================
 
     //Write to output file/ print to a png
     if(m_opt->OutputFormat().find("PNG") != std::string::npos){ 
@@ -582,8 +622,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     delete hs_res_a;
     delete ttlbox;
     curpad = NULL;
-    //delete leg_a;
-    //delete leg_yield;
+    delete leg_a;
+    delete leg_yield;
     //Clear strings
     //var_name.clear();
     //var_label.clear();
