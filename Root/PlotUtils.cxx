@@ -200,12 +200,12 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     TLegend* leg_a = new TLegend();
     TLegend* leg_yield = (m_opt->ShowYields() && (!var_isShape || var_draw_stack) ) ? new TLegend() : NULL;
 
-    double textsize=0.04;
-    if(drawRes){textsize=0.05;}
+    double textsize=0.035;
+    if(drawRes){textsize=0.045;}
     SetStyleLegend(*leg_a, textsize);
     leg_a->Clear();
     if(leg_yield){
-      SetStyleLegend(*leg_yield, textsize, 42, 0.05);
+      SetStyleLegend(*leg_yield, textsize, 42, 0.04);
       leg_yield->Clear();
     }
 
@@ -233,8 +233,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       ttlbox->SetFillColor(0);
       ttlbox->SetFillStyle(0);
       ttlbox->SetLineColor(0);
-      if(drawRes){ ttlbox->SetTextSize(0.05); }
-      else{ ttlbox->SetTextSize(0.04); }
+      if(drawRes){ ttlbox->SetTextSize(0.045); }
+      else{ ttlbox->SetTextSize(0.035); }
       ttlbox->SetTextFont(42);
       ttlbox->SetShadowColor(0);
 
@@ -350,10 +350,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
 
     if(leg_yield){
-      ResizeLegend(*leg_yield, 0.89, 0.89);
+      ResizeLegend(*leg_yield, 0.95, 0.94);
       ResizeLegend(*leg_a, leg_yield->GetX1NDC(), leg_yield->GetY2NDC() );
     }
-    else{ ResizeLegend(*leg_a, 0.89, 0.89 );}
+    else{ ResizeLegend(*leg_a, 0.95, 0.94 );}
 
     //stretch_min = var_isLogY ? 1.E-2 : 0.5; 
     //stretch_max = var_isLogY ? 1.E3 : 1.35; 
@@ -434,10 +434,11 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       if(hs_nostack_a->GetNhists() > 0){hs_nostack_a->Draw("samenostack");}
 
       if(var_modXRange){ hs_stack_a->GetXaxis()->SetRangeUser(var_xmin, var_xmax); }
-
-      hs_stack_a->SetMinimum(var_ymin);
-      hs_stack_a->SetMaximum(var_ymax);
-
+      //To protect empty histograms
+      if(var_ymax > var_ymin){
+	hs_stack_a->SetMinimum(var_ymin);
+	hs_stack_a->SetMaximum(var_ymax);
+      }
       if(var_ylabel != ""){ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle(var_ylabel.c_str()); }
       else{ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_stack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
 
@@ -476,9 +477,11 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       hs_nostack_a->Draw("nostack"); 
       if(var_modXRange){ hs_nostack_a->GetXaxis()->SetRangeUser(var_xmin, var_xmax); }
 
-      hs_nostack_a->SetMinimum(var_ymin);
-      hs_nostack_a->SetMaximum(var_ymax);
-
+      //To protect empty histograms
+      if(var_ymax > var_ymin){
+	hs_nostack_a->SetMinimum(var_ymin);
+	hs_nostack_a->SetMaximum(var_ymax);
+      }
       if(var_ylabel != ""){ hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle(var_ylabel.c_str()); }
       else{ hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_nostack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
 
@@ -527,7 +530,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(ttlbox){ ttlbox->Draw(); } 
     curpad->RedrawAxis();
-    //curpad->SetGridy();
 
     leg_a->Draw();
     if(leg_yield){ leg_yield->Draw(); }
@@ -782,10 +784,12 @@ int PlotUtils::SetStyleHist(std::string hname, std::string style_key){
 }
 
 int PlotUtils::SetStyleLegend(TLegend &leg, double textsize, int textfont, double margin){
-  leg.SetFillColor(kWhite);
-  leg.SetFillStyle(1001);
-  leg.SetLineColor(kWhite);
+  leg.SetFillColor(0);
+  leg.SetFillStyle(0);
+  leg.SetLineColor(0);
+  leg.SetLineStyle(0);
   leg.SetMargin(margin);
+  leg.SetBorderSize(0);
   leg.SetTextSize(textsize);
   leg.SetTextFont(textfont);
   leg.SetShadowColor(0);
