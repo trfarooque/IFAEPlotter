@@ -258,7 +258,7 @@ int PlotManager::ParseConfigFile_Old(const std::string& config_file, std::vector
   do{ 
     pos = AnalysisUtils::ParseString(paramString, param, delim);
     AnalysisUtils::TrimString(param);
-    std::transform(param.begin(), param.end(), param.begin(), ::toupper);
+    //std::transform(param.begin(), param.end(), param.begin(), ::toupper);
     paramSeq[nparam] = param;
     //if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" nparam = "<<nparam<<" param = "<<param<<std::endl; 
     nparam++;
@@ -1112,8 +1112,8 @@ int PlotManager::PrintSystematics(){
       var_yield_nominal_stream << sample->Name();
       var_yield_stream << sample->Name();
       var_syst_stream << sample->Name();
-      for(int b = 5; b <= h_nominal->GetNbinsX(); b++){
-      //for(int b = 2; b <= 4; b++){
+      //for(int b = 5; b <= h_nominal->GetNbinsX(); b++){
+      for(int b = 2; b <= 4; b++){
 	double bc_nominal = h_nominal->GetBinContent(b)*3209.;
 	double bc_up = h_up->GetBinContent(b)*3209.;
 	double bc_down = h_down->GetBinContent(b)*3209.;

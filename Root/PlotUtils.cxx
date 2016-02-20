@@ -788,6 +788,7 @@ int PlotUtils::SetStyleLegend(TLegend &leg, double textsize, int textfont, doubl
   leg.SetFillStyle(0);
   leg.SetLineColor(0);
   leg.SetLineStyle(0);
+  leg.SetLineWidth(0);
   leg.SetMargin(margin);
   leg.SetBorderSize(0);
   leg.SetTextSize(textsize);
@@ -801,7 +802,7 @@ int PlotUtils::ResizeLegend(TLegend& leg, double xpt, double ypt, const std::str
 
   float textsize = leg.GetTextSize();
   float nrows = (float)leg.GetNRows();
-  float margin = leg.GetMargin();
+  //float margin = leg.GetMargin();
   TIter liter(leg.GetListOfPrimitives());
   float maxlsize = 0.;
   int nrow = 0;
@@ -818,7 +819,8 @@ int PlotUtils::ResizeLegend(TLegend& leg, double xpt, double ypt, const std::str
   delete canv_test;
 
   float X1 = 0., X2 = 0., Y1 = 0., Y2 = 0.;
-  float delX = maxlsize*(1.+margin+0.1);//*textsize;
+  float delX = maxlsize;//*(1.+margin);
+  //float delX = maxlsize*(1.+margin+0.1);//*textsize;
   float delY = nrows * textsize;
 
   if(justify == "r"){
