@@ -83,10 +83,11 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
   bool opt_hasResMin = (m_opt->OptStr().find("--RESMIN") != std::string::npos); 
   bool opt_hasResMax = (m_opt->OptStr().find("--RESMAX") != std::string::npos);
-  bool opt_hasYMin   = (m_opt->OptStr().find("--YMIN") != std::string::npos);
-  bool opt_hasYMax   = (m_opt->OptStr().find("--YMAX") != std::string::npos);
-  bool opt_hasXMin   = (m_opt->OptStr().find("--XMIN") != std::string::npos);
-  bool opt_hasXMax   = (m_opt->OptStr().find("--XMAX") != std::string::npos);
+  bool opt_hasYMin   = (m_opt->OptStr().find("--YMIN")   != std::string::npos);
+  bool opt_hasYMax   = (m_opt->OptStr().find("--YMAX")   != std::string::npos);
+  bool opt_hasYScale = (m_opt->OptStr().find("--YSCALE") != std::string::npos);
+  bool opt_hasXMin   = (m_opt->OptStr().find("--XMIN")   != std::string::npos);
+  bool opt_hasXMax   = (m_opt->OptStr().find("--XMAX")   != std::string::npos);
   
   bool var_draw_stack = 0;
   bool var_isLogY = false;
@@ -95,10 +96,11 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   //bool var_do_width = false;
   bool var_hasResMin = false;
   bool var_hasResMax = false;
-  bool var_hasYMin = false;
-  bool var_hasYMax = false;
-  bool var_hasXMin = false;
-  bool var_hasXMax = false;
+  bool var_hasYMin   = false;
+  bool var_hasYMax   = false;
+  bool var_hasYScale = false;
+  bool var_hasXMin   = false;
+  bool var_hasXMax   = false;
   bool var_modXRange = false;
   //bool var_modYRange = false;
   int var_nbinx = 0;
@@ -107,6 +109,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
   double var_ymin = 0.;
   double var_ymax = 0.;
+  double var_yscale = 0.;
   double var_ymax_legrange = 0.;
 
   bool ds_draw_stack = false;
@@ -159,6 +162,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     var_hasResMax      = va_it->second->HasResMax();
     var_hasYMin        = va_it->second->HasYMin();
     var_hasYMax        = va_it->second->HasYMax();
+    var_hasYScale      = va_it->second->HasYScale();
     var_hasXMin        = va_it->second->HasXMin();
     var_hasXMax        = va_it->second->HasXMax();
 
@@ -200,18 +204,24 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     TLegend* leg_a = new TLegend();
     TLegend* leg_yield = (m_opt->ShowYields() && (!var_isShape || var_draw_stack) ) ? new TLegend() : NULL;
 
-    double textsize=0.035;
-    if(drawRes){textsize=0.045;}
-    SetStyleLegend(*leg_a, textsize);
+    double leg_textsize=0.;
+    if(va_it->second->HasLegendTextSize()){ leg_textsize = va_it->second->LegendTextSize(); }
+    else if(m_opt->OptStr().find("LEGENDTEXTSIZE") != std::string::npos){ leg_textsize = m_opt->LegendTextSize(); }
+    else{ 
+      leg_textsize = drawRes ? 0.045 : 0.035;
+    }
+
+    SetStyleLegend(*leg_a, leg_textsize);
     leg_a->Clear();
     if(leg_yield){
-      SetStyleLegend(*leg_yield, textsize, 42, 0.04);
+      SetStyleLegend(*leg_yield, leg_textsize, 42, 0.04);
       leg_yield->Clear();
     }
 
     TPaveText* ttlbox = NULL;
     if( (glob_ttl != "") || (var_extralabel != "") ){
       double ttl_xmin = 0.; double ttl_ymin = 0.; double ttl_xmax = 0.; double ttl_ymax = 0.;
+      double ttl_textsize = 0.;
       if(va_it->second->HasTitleXMin()){ ttl_xmin = va_it->second->TitleXMin(); }
       else if(m_opt->OptStr().find("TITLEXMIN") != std::string::npos){ ttl_xmin = m_opt->TitleXMin(); }
       else{ std::cout<<"Warning: No min. x coordinate give for title box"<<std::endl; } 
@@ -228,13 +238,17 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       else if(m_opt->OptStr().find("TITLEYMAX") != std::string::npos){ ttl_ymax = m_opt->TitleYMax(); }
       else{ std::cout<<"Warning: No max. y coordinate give for title box"<<std::endl; } 
 
+      if(va_it->second->HasTitleTextSize()){ ttl_textsize = va_it->second->TitleTextSize(); }
+      else if(m_opt->OptStr().find("TITLETEXTSIZE") != std::string::npos){ ttl_textsize = m_opt->TitleTextSize(); }
+      else{ 
+	ttl_textsize = drawRes ? 0.045 : 0.035;
+      }
 
       ttlbox = new TPaveText(ttl_xmin, ttl_ymin, ttl_xmax, ttl_ymax, "NBNDC");
       ttlbox->SetFillColor(0);
       ttlbox->SetFillStyle(0);
       ttlbox->SetLineColor(0);
-      if(drawRes){ ttlbox->SetTextSize(0.045); }
-      else{ ttlbox->SetTextSize(0.035); }
+      ttlbox->SetTextSize(ttl_textsize);
       ttlbox->SetTextFont(42);
       ttlbox->SetShadowColor(0);
 
@@ -374,44 +388,50 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     if(var_hasYMax){var_ymax = va_it->second->YMax();}
     else if(opt_hasYMax){var_ymax = m_opt->YMax();}
     else{ 
-      stretch_max = 1.35; 
+
       var_ymax = (hs_nostack_a->GetNhists() > 0) ? hs_nostack_a->GetMaximum("nostack") : var_ymax;
       if(var_draw_stack && (hs_stack_a->GetNhists() > 0)){
 	var_ymax = max(var_ymax, hs_stack_a->GetMaximum());
       }
 
-      double stretch_max_leg = ( leg_a->GetY1NDC() > 0. ) ? 1./leg_a->GetY1NDC() : 1.35;
+      if(var_hasYScale){stretch_max = va_it->second->YScale();}
+      else if(opt_hasYScale){stretch_max = m_opt->YScale();}
+      else{ 
+	stretch_max = 1.35; 
+	double stretch_max_leg = ( leg_a->GetY1NDC() > 0. ) ? 1./leg_a->GetY1NDC() : 1.35;
 
-      if(stretch_max_leg > stretch_max){
+	if(stretch_max_leg > stretch_max){
 
-	//The x-range of the legend
-	double fmin_leg = leg_a->GetX1NDC(); double fmax_leg = leg_a->GetX2NDC();
-	//Find the maximum of the nostack histograms in the axis range
-	TList* hlist = hs_nostack_a->GetHists();
+	  //The x-range of the legend
+	  double fmin_leg = leg_a->GetX1NDC(); double fmax_leg = leg_a->GetX2NDC();
+	  //Find the maximum of the nostack histograms in the axis range
+	  TList* hlist = hs_nostack_a->GetHists();
 
-	double hleg_low = fmin_leg*var_xmax + (1.-fmin_leg)*var_xmin;
-	double hleg_up = fmax_leg*var_xmax + (1.-fmax_leg)*var_xmin;
+	  double hleg_low = fmin_leg*var_xmax + (1.-fmin_leg)*var_xmin;
+	  double hleg_up = fmax_leg*var_xmax + (1.-fmax_leg)*var_xmin;
 
-	TH1D* hcur = NULL;
+	  TH1D* hcur = NULL;
 
-	for(int i = 0; i < hs_nostack_a->GetNhists(); i++){
-	  hcur = (TH1D*)(hlist->At(i));
-	  hcur->SetAxisRange(hleg_low, hleg_up);
-	  var_ymax_legrange = max(var_ymax_legrange, hcur->GetMaximum());
-	  hcur->SetAxisRange(var_xmin, var_xmax);
-	}
+	  for(int i = 0; i < hs_nostack_a->GetNhists(); i++){
+	    hcur = (TH1D*)(hlist->At(i));
+	    hcur->SetAxisRange(hleg_low, hleg_up);
+	    var_ymax_legrange = max(var_ymax_legrange, hcur->GetMaximum());
+	    hcur->SetAxisRange(var_xmin, var_xmax);
+	  }
 
-	if(var_draw_stack && (hs_stack_a->GetNhists() > 0)){
-	  hcur = (TH1D*)(hs_stack_a->GetStack()->Last());
-	  hcur->SetAxisRange(hleg_low, hleg_up);
-	  var_ymax_legrange = max(var_ymax_legrange, hcur->GetMaximum());
-	  hcur->SetAxisRange(var_xmin, var_xmax);
-	}
+	  if(var_draw_stack && (hs_stack_a->GetNhists() > 0)){
+	    hcur = (TH1D*)(hs_stack_a->GetStack()->Last());
+	    hcur->SetAxisRange(hleg_low, hleg_up);
+	    var_ymax_legrange = max(var_ymax_legrange, hcur->GetMaximum());
+	    hcur->SetAxisRange(var_xmin, var_xmax);
+	  }
 
-	if(var_isLogY){ var_ymax_legrange = pow(var_ymax_legrange, stretch_max_leg)/pow(var_ymin, stretch_max_leg -1.); }
-	else{ var_ymax_legrange = stretch_max_leg*var_ymax_legrange - (1. - stretch_max_leg)*var_ymin; }
+	  if(var_isLogY){ var_ymax_legrange = pow(var_ymax_legrange, stretch_max_leg)/pow(var_ymin, stretch_max_leg -1.); }
+	  else{ var_ymax_legrange = stretch_max_leg*var_ymax_legrange - (1. - stretch_max_leg)*var_ymin; }
 
-      }//if legend extent is more than default stretch factor
+	}//if legend extent is more than default stretch factor
+
+      } //if stretch factor is not provided
 
       if(var_isLogY){ var_ymax = pow(var_ymax, stretch_max)/pow(var_ymin, stretch_max -1.); }
       else{ var_ymax = stretch_max*var_ymax - (1. - stretch_max)*var_ymin; }

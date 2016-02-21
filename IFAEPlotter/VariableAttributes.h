@@ -14,10 +14,13 @@ class VariableAttributes{
 		     , bool isLogY=false, bool isLogX=false
 		     , const std::string& ylabel="", const std::string& reslabel=""
 		     , bool has_resmin=false, bool has_resmax=false, double resmin=0.5, double resmax=1.5
-		     , bool has_ymin=false, bool has_ymax=false, double ymin=0., double ymax=0.
+		     , bool has_ymin=false, bool has_ymax=false, bool has_yscale=false
+		     , double ymin=0., double ymax=0., double yscale=0. 
 		     , bool has_xmin=false, bool has_xmax=false, double xmin=0., double xmax=0.
 		     , bool has_ttl_xmin=false, bool has_ttl_xmax=false, double ttl_xmin=0., double ttl_xmax=0.
 		     , bool has_ttl_ymin=false, bool has_ttl_ymax=false, double ttl_ymin=0., double ttl_ymax=0.   
+		     , bool has_ttl_textsize=false, double ttl_textsize=0. 
+		     , bool has_leg_textsize=false, double leg_textsize=0. 
 		     , const std::string& resdrawopt="", const std::string& extralabel=""
 		     , int rebin=0, const std::string& rebinedges="", const std::string& blinding="");
   VariableAttributes(VariableAttributes& q);
@@ -45,8 +48,10 @@ class VariableAttributes{
   void SetHasResMax(bool has_resmax){ m_has_resmax = has_resmax; }
   void SetYMin(double ymin){ m_ymin = ymin; }
   void SetYMax(double ymax){ m_ymax = ymax; }
+  void SetYScale(double yscale){ m_yscale = yscale; }
   void SetHasYMin(bool has_ymin){ m_has_ymin = has_ymin; }
   void SetHasYMax(bool has_ymax){ m_has_ymax = has_ymax; }
+  void SetHasYScale(bool has_yscale){ m_has_yscale = has_yscale; }
   void SetXMin(double xmin){ m_xmin = xmin; }
   void SetXMax(double xmax){ m_xmax = xmax; }
   void SetHasXMin(bool has_xmin){ m_has_xmin = has_xmin; }
@@ -55,10 +60,14 @@ class VariableAttributes{
   void SetTitleYMin(double ttl_ymin){ m_ttl_ymin = ttl_ymin; }
   void SetTitleXMax(double ttl_xmax){ m_ttl_xmax = ttl_xmax; }
   void SetTitleYMax(double ttl_ymax){ m_ttl_ymax = ttl_ymax; }
+  void SetTitleTextSize(double ttl_textsize){ m_ttl_textsize = ttl_textsize; }
+  void SetLegendTextSize(double leg_textsize){ m_leg_textsize = leg_textsize; }
   void SetHasTitleXMin(bool has_ttl_xmin){ m_has_ttl_xmin = has_ttl_xmin; }
   void SetHasTitleYMin(bool has_ttl_ymin){ m_has_ttl_ymin = has_ttl_ymin; }
   void SetHasTitleXMax(bool has_ttl_xmax){ m_has_ttl_xmax = has_ttl_xmax; }
   void SetHasTitleYMax(bool has_ttl_ymax){ m_has_ttl_ymax = has_ttl_ymax; }
+  void SetHasTitleTextSize(bool has_ttl_textsize){ m_has_ttl_textsize = has_ttl_textsize; }
+  void SetHasLegendTextSize(bool has_leg_textsize){ m_has_leg_textsize = has_leg_textsize; }
   void SetNProjBin(int nprojbin){ m_nprojbin = nprojbin; }
   void SetExtraLabel(const std::string& extralabel){ m_extralabel = extralabel; }
 
@@ -81,8 +90,10 @@ class VariableAttributes{
   bool HasResMax(){ return m_has_resmax; }
   double YMin(){ return m_ymin; }
   double YMax(){ return m_ymax; }
+  double YScale(){ return m_yscale; }
   bool HasYMin(){ return m_has_ymin; }
   bool HasYMax(){ return m_has_ymax; }
+  bool HasYScale(){ return m_has_yscale; }
   double XMin(){ return m_xmin; }
   double XMax(){ return m_xmax; }
   bool HasXMin(){ return m_has_xmin; }
@@ -91,10 +102,14 @@ class VariableAttributes{
   double TitleYMin(){ return m_ttl_ymin; }
   double TitleXMax(){ return m_ttl_xmax; }
   double TitleYMax(){ return m_ttl_ymax; }
+  double TitleTextSize(){ return m_ttl_textsize; }
+  double LegendTextSize(){ return m_leg_textsize; }
   bool HasTitleXMin(){ return m_has_ttl_xmin; }
   bool HasTitleYMin(){ return m_has_ttl_ymin; }
   bool HasTitleXMax(){ return m_has_ttl_xmax; }
   bool HasTitleYMax(){ return m_has_ttl_ymax; }
+  bool HasTitleTextSize(){ return m_has_ttl_textsize; }
+  bool HasLegendTextSize(){ return m_has_leg_textsize; }
 
   int NProjBin(){ return m_nprojbin; }
   const std::string& ResDrawOpt(){ return m_resdrawopt; }
@@ -122,8 +137,10 @@ class VariableAttributes{
   bool m_has_resmax;
   double m_ymin;
   double m_ymax; 
+  double m_yscale; 
   bool m_has_ymin;
   bool m_has_ymax;
+  bool m_has_yscale;
   double m_xmin;
   double m_xmax; 
   bool m_has_xmin;
@@ -132,10 +149,14 @@ class VariableAttributes{
   double m_ttl_ymin;
   double m_ttl_xmax; 
   double m_ttl_ymax; 
+  double m_ttl_textsize; 
+  double m_leg_textsize; 
   bool m_has_ttl_xmin;
   bool m_has_ttl_ymin;
   bool m_has_ttl_xmax;
   bool m_has_ttl_ymax;
+  bool m_has_ttl_textsize;
+  bool m_has_leg_textsize;
 
   int m_nprojbin;
   std::string m_resdrawopt;

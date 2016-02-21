@@ -459,6 +459,10 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
       varObj->SetYMax(atof(keymap["YMAX"].c_str())); 
       varObj->SetHasYMax(true);
     }
+    if( keymap.find("YSCALE") != keymap.end() && (keymap["YSCALE"] != "") ){ 
+      varObj->SetYScale(atof(keymap["YSCALE"].c_str())); 
+      varObj->SetHasYScale(true);
+    }
     if( keymap.find("XMIN") != keymap.end() && (keymap["XMIN"] != "") ){ 
       varObj->SetXMin(atof(keymap["XMIN"].c_str())); 
       varObj->SetHasXMin(true);
@@ -484,6 +488,15 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
     if( keymap.find("TITLEYMAX") != keymap.end() && (keymap["TITLEYMAX"] != "") ){ 
       varObj->SetTitleYMax(atof(keymap["TITLEYMAX"].c_str())); 
       varObj->SetHasTitleYMax(true);
+    }
+    //
+    if( keymap.find("TITLETEXTSIZE") != keymap.end() && (keymap["TITLETEXTSIZE"] != "") ){ 
+      varObj->SetTitleTextSize(atof(keymap["TITLETEXTSIZE"].c_str())); 
+      varObj->SetHasTitleTextSize(true);
+    }
+    if( keymap.find("LEGENDTEXTSIZE") != keymap.end() && (keymap["LEGENDTEXTSIZE"] != "") ){ 
+      varObj->SetLegendTextSize(atof(keymap["LEGENDTEXTSIZE"].c_str())); 
+      varObj->SetHasLegendTextSize(true);
     }
 
     if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" Adding variable "<<name<<std::endl;

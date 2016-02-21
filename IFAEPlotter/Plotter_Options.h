@@ -48,6 +48,7 @@ public:
     inline double ResMax(){ return m_resmax; }
     inline double YMin(){ return m_ymin; }
     inline double YMax(){ return m_ymax; }
+    inline double YScale(){ return m_yscale; }
     inline double XMin(){ return m_xmin; }
     inline double XMax(){ return m_xmax; }
     inline bool ShowYields(){ return m_show_yields; }
@@ -60,6 +61,8 @@ public:
     inline double TitleYMin(){ return m_titleymin; }
     inline double TitleXMax(){ return m_titlexmax; }
     inline double TitleYMax(){ return m_titleymax; }
+    inline double TitleTextSize(){ return m_title_textsize; }
+    inline double LegendTextSize(){ return m_legend_textsize; }
     inline double GlobalScale(){ return m_global_scale; }
     inline double BlindThreshold(){ return m_blind_threshold; }
     inline bool AllFromFile(){ return m_all_from_file; }
@@ -111,12 +114,15 @@ private:
     double m_resmax;
     double m_ymin;
     double m_ymax;
+    double m_yscale;
     double m_xmin;
     double m_xmax;
     double m_titlexmin;
     double m_titleymin;
     double m_titlexmax;
     double m_titleymax;
+    double m_title_textsize;
+    double m_legend_textsize;
     double m_global_scale;
     double m_blind_threshold;
 

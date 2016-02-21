@@ -1,3 +1,7 @@
+2016-02-21 Trisha Farooque <farooque@cern.ch>
+	- Configurable text size in title box and legend box
+	- Configurable stretch factor for hiostogram y-range
+	
 2016-02-19 Trisha Farooque <farooque@cern.ch>
 	- Automatic scaling of histograms to remove legend overlap
 	- Bug fix: TLegend now written to ROOT file

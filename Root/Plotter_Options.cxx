@@ -50,12 +50,15 @@ Plotter_Options::Plotter_Options():
   m_resmax(0.),
   m_ymin(0.),
   m_ymax(0.),
+  m_yscale(0.),
   m_xmin(0.),
   m_xmax(0.),
   m_titlexmin(0.),
   m_titleymin(0.),
   m_titlexmax(0.),
   m_titleymax(0.),
+  m_title_textsize(0.),
+  m_legend_textsize(0.),
   m_global_scale(1.),
   m_blind_threshold(0.)
 {}
@@ -106,12 +109,15 @@ OptionsBase(q)
   m_resmax               = q.m_resmax;
   m_ymin                 = q.m_ymin;
   m_ymax                 = q.m_ymax;
+  m_yscale               = q.m_yscale;
   m_xmin                 = q.m_xmin;
   m_xmax                 = q.m_xmax;
   m_titlexmin            = q.m_titlexmin;
   m_titleymin            = q.m_titleymin;
   m_titlexmax            = q.m_titlexmax;
   m_titleymax            = q.m_titleymax;
+  m_title_textsize       = q.m_title_textsize;
+  m_legend_textsize      = q.m_legend_textsize;
   m_global_scale         = q.m_global_scale;
   m_blind_threshold      = q.m_blind_threshold;
 }
@@ -259,6 +265,9 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     else if( temp_arg.find("--YMAX") != std::string::npos ){
       m_ymax = atof(temp_val.c_str());
     } 
+    else if( temp_arg.find("--YSCALE") != std::string::npos ){
+      m_yscale = atof(temp_val.c_str());
+    } 
     else if( temp_arg.find("--XMIN") != std::string::npos ){
       m_xmin = atof(temp_val.c_str());
     } 
@@ -276,6 +285,12 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     } 
     else if( temp_arg.find("--TITLEYMAX") != std::string::npos ){
       m_titleymax = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--TITLETEXTSIZE") != std::string::npos ){
+      m_title_textsize = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--LEGENDTEXTSIZE") != std::string::npos ){
+      m_legend_textsize = atof(temp_val.c_str());
     } 
     else if( temp_arg.find("--TITLE") != std::string::npos ){
       m_title = temp_val;
@@ -341,12 +356,15 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_resmax                 = " << m_resmax               << std::endl;
     std::cout << " m_ymin                   = " << m_ymin                 << std::endl;
     std::cout << " m_ymax                   = " << m_ymax                 << std::endl;
+    std::cout << " m_yscale                 = " << m_yscale               << std::endl;
     std::cout << " m_xmin                   = " << m_xmin                 << std::endl;
     std::cout << " m_xmax                   = " << m_xmax                 << std::endl;
     std::cout << " m_titlexmin              = " << m_titlexmin            << std::endl;
     std::cout << " m_titleymin              = " << m_titleymin            << std::endl;
     std::cout << " m_titlexmax              = " << m_titlexmax            << std::endl;
     std::cout << " m_titleymax              = " << m_titleymax            << std::endl;
+    std::cout << " m_title_textsize         = " << m_title_textsize       << std::endl;
+    std::cout << " m_legend_textsize        = " << m_legend_textsize      << std::endl;
     std::cout << " m_global_scale           = " << m_global_scale         << std::endl;
     std::cout << " m_blind_threshold        = " << m_blind_threshold      << std::endl;
 

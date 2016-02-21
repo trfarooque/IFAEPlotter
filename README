@@ -62,8 +62,7 @@ file, the config file option will override the global option for a given sample/
 --FILELIST : The file list for samples
 --STYLELIB : Style library to use
 --OUTFORMAT(DEFAULT="PNG") : Comma-separated list of all formats in which the plots should be printed. 
-Currently supports eps ("EPS"), png ("PNG"), pdf ("PDF") and .C ("CPP") files.
-Writing ROOT files is buggy - the legends are not displayed.
+Currently supports eps ("EPS"), png ("PNG"), pdf ("PDF"), .C ("CPP") and .root ("ROOT") files.
 --YLABEL(DEFAULT="Events") : Title of Y-axis. Overriden by variable configuration.
 --RESLABEL(DEFAULT="Data/MC") : Title of Y-axis in bottom panel. Overriden by variable configuration.
 --RESDRAWOPT(DEFAULT=NONE): Drawing option for residual histogram in bottom panel. 
@@ -81,7 +80,8 @@ If RESDRAWOPT is not provided anywhere, use the drawing option for each sample a
 --RESMIN(DEFAULT=NONE) : Minimum of y-axis range for bottom panel
 --RESMAX(DEFAULT=NONE) : Maximum of y-axis range for bottom panel
 --YMIN(DEFAULT=NONE) : Minimum of y-axis range. Overriden by variable configuration.
---YMAX(DEFAULT=NONE) : Maximum of y-axis range. Overriden by variable configuration.
+--YMAX(DEFAULT=NONE) : Maximum of y-axis range. Overriden by variable configuration. Has precedence over YSCALE.
+--YSCALE(DEFAULT=NONE) : Scale by which the maximum of the overlaid histograms is stretched. Overriden by variable configuration.
 --XMIN(DEFAULT=NONE) : Minimum of x-axis range. Overriden by variable configuration.
 --XMAX(DEFAULT=NONE) : Maximum of x-axis range. Overriden by variable configurati
 --SHOWYIELDS(DEFAULT=FALSE) : Show yields in the legend. TRUE or FALSE
@@ -91,6 +91,8 @@ of each sample is used to determine the style of the legend entry
 --TITLEYMIN(DEFAULT=NONE) : NDC min-y. coordinate for title box. Overriden by variable configuration.
 --TITLEXMAX(DEFAULT=NONE) : NDC max-x. coordinate for title box. Overriden by variable configuration.
 --TITLEYMAX(DEFAULT=NONE) : NDC max-y. coordinate for title box. Overriden by variable configuration.
+--TITLETEXTSIZE(DEFAULT=0.035(0.045) for single (double) panel plots) : Text size for title box. Overriden by variable configuration.
+--LEGENDTEXTSIZE(DEFAULT=0.035(0.045) for single (double) panel plots) : Text size for legend box. Overriden by variable configuration.
 --TITLE : Title string to be drawn (e.g. ATLAS internal). Accepts #splitline.
 --BLINDING : Type of blinding to apply to blind sample. Supported options: 
 	   "THRESH" : Only blind bins/histograms where the blinding variable is above threshold. 
@@ -167,13 +169,14 @@ RESMIN(DEFAULT=NONE) : See global option
 RESMAX(DEFAULT=NONE) : See global option 
 YMIN(DEFAULT=NONE) : See global option 
 YMAX(DEFAULT=NONE) : See global option
+YSCALE(DEFAULT=NONE) : See global option
 XMIN(DEFAULT=NONE) : See global option 
 XMAX(DEFAULT=NONE) : See global option 
 TITLEXMIN(DEFAULT=NONE) : See global option 
 TITLEYMIN(DEFAULT=NONE) : See global option
 TITLEXMAX(DEFAULT=NONE) : See global option 
 TITLEYMAX(DEFAULT=NONE) : See global option 
-	
+TITLETEXTSIZE(DEFAULT=0.035(0.045) for single(double) panel plots) : See global option	
 ********************
 
 Some notes:
