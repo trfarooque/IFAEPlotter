@@ -21,6 +21,7 @@ class VariableAttributes{
 		     , bool has_ttl_ymin=false, bool has_ttl_ymax=false, double ttl_ymin=0., double ttl_ymax=0.   
 		     , bool has_ttl_textsize=false, double ttl_textsize=0. 
 		     , bool has_leg_textsize=false, double leg_textsize=0. 
+		     , bool is_count=false 
 		     , const std::string& resdrawopt="", const std::string& extralabel=""
 		     , int rebin=0, const std::string& rebinedges="", const std::string& blinding="");
   VariableAttributes(VariableAttributes& q);
@@ -68,6 +69,7 @@ class VariableAttributes{
   void SetHasTitleYMax(bool has_ttl_ymax){ m_has_ttl_ymax = has_ttl_ymax; }
   void SetHasTitleTextSize(bool has_ttl_textsize){ m_has_ttl_textsize = has_ttl_textsize; }
   void SetHasLegendTextSize(bool has_leg_textsize){ m_has_leg_textsize = has_leg_textsize; }
+  void SetIsCount(bool is_count){ m_is_count = is_count; }
   void SetNProjBin(int nprojbin){ m_nprojbin = nprojbin; }
   void SetExtraLabel(const std::string& extralabel){ m_extralabel = extralabel; }
 
@@ -110,6 +112,7 @@ class VariableAttributes{
   bool HasTitleYMax(){ return m_has_ttl_ymax; }
   bool HasTitleTextSize(){ return m_has_ttl_textsize; }
   bool HasLegendTextSize(){ return m_has_leg_textsize; }
+  bool IsCount(){ return m_is_count; }
 
   int NProjBin(){ return m_nprojbin; }
   const std::string& ResDrawOpt(){ return m_resdrawopt; }
@@ -157,6 +160,7 @@ class VariableAttributes{
   bool m_has_ttl_ymax;
   bool m_has_ttl_textsize;
   bool m_has_leg_textsize;
+  bool m_is_count;
 
   int m_nprojbin;
   std::string m_resdrawopt;

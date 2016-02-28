@@ -11,7 +11,9 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
 				       , bool has_ttl_ymin, bool has_ttl_ymax, double ttl_ymin, double ttl_ymax 
 				       , bool has_ttl_textsize, double ttl_textsize
 				       , bool has_leg_textsize, double leg_textsize
-				       , const std::string& resdrawopt, const std::string& extralabel, int rebin, const std::string& rebinedges, const std::string& blinding) : 
+				       , bool is_count
+				       , const std::string& resdrawopt, const std::string& extralabel
+				       , int rebin, const std::string& rebinedges, const std::string& blinding) : 
   m_name(name),
   m_label(label),
   m_ylabel(ylabel),
@@ -51,6 +53,7 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
   m_has_ttl_ymax(has_ttl_ymax),
   m_has_ttl_textsize(has_ttl_textsize),
   m_has_leg_textsize(has_leg_textsize),
+  m_is_count(is_count),
   m_nprojbin(-1),
   m_resdrawopt(resdrawopt),
   m_blinding(blinding),
@@ -97,8 +100,9 @@ VariableAttributes::VariableAttributes(VariableAttributes& q){
   m_has_ttl_ymin       = q.m_has_ttl_ymin;
   m_has_ttl_xmax       = q.m_has_ttl_xmax;
   m_has_ttl_ymax       = q.m_has_ttl_ymax;
-  m_has_ttl_textsize   = q.m_ttl_textsize;
-  m_has_leg_textsize   = q.m_leg_textsize;
+  m_has_ttl_textsize   = q.m_has_ttl_textsize;
+  m_has_leg_textsize   = q.m_has_leg_textsize;
+  m_is_count           = q.m_is_count;
   m_nprojbin           = q.m_nprojbin;
   m_resdrawopt         = q.m_resdrawopt;
   m_extralabel         = q.m_extralabel;

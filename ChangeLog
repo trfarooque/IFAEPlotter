@@ -1,6 +1,10 @@
+2016-02-28 Trisha Farooque <farooque@cern.ch>
+	- Integer axis ticks
+	- Axis ticks on top and right
+	
 2016-02-21 Trisha Farooque <farooque@cern.ch>
 	- Configurable text size in title box and legend box
-	- Configurable stretch factor for hiostogram y-range
+	- Configurable stretch factor for histogram y-range
 	
 2016-02-19 Trisha Farooque <farooque@cern.ch>
 	- Automatic scaling of histograms to remove legend overlap

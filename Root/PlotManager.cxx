@@ -498,6 +498,7 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
       varObj->SetLegendTextSize(atof(keymap["LEGENDTEXTSIZE"].c_str())); 
       varObj->SetHasLegendTextSize(true);
     }
+    if( keymap.find("ISCOUNT") != keymap.end() ){ varObj->SetIsCount(AnalysisUtils::BoolValue(keymap["ISCOUNT"], "ISCOUNT")); }
 
     if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" Adding variable "<<name<<std::endl;
     m_var_map[name] = varObj;

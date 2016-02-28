@@ -109,9 +109,9 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
   double var_ymin = 0.;
   double var_ymax = 0.;
-  double var_yscale = 0.;
   double var_ymax_legrange = 0.;
 
+  bool var_isCount = false;
   bool ds_draw_stack = false;
   int ds_res_opt = -1;
   std::string ds_res_erropt = "";
@@ -152,6 +152,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     const std::string& var_resdrawopt    = (va_it->second->ResDrawOpt() != "") ? va_it->second->ResDrawOpt() : m_opt->ResDrawOpt();
     const std::string& var_extralabel    = va_it->second->ExtraLabel();
 
+    var_isCount        = va_it->second->IsCount();
     var_isShape        = !doGraphs && (va_it->second->DoScale() == "SHAPE"); 
     //var_do_width       = !doGraphs && va_it->second->DoWidth();
     var_draw_stack     = !doGraphs && va_it->second->DrawStack();
@@ -461,6 +462,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       }
       if(var_ylabel != ""){ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle(var_ylabel.c_str()); }
       else{ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_stack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
+      if(var_isCount){
+	hs_stack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin);
+      }
+
 
       double yoff = 0.;
       double yttlsz = drawRes ? 0.05 : 0.04;
@@ -504,6 +509,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       }
       if(var_ylabel != ""){ hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle(var_ylabel.c_str()); }
       else{ hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_nostack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
+
+      if(var_isCount){
+	hs_nostack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin);
+      }
 
       double yoff = 0.;
       double yttlsz = drawRes ? 0.05 : 0.04;
@@ -595,6 +604,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       hs_res_a->SetMinimum(r_min);
       hs_res_a->SetMaximum(r_max);
       lnref->DrawClone("same");
+
+      if(var_isCount){
+	hs_res_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin);
+      }
 
       hs_res_a->GetHistogram()->GetXaxis()->SetTitleOffset(0.9);
       hs_res_a->GetHistogram()->GetYaxis()->SetTitleOffset(0.5);
@@ -764,6 +777,7 @@ int PlotUtils::SetStyleCanvas(TCanvas& canv, bool divide){
 
   if(divide){canv.Divide(1,2);
     canv.cd(1)->SetPad(0.,0.35,0.95,0.95);
+    canv.cd(1)->SetTicks();
     canv.cd(1)->SetBorderMode(0);
     canv.cd(1)->SetTopMargin(0.05);
     canv.cd(1)->SetBottomMargin(0.0001);
@@ -771,6 +785,7 @@ int PlotUtils::SetStyleCanvas(TCanvas& canv, bool divide){
     canv.cd(1)->SetLeftMargin(0.15);
 
     canv.cd(2)->SetPad(0.,0.,0.95,0.35);
+    canv.cd(2)->SetTicks();
     canv.cd(2)->SetBorderMode(0);
     canv.cd(2)->SetTopMargin(0.0001);
     canv.cd(2)->SetBottomMargin(0.2);
@@ -778,6 +793,7 @@ int PlotUtils::SetStyleCanvas(TCanvas& canv, bool divide){
     canv.cd(2)->SetLeftMargin(0.15);
   }
   else{
+    canv.cd()->SetTicks();
     canv.cd()->SetTopMargin(0.05);
     canv.cd()->SetBottomMargin(0.2);
     canv.cd()->SetRightMargin(0.05);
