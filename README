@@ -177,6 +177,7 @@ TITLEYMIN(DEFAULT=NONE) : See global option
 TITLEXMAX(DEFAULT=NONE) : See global option 
 TITLEYMAX(DEFAULT=NONE) : See global option 
 TITLETEXTSIZE(DEFAULT=0.035(0.045) for single(double) panel plots) : See global option	
+ISCOUNT(DEFAUT=FALSE) : Set to TRUE to get count plots where only the integer divisions are drawn for the x-axis
 ********************
 
 Some notes:
