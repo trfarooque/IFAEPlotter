@@ -598,7 +598,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       var_ymax = max(var_ymax, var_ymax_legrange);
 
     }//if ymax coordinate not provided
-    if(!var_isLogY && var_ymin <= 1.e-5){var_ymin = 1.1e-5;}
+    if(drawRes && !var_isLogY && var_ymin <= 1.e-5){var_ymin = 1.1e-5;}
     else if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
 
     //==================================================== Resizing done ======================================================================
