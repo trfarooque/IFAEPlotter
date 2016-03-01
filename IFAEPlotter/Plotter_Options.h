@@ -63,6 +63,30 @@ public:
     inline double TitleYMax(){ return m_titleymax; }
     inline double TitleTextSize(){ return m_title_textsize; }
     inline double LegendTextSize(){ return m_legend_textsize; }
+    inline double LegendXMin(){ return m_legend_xmin; }
+    inline double LegendXMax(){ return m_legend_xmax; }
+    inline double LegendYMin(){ return m_legend_ymin; }
+    inline double LegendYMax(){ return m_legend_ymax; }
+
+    inline double XTitleOffset(){ return m_xtitle_offset; }
+    inline double XTitleSize(){ return m_xtitle_size; }
+    inline double YTitleOffset(){ return m_ytitle_offset; }
+    inline double YTitleSize(){ return m_ytitle_size; }
+    inline double ResTitleOffset(){ return m_restitle_offset; }
+    inline double ResTitleSize(){ return m_restitle_size; }
+
+    inline double XLabelOffset(){ return m_xlabel_offset; }
+    inline double XLabelSize(){ return m_xlabel_size; }
+    inline double YLabelOffset(){ return m_ylabel_offset; }
+    inline double YLabelSize(){ return m_ylabel_size; }
+    inline double ResLabelOffset(){ return m_reslabel_offset; }
+    inline double ResLabelSize(){ return m_reslabel_size; }
+
+    inline double BottomMargin(){ return m_bottom_margin; }
+    inline double TopMargin(){ return m_top_margin; }
+    inline double LeftMargin(){ return m_left_margin; }
+    inline double RightMargin(){ return m_right_margin; }
+
     inline double GlobalScale(){ return m_global_scale; }
     inline double BlindThreshold(){ return m_blind_threshold; }
     inline bool AllFromFile(){ return m_all_from_file; }
@@ -123,6 +147,31 @@ private:
     double m_titleymax;
     double m_title_textsize;
     double m_legend_textsize;
+
+    double m_legend_xmin;
+    double m_legend_xmax;
+    double m_legend_ymin;
+    double m_legend_ymax;
+
+    double m_xtitle_offset;
+    double m_xtitle_size;
+    double m_ytitle_offset;
+    double m_ytitle_size;
+    double m_restitle_offset;
+    double m_restitle_size;
+
+    double m_xlabel_offset;
+    double m_xlabel_size;
+    double m_ylabel_offset;
+    double m_ylabel_size;
+    double m_reslabel_offset;
+    double m_reslabel_size;
+
+    double m_bottom_margin;
+    double m_top_margin;
+    double m_left_margin;
+    double m_right_margin;
+
     double m_global_scale;
     double m_blind_threshold;
 

@@ -88,12 +88,36 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   bool opt_hasYScale = (m_opt->OptStr().find("--YSCALE") != std::string::npos);
   bool opt_hasXMin   = (m_opt->OptStr().find("--XMIN")   != std::string::npos);
   bool opt_hasXMax   = (m_opt->OptStr().find("--XMAX")   != std::string::npos);
+
+  //bool opt_hasLegendXMin = (m_opt->OptStr().find("--LEGENDXMIN") != std::string::npos);
+  bool opt_hasLegendXMax = (m_opt->OptStr().find("--LEGENDXMAX") != std::string::npos);
+  //bool opt_hasLegendYMin = (m_opt->OptStr().find("--LEGENDYMIN") != std::string::npos);
+  bool opt_hasLegendYMax = (m_opt->OptStr().find("--LEGENDYMAX") != std::string::npos);
+
+  bool opt_hasXTitleSize     = (m_opt->OptStr().find("--XTITLESIZE") != std::string::npos);
+  bool opt_hasXTitleOffset   = (m_opt->OptStr().find("--XTITLEOFFSET") != std::string::npos);
+  bool opt_hasYTitleSize     = (m_opt->OptStr().find("--YTITLESIZE") != std::string::npos);
+  bool opt_hasYTitleOffset   = (m_opt->OptStr().find("--YTITLEOFFSET") != std::string::npos);
+  bool opt_hasResTitleSize     = (m_opt->OptStr().find("--RESTITLESIZE") != std::string::npos);
+  bool opt_hasResTitleOffset   = (m_opt->OptStr().find("--RESTITLEOFFSET") != std::string::npos);
+
+  bool opt_hasXLabelSize     = (m_opt->OptStr().find("--XLABELSIZE") != std::string::npos);
+  bool opt_hasXLabelOffset   = (m_opt->OptStr().find("--XLABELOFFSET") != std::string::npos);
+  bool opt_hasYLabelSize     = (m_opt->OptStr().find("--YLABELSIZE") != std::string::npos);
+  bool opt_hasYLabelOffset   = (m_opt->OptStr().find("--YLABELOFFSET") != std::string::npos);
+  bool opt_hasResLabelSize     = (m_opt->OptStr().find("--RESLABELSIZE") != std::string::npos);
+  bool opt_hasResLabelOffset   = (m_opt->OptStr().find("--RESLABELOFFSET") != std::string::npos);
+
+  bool opt_hasBottomMargin   = (m_opt->OptStr().find("--BOTTOMMARGIN") != std::string::npos);
+  bool opt_hasTopMargin      = (m_opt->OptStr().find("--TOPMARGIN") != std::string::npos);
+  bool opt_hasLeftMargin     = (m_opt->OptStr().find("--LEFTMARGIN") != std::string::npos);
+  bool opt_hasRightMargin    = (m_opt->OptStr().find("--RIGHTMARGIN") != std::string::npos);
   
   bool var_draw_stack = 0;
   bool var_isLogY = false;
   bool var_isLogX = false;
   bool var_isShape = false;
-  //bool var_do_width = false;
+
   bool var_hasResMin = false;
   bool var_hasResMax = false;
   bool var_hasYMin   = false;
@@ -102,7 +126,31 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   bool var_hasXMin   = false;
   bool var_hasXMax   = false;
   bool var_modXRange = false;
-  //bool var_modYRange = false;
+
+  //bool var_hasLegendXMin = false;
+  bool var_hasLegendXMax = false;
+  //bool var_hasLegendYMin = false;
+  bool var_hasLegendYMax = false;
+
+  bool var_hasXTitleSize   = false;
+  bool var_hasXTitleOffset = false;
+  bool var_hasYTitleSize   = false;
+  bool var_hasYTitleOffset = false;
+  bool var_hasResTitleSize   = false;
+  bool var_hasResTitleOffset = false;
+
+  bool var_hasXLabelSize   = false;
+  bool var_hasXLabelOffset = false;
+  bool var_hasYLabelSize   = false;
+  bool var_hasYLabelOffset = false;
+  bool var_hasResLabelSize   = false;
+  bool var_hasResLabelOffset = false;
+
+  bool var_hasBottomMargin = false;
+  bool var_hasTopMargin    = false;
+  bool var_hasLeftMargin   = false;
+  bool var_hasRightMargin  = false;
+
   int var_nbinx = 0;
   double var_xmin = 0.;
   double var_xmax = 0.;
@@ -110,6 +158,30 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   double var_ymin = 0.;
   double var_ymax = 0.;
   double var_ymax_legrange = 0.;
+
+  //double var_legend_xmin = 0.;
+  double var_legend_xmax = 0.;
+  //double var_legend_ymin = 0.;
+  double var_legend_ymax = 0.;
+
+  double var_xtitle_size = 0.;
+  double var_xtitle_offset = 0.;
+  double var_ytitle_size = 0.;
+  double var_ytitle_offset = 0.;
+  double var_restitle_size = 0.;
+  double var_restitle_offset = 0.;
+
+  double var_xlabel_size = 0.;
+  double var_xlabel_offset = 0.;
+  double var_ylabel_size = 0.;
+  double var_ylabel_offset = 0.;
+  double var_reslabel_size = 0.;
+  double var_reslabel_offset = 0.;
+
+  double var_bottom_margin = 0.;
+  double var_top_margin = 0.;
+  double var_left_margin = 0.;
+  double var_right_margin = 0.;
 
   bool var_isCount = false;
   bool ds_draw_stack = false;
@@ -170,29 +242,97 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     var_modXRange      = var_hasXMin || var_hasXMax || opt_hasXMin || opt_hasXMax;
     //var_modYRange      = var_hasYMin || var_hasYMax || opt_hasYMin || opt_hasYMax;
 
+    //var_hasLegendXMin  = va_it->second->HasLegendXMin();
+    var_hasLegendXMax  = va_it->second->HasLegendXMax();
+    //var_hasLegendYMin  = va_it->second->HasLegendYMin();
+    var_hasLegendYMax  = va_it->second->HasLegendYMax();
+
+    var_hasXTitleSize   = va_it->second->HasXTitleSize();
+    var_hasXTitleOffset = va_it->second->HasXTitleOffset();
+    var_hasYTitleSize   = va_it->second->HasYTitleSize();
+    var_hasYTitleOffset = va_it->second->HasYTitleOffset();
+    var_hasResTitleSize   = va_it->second->HasResTitleSize();
+    var_hasResTitleOffset = va_it->second->HasResTitleOffset();
+
+    var_hasXLabelSize   = va_it->second->HasXLabelSize();
+    var_hasXLabelOffset = va_it->second->HasXLabelOffset();
+    var_hasYLabelSize   = va_it->second->HasYLabelSize();
+    var_hasYLabelOffset = va_it->second->HasYLabelOffset();
+    var_hasResLabelSize   = va_it->second->HasResLabelSize();
+    var_hasResLabelOffset = va_it->second->HasResLabelOffset();
+
+    var_hasBottomMargin = va_it->second->HasBottomMargin();
+    var_hasTopMargin    = va_it->second->HasTopMargin();
+    var_hasLeftMargin   = va_it->second->HasLeftMargin();
+    var_hasRightMargin  = va_it->second->HasRightMargin();
+
     var_xmin = 0.; 
     var_xmax = 0.; 
     var_ymin = 0.; 
     var_ymax = 0.; 
     var_ymax_legrange = 0.; 
 
+    //var_legend_xmin = 0.;
+    var_legend_xmax = 0.;
+    //var_legend_ymin = 0.;
+    var_legend_ymax = 0.;
+
+    var_xtitle_size = 0.;
+    var_xtitle_offset = 0.;
+    var_ytitle_size = 0.;
+    var_ytitle_offset = 0.;
+    var_restitle_size = 0.;
+    var_restitle_offset = 0.;
+
+    var_xlabel_size = 0.;
+    var_xlabel_offset = 0.;
+    var_ylabel_size = 0.;
+    var_ylabel_offset = 0.;
+    var_reslabel_size = 0.;
+    var_reslabel_offset = 0.;
+
+    var_bottom_margin = 0.;
+    var_top_margin = 0.;
+    var_left_margin = 0.;
+    var_right_margin = 0.;
+
     var_nbinx = 0; 
+
+    //================================================================================
+    if(var_hasBottomMargin){ var_bottom_margin = va_it->second->BottomMargin(); }
+    else if(opt_hasBottomMargin){ var_bottom_margin = m_opt->BottomMargin(); }
+    else{ var_bottom_margin = 0.2;}
+
+    if(var_hasTopMargin){ var_top_margin = va_it->second->TopMargin(); }
+    else if(opt_hasTopMargin){ var_top_margin = m_opt->TopMargin(); }
+    else{ var_top_margin = 0.05;}
+
+    if(var_hasLeftMargin){ var_left_margin = va_it->second->LeftMargin(); }
+    else if(opt_hasLeftMargin){ var_left_margin = m_opt->LeftMargin(); }
+    else{ var_left_margin = 0.15;}
+
+    if(var_hasRightMargin){ var_right_margin = va_it->second->RightMargin(); }
+    else if(opt_hasRightMargin){ var_right_margin = m_opt->RightMargin(); }
+    else{ var_right_margin = 0.2;}
+
+    //================================================================================
 
     std::string hname_sum = m_drawSum ? var_name + "_" + m_attrbt_map["SUM"]->Suffix() : "";
     std::string hname_blinder = m_drawBlinder ? var_name + "_" + m_attrbt_map["BLINDER"]->Suffix() : "";
     bool drawRes = ( (var_draw_res != "") && (var_draw_res != "NONE") );
     if(drawRes && (s_base_name == "") ){std::cout<<"No reference sample specified for residual calculation"<<std::endl;}
+
+    std::string canv_name = "canv_" + var_name;
+    TCanvas* canv_a = new TCanvas(canv_name.c_str(), "", 800, 800);
+    SetStyleCanvas( *canv_a, drawRes, var_bottom_margin, var_top_margin, var_left_margin, var_right_margin );
+ 
     //NOTE:
     //Eventually, TCanvas and TLegend properties will be defined in the StyleDictionary
     //Make a TCanvas and set its attributes
-    std::string canv_name = "canv_" + var_name;
     std::string hs_stack_name = "hs_stack_" + var_name;
     std::string hs_nostack_name = "hs_nostack_" + var_name;
     std::string hs_res_name = "hs_res_" + var_name;
     //std::string hs_res_ref_name = "hs_res_ref_" + var_name;
-
-    TCanvas* canv_a = new TCanvas(canv_name.c_str(), "", 800, 800);
-    SetStyleCanvas( *canv_a, drawRes );
 
     THStack* hs_res_a = drawRes ? new THStack(hs_res_name.c_str(), "") : NULL;
     //THStack* hs_res_ref_a = drawRes ? new THStack(hs_res_ref_name.c_str(), "") : NULL;
@@ -202,6 +342,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     THStack* hs_nostack_a = new THStack(hs_nostack_name.c_str(), "");
     THStack* hs_stack_a = var_draw_stack ? new THStack(hs_stack_name.c_str(), "") : NULL;
 
+    //---------------------------------------------------------
     TLegend* leg_a = new TLegend();
     TLegend* leg_yield = (m_opt->ShowYields() && (!var_isShape || var_draw_stack) ) ? new TLegend() : NULL;
 
@@ -218,7 +359,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       SetStyleLegend(*leg_yield, leg_textsize, 42, 0.04);
       leg_yield->Clear();
     }
-
+    //---------------------------------------------------------------
     TPaveText* ttlbox = NULL;
     if( (glob_ttl != "") || (var_extralabel != "") ){
       double ttl_xmin = 0.; double ttl_ymin = 0.; double ttl_xmax = 0.; double ttl_ymax = 0.;
@@ -249,6 +390,9 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       ttlbox->SetFillColor(0);
       ttlbox->SetFillStyle(0);
       ttlbox->SetLineColor(0);
+      ttlbox->SetLineStyle(0);
+      ttlbox->SetLineWidth(0);
+      ttlbox->SetBorderSize(0);
       ttlbox->SetTextSize(ttl_textsize);
       ttlbox->SetTextFont(42);
       ttlbox->SetShadowColor(0);
@@ -256,6 +400,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       if(glob_ttl != ""){ ttlbox->AddText(glob_ttl.c_str()); }
       if(var_extralabel != ""){ ttlbox->AddText(var_extralabel.c_str());}
     }
+    //---------------------------------------------------------------------------------------------------
 
     bool firstsample = true;
     for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
@@ -363,12 +508,26 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     }
 
-
+    //=================================================================
+    if(var_hasLegendXMax){ var_legend_xmax = va_it->second->LegendXMax(); }
+    else if(opt_hasLegendXMax){ var_legend_xmax = m_opt->LegendXMax(); }
+    else{ var_legend_xmax = 0.9;}
+    if(var_hasLegendYMax){ var_legend_ymax = va_it->second->LegendYMax(); }
+    else if(opt_hasLegendYMax){ var_legend_ymax = m_opt->LegendYMax(); }
+    else{ var_legend_ymax = 0.9;}
+    /*
+    if(var_hasLegendXMin){ var_legend_xmin = va_it->second->LegendXMin(); }
+    else if(opt_hasLegendXMin){ var_legend_xmin = m_opt->LegendXMin(); }
+    if(var_hasLegendYMin){ var_legend_ymin = va_it->second->LegendYMin(); }
+    else if(opt_hasLegendYMin){ var_legend_ymin = m_opt->LegendYMin(); }
+    */
     if(leg_yield){
-      ResizeLegend(*leg_yield, 0.95, 0.94);
+      ResizeLegend(*leg_yield, var_legend_xmax, var_legend_ymax);
       ResizeLegend(*leg_a, leg_yield->GetX1NDC(), leg_yield->GetY2NDC() );
     }
-    else{ ResizeLegend(*leg_a, 0.95, 0.94 );}
+    else{ ResizeLegend(*leg_a, var_legend_xmax, var_legend_ymax );}
+
+    //=================================================================================
 
     //stretch_min = var_isLogY ? 1.E-2 : 0.5; 
     //stretch_max = var_isLogY ? 1.E3 : 1.35; 
@@ -444,6 +603,69 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     //==================================================== Resizing done ======================================================================
 
+    if(var_hasXTitleSize){ var_xtitle_size = va_it->second->XTitleSize(); }
+    else if(opt_hasXTitleSize){ var_xtitle_size = m_opt->XTitleSize(); }
+    else{ var_xtitle_size = 0.04; }
+
+    if(var_hasXTitleOffset){ var_xtitle_offset = va_it->second->XTitleOffset(); }
+    else if(opt_hasXTitleOffset){ var_xtitle_offset = m_opt->XTitleOffset(); }
+    else { var_xtitle_offset = 1.; }
+
+    if(var_hasXLabelSize){ var_xlabel_size = va_it->second->XLabelSize(); }
+    else if(opt_hasXLabelSize){ var_xlabel_size = m_opt->XLabelSize(); }
+    else{ var_xlabel_size = 0.04; }
+
+    if(var_hasXLabelOffset){ var_xlabel_offset = va_it->second->XLabelOffset(); }
+    else if(opt_hasXLabelOffset){ var_xlabel_offset = m_opt->XLabelOffset(); }
+    else { var_xlabel_offset = 0.005; }
+
+    if(var_hasYTitleSize){ var_ytitle_size = va_it->second->YTitleSize(); }
+    else if(opt_hasYTitleSize){ var_ytitle_size = m_opt->YTitleSize(); }
+    else{ var_ytitle_size = drawRes ? 0.05 : 0.04; }
+
+    if(var_hasYTitleOffset){ var_ytitle_offset = va_it->second->YTitleOffset(); }
+    else if(opt_hasYTitleOffset){ var_ytitle_offset = m_opt->YTitleOffset(); }
+    else{
+      int ndig = 0.;
+      if( var_isLogY ){ndig = 2;}
+      else if(var_ymin < 0.0001 || var_ymax > 100000.){ndig = 6; }
+      else if(var_ymin < 0.01 || var_ymax > 1000.){ndig = 4; }
+      else {ndig = 3; }
+
+      if( ndig<=3 ){ var_ytitle_offset = 0.7; }
+      else if( ndig>3 && ndig<6 ){ var_ytitle_offset = 1.0; }
+      else if( ndig==6 ){ var_ytitle_offset = 1.2; }
+      else{ var_ytitle_offset = 1.5; }
+    }
+
+    if(var_hasYLabelSize){ var_ylabel_size = va_it->second->YLabelSize(); }
+    else if(opt_hasYLabelSize){ var_ylabel_size = m_opt->YLabelSize(); }
+    else{ var_ylabel_size = drawRes ? 0.05 : 0.04; }
+
+    if(var_hasYLabelOffset){ var_ylabel_offset = va_it->second->YLabelOffset(); }
+    else if(opt_hasYLabelOffset){ var_ylabel_offset = m_opt->YLabelOffset(); }
+    else{ var_ylabel_offset = 0.005; }
+
+    if(var_hasResTitleSize){ var_restitle_size = va_it->second->ResTitleSize(); }
+    else if(opt_hasResTitleSize){ var_restitle_size = m_opt->ResTitleSize(); }
+    else{ var_restitle_size = 0.04; }
+
+    if(var_hasResTitleOffset){ var_restitle_offset = va_it->second->ResTitleOffset(); }
+    else if(opt_hasResTitleOffset){ var_restitle_offset = m_opt->ResTitleOffset(); }
+    else { var_restitle_offset = 1.; }
+
+    if(var_hasResLabelSize){ var_reslabel_size = va_it->second->ResLabelSize(); }
+    else if(opt_hasResLabelSize){ var_reslabel_size = m_opt->ResLabelSize(); }
+    else{ var_reslabel_size = 0.04; }
+
+    if(var_hasResLabelOffset){ var_reslabel_offset = va_it->second->ResLabelOffset(); }
+    else if(opt_hasResLabelOffset){ var_reslabel_offset = m_opt->ResLabelOffset(); }
+    else { var_reslabel_offset = 0.005; }
+
+
+
+    //==================================================== Axis title parameters set ======================================================================
+
     TPad* curpad = (TPad*)(canv_a->cd(1));
     if(var_isLogY){curpad->SetLogy();}
     if(var_isLogX){curpad->SetLogx();}
@@ -463,38 +685,23 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       if(var_ylabel != ""){ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle(var_ylabel.c_str()); }
       else{ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_stack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
       if(var_isCount){
-	hs_stack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin);
+	hs_stack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false);
+	hs_stack_a->GetHistogram()->GetXaxis()->CenterLabels();
       }
 
-
-      double yoff = 0.;
-      double yttlsz = drawRes ? 0.05 : 0.04;
-      double ylblsz = drawRes ? 0.05 : 0.04;
-
-      int ndig = 0.;
-      if( var_isLogY ){ndig = 2;}
-      else if(var_ymin < 0.0001 || var_ymax > 100000.){ndig = 6; }
-      else if(var_ymin < 0.01 || var_ymax > 1000.){ndig = 4; }
-      else {ndig = 3; }
-
-      if( ndig<=3 ){ yoff = 0.7; }
-      else if( ndig>3 && ndig<6 ){ yoff = 1.0; }
-      else if( ndig==6 ){ yoff = 1.2; }
-      else{ yoff = 1.5; }
-
-
-      hs_stack_a->GetHistogram()->GetYaxis()->SetTitleOffset(yoff);
-      hs_stack_a->GetHistogram()->GetYaxis()->SetTitleSize(yttlsz);
-      hs_stack_a->GetHistogram()->GetYaxis()->SetLabelSize(ylblsz);
+      hs_stack_a->GetHistogram()->GetYaxis()->SetTitleOffset(var_ytitle_offset);
+      hs_stack_a->GetHistogram()->GetYaxis()->SetTitleSize(var_ytitle_size);
+      hs_stack_a->GetHistogram()->GetYaxis()->SetLabelOffset(var_ylabel_offset);
+      hs_stack_a->GetHistogram()->GetYaxis()->SetLabelSize(var_ylabel_size);
 
       if(!drawRes){      
 	if(var_label != ""){ hs_stack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
 	else{ hs_stack_a->GetHistogram()->GetXaxis()->SetTitle( ((TH1D*)(hs_stack_a->GetStack()->First()))->GetXaxis()->GetTitle() ) ; }
 
-	hs_stack_a->GetHistogram()->GetXaxis()->SetTitleOffset(1.);
-	hs_stack_a->GetHistogram()->GetXaxis()->SetTitleSize(0.04);
-	hs_stack_a->GetHistogram()->GetXaxis()->SetLabelSize(0.04);
-
+	hs_stack_a->GetHistogram()->GetXaxis()->SetTitleOffset(var_xtitle_offset);
+	hs_stack_a->GetHistogram()->GetXaxis()->SetTitleSize(var_xtitle_size);
+	hs_stack_a->GetHistogram()->GetXaxis()->SetLabelOffset(var_xlabel_offset);
+	hs_stack_a->GetHistogram()->GetXaxis()->SetLabelSize(var_xlabel_size);
       }
 
     }//if var_draw_stack
@@ -511,36 +718,22 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       else{ hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_nostack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
 
       if(var_isCount){
-	hs_nostack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin);
+	hs_nostack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false);
       }
 
-      double yoff = 0.;
-      double yttlsz = drawRes ? 0.05 : 0.04;
-      double ylblsz = drawRes ? 0.05 : 0.04;
-
-      int ndig = 0.;
-      if( var_isLogY ){ndig = 2;}
-      else if(var_ymin < 0.0001 || var_ymax > 100000.){ndig = 6; }
-      else if(var_ymin < 0.01 || var_ymax > 1000.){ndig = 4; }
-      else {ndig = 3; }
-
-      if( ndig<=3 ){ yoff = 0.7; }
-      else if( ndig>3 && ndig<6 ){ yoff = 1.0; }
-      else if( ndig==6 ){ yoff = 1.2; }
-      else{ yoff = 1.5; }
-
-      hs_nostack_a->GetHistogram()->GetYaxis()->SetTitleOffset(yoff);
-      hs_nostack_a->GetHistogram()->GetYaxis()->SetTitleSize(yttlsz);
-      hs_nostack_a->GetHistogram()->GetYaxis()->SetLabelSize(ylblsz);
-
+      hs_nostack_a->GetHistogram()->GetYaxis()->SetTitleOffset(var_ytitle_offset);
+      hs_nostack_a->GetHistogram()->GetYaxis()->SetTitleSize(var_ytitle_size);
+      hs_nostack_a->GetHistogram()->GetYaxis()->SetLabelOffset(var_ylabel_offset);
+      hs_nostack_a->GetHistogram()->GetYaxis()->SetLabelSize(var_ylabel_size);
 
       if(!drawRes){      
 	if(var_label != ""){ hs_nostack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
 	else{ hs_nostack_a->GetHistogram()->GetXaxis()->SetTitle( ((TH1D*)(hs_nostack_a->GetStack()->First()))->GetXaxis()->GetTitle() ) ; }
 
-	hs_nostack_a->GetHistogram()->GetXaxis()->SetTitleOffset(1.);
-	hs_nostack_a->GetHistogram()->GetXaxis()->SetTitleSize(0.04);
-	hs_nostack_a->GetHistogram()->GetXaxis()->SetLabelSize(0.04);
+	hs_nostack_a->GetHistogram()->GetXaxis()->SetTitleOffset(var_xtitle_offset);
+	hs_nostack_a->GetHistogram()->GetXaxis()->SetTitleSize(var_xtitle_size);
+	hs_nostack_a->GetHistogram()->GetXaxis()->SetLabelOffset(var_xlabel_offset);
+	hs_nostack_a->GetHistogram()->GetXaxis()->SetLabelSize(var_xlabel_size);
 
       }
 
@@ -606,17 +799,19 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       lnref->DrawClone("same");
 
       if(var_isCount){
-	hs_res_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin);
+	hs_res_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false);
       }
 
-      hs_res_a->GetHistogram()->GetXaxis()->SetTitleOffset(0.9);
-      hs_res_a->GetHistogram()->GetYaxis()->SetTitleOffset(0.5);
+      hs_res_a->GetHistogram()->GetXaxis()->SetTitleOffset(var_xtitle_offset);
+      hs_res_a->GetHistogram()->GetYaxis()->SetTitleOffset(var_restitle_offset);
       
-      hs_res_a->GetHistogram()->GetXaxis()->SetTitleSize(0.09);
-      hs_res_a->GetHistogram()->GetYaxis()->SetTitleSize(0.07);
+      hs_res_a->GetHistogram()->GetXaxis()->SetTitleSize(var_xtitle_size);
+      hs_res_a->GetHistogram()->GetYaxis()->SetTitleSize(var_restitle_size);
  
-      hs_res_a->GetHistogram()->GetXaxis()->SetLabelSize(0.09);
-      hs_res_a->GetHistogram()->GetYaxis()->SetLabelSize(0.07);
+      hs_res_a->GetHistogram()->GetXaxis()->SetLabelOffset(var_xlabel_offset);
+      hs_res_a->GetHistogram()->GetXaxis()->SetLabelSize(var_xlabel_size);
+      hs_res_a->GetHistogram()->GetYaxis()->SetLabelOffset(var_reslabel_offset);
+      hs_res_a->GetHistogram()->GetYaxis()->SetLabelSize(var_reslabel_size);
       
       hs_res_a->GetHistogram()->GetYaxis()->CenterTitle();
 
@@ -773,31 +968,31 @@ TH1D* PlotUtils::makeResidual(const std::string& resname, TH1D* hist, TH1D* href
 
 }
 
-int PlotUtils::SetStyleCanvas(TCanvas& canv, bool divide){
+int PlotUtils::SetStyleCanvas(TCanvas& canv, bool divide, double bottommargin, double topmargin, double leftmargin, double rightmargin){
 
   if(divide){canv.Divide(1,2);
     canv.cd(1)->SetPad(0.,0.35,0.95,0.95);
     canv.cd(1)->SetTicks();
     canv.cd(1)->SetBorderMode(0);
-    canv.cd(1)->SetTopMargin(0.05);
+    canv.cd(1)->SetTopMargin(topmargin);
     canv.cd(1)->SetBottomMargin(0.0001);
-    canv.cd(1)->SetRightMargin(0.05);
-    canv.cd(1)->SetLeftMargin(0.15);
+    canv.cd(1)->SetRightMargin(rightmargin);
+    canv.cd(1)->SetLeftMargin(leftmargin);
 
     canv.cd(2)->SetPad(0.,0.,0.95,0.35);
     canv.cd(2)->SetTicks();
     canv.cd(2)->SetBorderMode(0);
     canv.cd(2)->SetTopMargin(0.0001);
-    canv.cd(2)->SetBottomMargin(0.2);
-    canv.cd(2)->SetRightMargin(0.05);
-    canv.cd(2)->SetLeftMargin(0.15);
+    canv.cd(2)->SetBottomMargin(bottommargin);
+    canv.cd(2)->SetRightMargin(rightmargin);
+    canv.cd(2)->SetLeftMargin(leftmargin);
   }
   else{
     canv.cd()->SetTicks();
-    canv.cd()->SetTopMargin(0.05);
-    canv.cd()->SetBottomMargin(0.2);
-    canv.cd()->SetRightMargin(0.05);
-    canv.cd()->SetLeftMargin(0.15);
+    canv.cd()->SetTopMargin(topmargin);
+    canv.cd()->SetBottomMargin(bottommargin);
+    canv.cd()->SetRightMargin(rightmargin);
+    canv.cd()->SetLeftMargin(leftmargin);
   }
 
   return 0;

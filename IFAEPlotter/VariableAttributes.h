@@ -17,10 +17,36 @@ class VariableAttributes{
 		     , bool has_ymin=false, bool has_ymax=false, bool has_yscale=false
 		     , double ymin=0., double ymax=0., double yscale=0. 
 		     , bool has_xmin=false, bool has_xmax=false, double xmin=0., double xmax=0.
+
 		     , bool has_ttl_xmin=false, bool has_ttl_xmax=false, double ttl_xmin=0., double ttl_xmax=0.
 		     , bool has_ttl_ymin=false, bool has_ttl_ymax=false, double ttl_ymin=0., double ttl_ymax=0.   
 		     , bool has_ttl_textsize=false, double ttl_textsize=0. 
 		     , bool has_leg_textsize=false, double leg_textsize=0. 
+
+		     , bool has_leg_ymin=false, bool has_leg_ymax=false
+		     , double leg_ymin=0., double leg_ymax=0. 
+		     , bool has_leg_xmin=false, bool has_leg_xmax=false
+		     , double leg_xmin=0., double leg_xmax=0. 
+
+		     , bool has_xtitle_size=false, bool has_xtitle_offset=false
+		     , double xtitle_size=0., double xtitle_offset=0.
+		     , bool has_ytitle_size=false, bool has_ytitle_offset=false
+		     , double ytitle_size=0., double ytitle_offset=0.
+		     , bool has_restitle_size=false, bool has_restitle_offset=false
+		     , double restitle_size=0., double restitle_offset=0.
+
+		     , bool has_xlabel_size=false, bool has_xlabel_offset=false
+		     , double xlabel_size=0., double xlabel_offset=0.
+		     , bool has_ylabel_size=false, bool has_ylabel_offset=false
+		     , double ylabel_size=0., double ylabel_offset=0.
+		     , bool has_reslabel_size=false, bool has_reslabel_offset=false
+		     , double reslabel_size=0., double reslabel_offset=0.
+
+		     , bool has_bottom_margin=false, bool has_top_margin=false
+		     , bool has_left_margin=false, bool has_right_margin=false
+		     , double bottom_margin=0., double top_margin=0.
+		     , double left_margin=0., double right_margin=0.
+
 		     , bool is_count=false 
 		     , const std::string& resdrawopt="", const std::string& extralabel=""
 		     , int rebin=0, const std::string& rebinedges="", const std::string& blinding="");
@@ -69,6 +95,55 @@ class VariableAttributes{
   void SetHasTitleYMax(bool has_ttl_ymax){ m_has_ttl_ymax = has_ttl_ymax; }
   void SetHasTitleTextSize(bool has_ttl_textsize){ m_has_ttl_textsize = has_ttl_textsize; }
   void SetHasLegendTextSize(bool has_leg_textsize){ m_has_leg_textsize = has_leg_textsize; }
+
+  void SetHasLegendXMin(bool has_leg_xmin){ m_has_leg_xmin = has_leg_xmin; }
+  void SetHasLegendXMax(bool has_leg_xmax){ m_has_leg_xmax = has_leg_xmax; }
+  void SetHasLegendYMin(bool has_leg_ymin){ m_has_leg_ymin = has_leg_ymin; }
+  void SetHasLegendYMax(bool has_leg_ymax){ m_has_leg_ymax = has_leg_ymax; }
+
+  void SetLegendXMin(double leg_xmin){ m_leg_xmin = leg_xmin; }
+  void SetLegendXMax(double leg_xmax){ m_leg_xmax = leg_xmax; }
+  void SetLegendYMin(double leg_ymin){ m_leg_ymin = leg_ymin; }
+  void SetLegendYMax(double leg_ymax){ m_leg_ymax = leg_ymax; }
+
+  void SetHasXTitleOffset(bool has_xtitle_offset){ m_has_xtitle_offset = has_xtitle_offset; }
+  void SetHasXTitleSize(bool has_xtitle_size){ m_has_xtitle_size = has_xtitle_size; }
+  void SetHasYTitleOffset(bool has_ytitle_offset){ m_has_ytitle_offset = has_ytitle_offset; }
+  void SetHasYTitleSize(bool has_ytitle_size){ m_has_ytitle_size = has_ytitle_size; }
+  void SetHasResTitleOffset(bool has_restitle_offset){ m_has_restitle_offset = has_restitle_offset; }
+  void SetHasResTitleSize(bool has_restitle_size){ m_has_restitle_size = has_restitle_size; }
+
+  void SetXTitleOffset(double xtitle_offset){ m_xtitle_offset = xtitle_offset; }
+  void SetXTitleSize(double xtitle_size){ m_xtitle_size = xtitle_size; }
+  void SetYTitleOffset(double ytitle_offset){ m_ytitle_offset = ytitle_offset; }
+  void SetYTitleSize(double ytitle_size){ m_ytitle_size = ytitle_size; }
+  void SetResTitleOffset(double restitle_offset){ m_restitle_offset = restitle_offset; }
+  void SetResTitleSize(double restitle_size){ m_restitle_size = restitle_size; }
+
+  void SetHasXLabelOffset(bool has_xlabel_offset){ m_has_xlabel_offset = has_xlabel_offset; }
+  void SetHasXLabelSize(bool has_xlabel_size){ m_has_xlabel_size = has_xlabel_size; }
+  void SetHasYLabelOffset(bool has_ylabel_offset){ m_has_ylabel_offset = has_ylabel_offset; }
+  void SetHasYLabelSize(bool has_ylabel_size){ m_has_ylabel_size = has_ylabel_size; }
+  void SetHasResLabelOffset(bool has_reslabel_offset){ m_has_reslabel_offset = has_reslabel_offset; }
+  void SetHasResLabelSize(bool has_reslabel_size){ m_has_reslabel_size = has_reslabel_size; }
+
+  void SetXLabelOffset(double xlabel_offset){ m_xlabel_offset = xlabel_offset; }
+  void SetXLabelSize(double xlabel_size){ m_xlabel_size = xlabel_size; }
+  void SetYLabelOffset(double ylabel_offset){ m_ylabel_offset = ylabel_offset; }
+  void SetYLabelSize(double ylabel_size){ m_ylabel_size = ylabel_size; }
+  void SetResLabelOffset(double reslabel_offset){ m_reslabel_offset = reslabel_offset; }
+  void SetResLabelSize(double reslabel_size){ m_reslabel_size = reslabel_size; }
+
+  void SetHasBottomMargin(bool has_bottom_margin){ m_has_bottom_margin = has_bottom_margin; }
+  void SetHasTopMargin(bool has_top_margin){ m_has_top_margin = has_top_margin; }
+  void SetHasLeftMargin(bool has_left_margin){ m_has_left_margin = has_left_margin; }
+  void SetHasRightMargin(bool has_right_margin){ m_has_right_margin = has_right_margin; }
+
+  void SetBottomMargin(double bottom_margin){ m_bottom_margin = bottom_margin; }
+  void SetTopMargin(double top_margin){ m_top_margin = top_margin; }
+  void SetLeftMargin(double left_margin){ m_left_margin = left_margin; }
+  void SetRightMargin(double right_margin){ m_right_margin = right_margin; }
+
   void SetIsCount(bool is_count){ m_is_count = is_count; }
   void SetNProjBin(int nprojbin){ m_nprojbin = nprojbin; }
   void SetExtraLabel(const std::string& extralabel){ m_extralabel = extralabel; }
@@ -112,6 +187,55 @@ class VariableAttributes{
   bool HasTitleYMax(){ return m_has_ttl_ymax; }
   bool HasTitleTextSize(){ return m_has_ttl_textsize; }
   bool HasLegendTextSize(){ return m_has_leg_textsize; }
+
+  bool HasLegendXMin(){ return m_has_leg_xmin; }
+  bool HasLegendXMax(){ return m_has_leg_xmax; }
+  bool HasLegendYMin(){ return m_has_leg_ymin; }
+  bool HasLegendYMax(){ return m_has_leg_ymax; }
+
+  double LegendXMin(){ return m_leg_xmin; }
+  double LegendXMax(){ return m_leg_xmax; }
+  double LegendYMin(){ return m_leg_ymin; }
+  double LegendYMax(){ return m_leg_ymax; }
+
+  bool HasXTitleSize(){ return m_has_xtitle_size; }
+  bool HasXTitleOffset(){ return m_has_xtitle_offset; }
+  bool HasYTitleSize(){ return m_has_ytitle_size; }
+  bool HasYTitleOffset(){ return m_has_ytitle_offset; }
+  bool HasResTitleSize(){ return m_has_restitle_size; }
+  bool HasResTitleOffset(){ return m_has_restitle_offset; }
+
+  double XTitleSize(){ return m_xtitle_size; }
+  double XTitleOffset(){ return m_xtitle_offset; }
+  double YTitleSize(){ return m_ytitle_size; }
+  double YTitleOffset(){ return m_ytitle_offset; }
+  double ResTitleSize(){ return m_restitle_size; }
+  double ResTitleOffset(){ return m_restitle_offset; }
+
+  bool HasXLabelSize(){ return m_has_xlabel_size; }
+  bool HasXLabelOffset(){ return m_has_xlabel_offset; }
+  bool HasYLabelSize(){ return m_has_ylabel_size; }
+  bool HasYLabelOffset(){ return m_has_ylabel_offset; }
+  bool HasResLabelSize(){ return m_has_reslabel_size; }
+  bool HasResLabelOffset(){ return m_has_reslabel_offset; }
+
+  double XLabelSize(){ return m_xlabel_size; }
+  double XLabelOffset(){ return m_xlabel_offset; }
+  double YLabelSize(){ return m_ylabel_size; }
+  double YLabelOffset(){ return m_ylabel_offset; }
+  double ResLabelSize(){ return m_reslabel_size; }
+  double ResLabelOffset(){ return m_reslabel_offset; }
+
+  bool HasBottomMargin(){ return m_has_bottom_margin; }
+  bool HasTopMargin(){ return m_has_top_margin; }
+  bool HasLeftMargin(){ return m_has_left_margin; }
+  bool HasRightMargin(){ return m_has_right_margin; }
+
+  double BottomMargin(){ return m_bottom_margin; }
+  double TopMargin(){ return m_top_margin; }
+  double LeftMargin(){ return m_left_margin; }
+  double RightMargin(){ return m_right_margin; }
+
   bool IsCount(){ return m_is_count; }
 
   int NProjBin(){ return m_nprojbin; }
@@ -160,6 +284,55 @@ class VariableAttributes{
   bool m_has_ttl_ymax;
   bool m_has_ttl_textsize;
   bool m_has_leg_textsize;
+
+  bool m_has_leg_xmin;
+  bool m_has_leg_xmax;
+  bool m_has_leg_ymin;
+  bool m_has_leg_ymax;
+
+  double m_leg_xmin;
+  double m_leg_xmax;
+  double m_leg_ymin;
+  double m_leg_ymax;
+
+  bool m_has_xtitle_size;
+  bool m_has_xtitle_offset;
+  bool m_has_ytitle_size;
+  bool m_has_ytitle_offset;
+  bool m_has_restitle_size;
+  bool m_has_restitle_offset;
+
+  double m_xtitle_size;
+  double m_xtitle_offset;
+  double m_ytitle_size;
+  double m_ytitle_offset;
+  double m_restitle_size;
+  double m_restitle_offset;
+
+  bool m_has_xlabel_size;
+  bool m_has_xlabel_offset;
+  bool m_has_ylabel_size;
+  bool m_has_ylabel_offset;
+  bool m_has_reslabel_size;
+  bool m_has_reslabel_offset;
+
+  double m_xlabel_size;
+  double m_xlabel_offset;
+  double m_ylabel_size;
+  double m_ylabel_offset;
+  double m_reslabel_size;
+  double m_reslabel_offset;
+
+  bool m_has_bottom_margin;
+  bool m_has_top_margin;
+  bool m_has_left_margin;
+  bool m_has_right_margin;
+
+  double m_bottom_margin;
+  double m_top_margin;
+  double m_left_margin;
+  double m_right_margin;
+
   bool m_is_count;
 
   int m_nprojbin;

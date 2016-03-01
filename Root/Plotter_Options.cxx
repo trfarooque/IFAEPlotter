@@ -59,6 +59,31 @@ Plotter_Options::Plotter_Options():
   m_titleymax(0.),
   m_title_textsize(0.),
   m_legend_textsize(0.),
+
+  m_legend_xmin(0.),
+  m_legend_xmax(0.),
+  m_legend_ymin(0.),
+  m_legend_ymax(0.),
+
+  m_xtitle_offset(0.),
+  m_xtitle_size(0.),
+  m_ytitle_offset(0.),
+  m_ytitle_size(0.),
+  m_restitle_offset(0.),
+  m_restitle_size(0.),
+
+  m_xlabel_offset(0.),
+  m_xlabel_size(0.),
+  m_ylabel_offset(0.),
+  m_ylabel_size(0.),
+  m_reslabel_offset(0.),
+  m_reslabel_size(0.),
+
+  m_bottom_margin(0.),
+  m_top_margin(0.),
+  m_left_margin(0.),
+  m_right_margin(0.),
+
   m_global_scale(1.),
   m_blind_threshold(0.)
 {}
@@ -118,6 +143,30 @@ OptionsBase(q)
   m_titleymax            = q.m_titleymax;
   m_title_textsize       = q.m_title_textsize;
   m_legend_textsize      = q.m_legend_textsize;
+  m_legend_xmin          = q.m_legend_xmin;
+  m_legend_xmax          = q.m_legend_xmax;
+  m_legend_ymin          = q.m_legend_ymin;
+  m_legend_ymax          = q.m_legend_ymax;
+
+  m_xtitle_offset        = q.m_xtitle_offset;
+  m_xtitle_size          = q.m_xtitle_size;
+  m_ytitle_offset        = q.m_ytitle_offset;
+  m_ytitle_size          = q.m_ytitle_size;
+  m_restitle_offset      = q.m_restitle_offset;
+  m_restitle_size        = q.m_restitle_size;
+
+  m_xlabel_offset        = q.m_xlabel_offset;
+  m_xlabel_size          = q.m_xlabel_size;
+  m_ylabel_offset        = q.m_ylabel_offset;
+  m_ylabel_size          = q.m_ylabel_size;
+  m_reslabel_offset      = q.m_reslabel_offset;
+  m_reslabel_size        = q.m_reslabel_size;
+
+  m_bottom_margin        = q.m_bottom_margin;
+  m_top_margin           = q.m_top_margin;
+  m_left_margin          = q.m_left_margin;
+  m_right_margin         = q.m_right_margin;
+
   m_global_scale         = q.m_global_scale;
   m_blind_threshold      = q.m_blind_threshold;
 }
@@ -292,6 +341,71 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     else if( temp_arg.find("--LEGENDTEXTSIZE") != std::string::npos ){
       m_legend_textsize = atof(temp_val.c_str());
     } 
+
+    else if( temp_arg.find("--LEGENDXMIN") != std::string::npos ){
+      m_legend_xmin = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--LEGENDXMAX") != std::string::npos ){
+      m_legend_xmax = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--LEGENDYMIN") != std::string::npos ){
+      m_legend_ymin = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--LEGENDYMAX") != std::string::npos ){
+      m_legend_ymax = atof(temp_val.c_str());
+    } 
+
+    else if( temp_arg.find("--XTITLEOFFSET") != std::string::npos ){
+      m_xtitle_offset = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--XTITLESIZE") != std::string::npos ){
+      m_xtitle_size = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--YTITLEOFFSET") != std::string::npos ){
+      m_ytitle_offset = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--YTITLESIZE") != std::string::npos ){
+      m_ytitle_size = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--RESTITLEOFFSET") != std::string::npos ){
+      m_restitle_offset = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--RESTITLESIZE") != std::string::npos ){
+      m_restitle_size = atof(temp_val.c_str());
+    } 
+    //
+    else if( temp_arg.find("--XLABELOFFSET") != std::string::npos ){
+      m_xlabel_offset = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--XLABELSIZE") != std::string::npos ){
+      m_xlabel_size = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--YLABELOFFSET") != std::string::npos ){
+      m_ylabel_offset = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--YLABELSIZE") != std::string::npos ){
+      m_ylabel_size = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--RESLABELOFFSET") != std::string::npos ){
+      m_reslabel_offset = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--RESLABELSIZE") != std::string::npos ){
+      m_reslabel_size = atof(temp_val.c_str());
+    } 
+
+    else if( temp_arg.find("--BOTTOMMARGIN") != std::string::npos ){
+      m_bottom_margin = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--TOPMARGIN") != std::string::npos ){
+      m_top_margin = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--LEFTMARGIN") != std::string::npos ){
+      m_left_margin = atof(temp_val.c_str());
+    } 
+    else if( temp_arg.find("--RIGHTMARGIN") != std::string::npos ){
+      m_right_margin = atof(temp_val.c_str());
+    } 
+
     else if( temp_arg.find("--TITLE") != std::string::npos ){
       m_title = temp_val;
     } 
@@ -365,6 +479,31 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_titleymax              = " << m_titleymax            << std::endl;
     std::cout << " m_title_textsize         = " << m_title_textsize       << std::endl;
     std::cout << " m_legend_textsize        = " << m_legend_textsize      << std::endl;
+
+    std::cout << " m_legend_xmin            = " << m_legend_xmin          << std::endl;
+    std::cout << " m_legend_xmax            = " << m_legend_xmax          << std::endl;
+    std::cout << " m_legend_ymin            = " << m_legend_ymin          << std::endl;
+    std::cout << " m_legend_ymax            = " << m_legend_ymax          << std::endl;
+
+    std::cout << " m_xtitle_offset          = " << m_xtitle_offset        << std::endl;
+    std::cout << " m_xtitle_size            = " << m_xtitle_size          << std::endl;
+    std::cout << " m_ytitle_offset          = " << m_ytitle_offset        << std::endl;
+    std::cout << " m_ytitle_size            = " << m_ytitle_size          << std::endl;
+    std::cout << " m_restitle_offset        = " << m_restitle_offset      << std::endl;
+    std::cout << " m_restitle_size          = " << m_restitle_size        << std::endl;
+
+    std::cout << " m_xlabel_offset          = " << m_xlabel_offset        << std::endl;
+    std::cout << " m_xlabel_size            = " << m_xlabel_size          << std::endl;
+    std::cout << " m_ylabel_offset          = " << m_ylabel_offset        << std::endl;
+    std::cout << " m_ylabel_size            = " << m_ylabel_size          << std::endl;
+    std::cout << " m_reslabel_offset        = " << m_reslabel_offset      << std::endl;
+    std::cout << " m_reslabel_size          = " << m_reslabel_size        << std::endl;
+
+    std::cout << " m_bottom_margin          = " << m_bottom_margin        << std::endl;
+    std::cout << " m_top_margin             = " << m_top_margin           << std::endl;
+    std::cout << " m_left_margin            = " << m_left_margin          << std::endl;
+    std::cout << " m_right_margin           = " << m_right_margin         << std::endl;
+
     std::cout << " m_global_scale           = " << m_global_scale         << std::endl;
     std::cout << " m_blind_threshold        = " << m_blind_threshold      << std::endl;
 

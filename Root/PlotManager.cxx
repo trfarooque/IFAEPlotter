@@ -498,6 +498,93 @@ int PlotManager::ParseVariableConfig(const std::string& config_variable, const s
       varObj->SetLegendTextSize(atof(keymap["LEGENDTEXTSIZE"].c_str())); 
       varObj->SetHasLegendTextSize(true);
     }
+
+    if( keymap.find("LEGENDXMIN") != keymap.end() && (keymap["LEGENDXMIN"] != "") ){ 
+      varObj->SetLegendXMin(atof(keymap["LEGENDXMIN"].c_str())); 
+      varObj->SetHasLegendXMin(true);
+    }
+    if( keymap.find("LEGENDXMAX") != keymap.end() && (keymap["LEGENDXMAX"] != "") ){ 
+      varObj->SetLegendXMax(atof(keymap["LEGENDXMAX"].c_str())); 
+      varObj->SetHasLegendXMax(true);
+    }
+    if( keymap.find("LEGENDYMIN") != keymap.end() && (keymap["LEGENDYMIN"] != "") ){ 
+      varObj->SetLegendYMin(atof(keymap["LEGENDYMIN"].c_str())); 
+      varObj->SetHasLegendYMin(true);
+    }
+    if( keymap.find("LEGENDYMAX") != keymap.end() && (keymap["LEGENDYMAX"] != "") ){ 
+      varObj->SetLegendYMax(atof(keymap["LEGENDYMAX"].c_str())); 
+      varObj->SetHasLegendYMax(true);
+    }
+
+    //---
+    if( keymap.find("XTITLESIZE") != keymap.end() && (keymap["XTITLESIZE"] != "") ){ 
+      varObj->SetXTitleSize(atof(keymap["XTITLESIZE"].c_str())); 
+      varObj->SetHasXTitleSize(true);
+    }
+    if( keymap.find("XTITLEOFFSET") != keymap.end() && (keymap["XTITLEOFFSET"] != "") ){ 
+      varObj->SetXTitleOffset(atof(keymap["XTITLEOFFSET"].c_str())); 
+      varObj->SetHasXTitleOffset(true);
+    }
+    if( keymap.find("YTITLESIZE") != keymap.end() && (keymap["YTITLESIZE"] != "") ){ 
+      varObj->SetYTitleSize(atof(keymap["YTITLESIZE"].c_str())); 
+      varObj->SetHasYTitleSize(true);
+    }
+    if( keymap.find("YTITLEOFFSET") != keymap.end() && (keymap["YTITLEOFFSET"] != "") ){ 
+      varObj->SetYTitleOffset(atof(keymap["YTITLEOFFSET"].c_str())); 
+      varObj->SetHasYTitleOffset(true);
+    }
+    if( keymap.find("RESTITLESIZE") != keymap.end() && (keymap["RESTITLESIZE"] != "") ){ 
+      varObj->SetResTitleSize(atof(keymap["RESTITLESIZE"].c_str())); 
+      varObj->SetHasResTitleSize(true);
+    }
+    if( keymap.find("RESTITLEOFFSET") != keymap.end() && (keymap["RESTITLEOFFSET"] != "") ){ 
+      varObj->SetResTitleOffset(atof(keymap["RESTITLEOFFSET"].c_str())); 
+      varObj->SetHasResTitleOffset(true);
+    }
+    //---
+    if( keymap.find("XLABELSIZE") != keymap.end() && (keymap["XLABELSIZE"] != "") ){ 
+      varObj->SetXLabelSize(atof(keymap["XLABELSIZE"].c_str())); 
+      varObj->SetHasXLabelSize(true);
+    }
+    if( keymap.find("XLABELOFFSET") != keymap.end() && (keymap["XLABELOFFSET"] != "") ){ 
+      varObj->SetXLabelOffset(atof(keymap["XLABELOFFSET"].c_str())); 
+      varObj->SetHasXLabelOffset(true);
+    }
+    if( keymap.find("YLABELSIZE") != keymap.end() && (keymap["YLABELSIZE"] != "") ){ 
+      varObj->SetYLabelSize(atof(keymap["YLABELSIZE"].c_str())); 
+      varObj->SetHasYLabelSize(true);
+    }
+    if( keymap.find("YLABELOFFSET") != keymap.end() && (keymap["YLABELOFFSET"] != "") ){ 
+      varObj->SetYLabelOffset(atof(keymap["YLABELOFFSET"].c_str())); 
+      varObj->SetHasYLabelOffset(true);
+    }
+    if( keymap.find("RESLABELSIZE") != keymap.end() && (keymap["RESLABELSIZE"] != "") ){ 
+      varObj->SetResLabelSize(atof(keymap["RESLABELSIZE"].c_str())); 
+      varObj->SetHasResLabelSize(true);
+    }
+    if( keymap.find("RESLABELOFFSET") != keymap.end() && (keymap["RESLABELOFFSET"] != "") ){ 
+      varObj->SetResLabelOffset(atof(keymap["RESLABELOFFSET"].c_str())); 
+      varObj->SetHasResLabelOffset(true);
+    }
+
+    //------------
+    if( keymap.find("BOTTOMMARGIN") != keymap.end() && (keymap["BOTTOMMARGIN"] != "") ){ 
+      varObj->SetBottomMargin(atof(keymap["BOTTOMMARGIN"].c_str())); 
+      varObj->SetHasBottomMargin(true);
+    }
+    if( keymap.find("TOPMARGIN") != keymap.end() && (keymap["TOPMARGIN"] != "") ){ 
+      varObj->SetTopMargin(atof(keymap["TOPMARGIN"].c_str())); 
+      varObj->SetHasTopMargin(true);
+    }
+    if( keymap.find("LEFTMARGIN") != keymap.end() && (keymap["LEFTMARGIN"] != "") ){ 
+      varObj->SetLeftMargin(atof(keymap["LEFTMARGIN"].c_str())); 
+      varObj->SetHasLeftMargin(true);
+    }
+    if( keymap.find("RIGHTMARGIN") != keymap.end() && (keymap["RIGHTMARGIN"] != "") ){ 
+      varObj->SetRightMargin(atof(keymap["RIGHTMARGIN"].c_str())); 
+      varObj->SetHasRightMargin(true);
+    }
+
     if( keymap.find("ISCOUNT") != keymap.end() ){ varObj->SetIsCount(AnalysisUtils::BoolValue(keymap["ISCOUNT"], "ISCOUNT")); }
 
     if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" Adding variable "<<name<<std::endl;

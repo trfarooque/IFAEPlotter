@@ -1,3 +1,9 @@
+2016-03-01 Trisha Farooque <farooqu2@cern.ch>
+	- Configurable text size and offset for axis titles and labels
+	- Configurable position for top right of legend
+	- Centered x-axis labels for count plots
+	- Configurable canvas margins
+	
 2016-02-28 Trisha Farooque <farooque@cern.ch>
 	- Integer axis ticks
 	- Axis ticks on top and right
