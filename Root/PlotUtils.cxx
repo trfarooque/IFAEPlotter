@@ -313,7 +313,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(var_hasRightMargin){ var_right_margin = va_it->second->RightMargin(); }
     else if(opt_hasRightMargin){ var_right_margin = m_opt->RightMargin(); }
-    else{ var_right_margin = 0.2;}
+    else{ var_right_margin = 0.05;}
 
     //================================================================================
 
