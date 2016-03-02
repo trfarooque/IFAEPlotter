@@ -719,6 +719,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
       if(var_isCount){
 	hs_nostack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false);
+	hs_nostack_a->GetHistogram()->GetXaxis()->CenterLabels();
       }
 
       hs_nostack_a->GetHistogram()->GetYaxis()->SetTitleOffset(var_ytitle_offset);
@@ -800,6 +801,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
       if(var_isCount){
 	hs_res_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false);
+	hs_res_a->GetHistogram()->GetXaxis()->CenterLabels();
       }
 
       hs_res_a->GetHistogram()->GetXaxis()->SetTitleOffset(var_xtitle_offset);
