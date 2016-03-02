@@ -387,6 +387,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       }
 
       ttlbox = new TPaveText(ttl_xmin, ttl_ymin, ttl_xmax, ttl_ymax, "NBNDC");
+      ttlbox->SetTextAlign(23); //horizontally centred; top-aligned
       ttlbox->SetFillColor(0);
       ttlbox->SetFillStyle(0);
       ttlbox->SetLineColor(0);
