@@ -5,7 +5,7 @@
 #include <map>
 #include <vector>
 
-class SystematicsAttributes;
+class Plotter_Options;
 
 class SystematicsAttributes{
 
@@ -34,13 +34,14 @@ class SystematicsAttributes{
   void SetOneSided(bool one_sided){ m_one_sided = one_sided; }
   void SetNewFile(bool newfile){ m_newfile = newfile; }
 
-  const std::string& Name(){ return m_name; }
-  const std::string& NameUp(){ return m_name_up; }
-  const std::string& NameDown(){ return m_name_down; }
-  const std::string& Symmetrisation(){ return m_symmetrisation; }
-  const std::string& Suffix(){ return m_suffix; }
-  bool OneSided(){ return m_one_sided; }
-  bool NewFile(){ return m_newfile; }
+  const std::string& Name() const{ return m_name; }
+  const std::string& NameUp() const{ return m_name_up; }
+  const std::string& NameDown() const{ return m_name_down; }
+  const std::string& Symmetrisation() const{ return m_symmetrisation; }
+  const std::string& Suffix() const{ return m_suffix; }
+  bool OneSided() const{ return m_one_sided; }
+  bool NewFile() const{ return m_newfile; }
+  static std::map<std::string, SystematicsAttributes*> ParseSystematicsConfig( Plotter_Options* opt );
 
 };
 

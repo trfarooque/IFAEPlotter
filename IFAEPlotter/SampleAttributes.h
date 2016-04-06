@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 
+class Plotter_Options; 
 class SampleAttributes{
 
  public:
@@ -18,6 +19,7 @@ class SampleAttributes{
 		   , const std::string& in_suffix = "", const std::string& in_prefix = "", bool no_shape=false);
   SampleAttributes(SampleAttributes& q);
   ~SampleAttributes();
+  static std::map<std::string, SampleAttributes*> ParseSampleConfig( Plotter_Options* opt );
 
  private:
   std::string m_name;
@@ -60,28 +62,29 @@ class SampleAttributes{
   void SetInPrefix(const std::string& in_prefix){ m_in_prefix = in_prefix; }
   void SetNoShape(bool no_shape){ m_no_shape = no_shape; }
 
-  const std::string& Name(){ return m_name; }
-  const std::string& Suffix(){ return m_suffix; }
-  const std::string& LegLabel(){ return m_leglabel; }
-  const std::string& LegOpt(){ return m_legopt; }
-  const std::string& StyleKey(){ return m_stylekey; }
-  const std::string& DrawOpt(){ return m_drawopt; }
-  const std::string& ResDrawOpt(){ return m_res_drawopt; }
-  const std::string& DrawScale(){ return m_drawscale; }
-  const std::string& Blinding(){ return m_blinding; }
-  const std::string& YieldFormat(){ return m_yield_format; }
-  const std::string& OutFileName(){ return m_outfile_name; }
-  const std::string& InSuffix(){ return m_in_suffix; }
-  const std::string& InPrefix(){ return m_in_prefix; }
-  bool DrawStack(){ return m_draw_stack; }
-  bool DoSum(){ return m_do_sum; }
-  int ResOpt(){ return m_res_opt; }
-  bool Write(){ return m_write; }
-  bool NoShape(){ return m_no_shape; }
+  const std::string& Name() const{ return m_name; }
+  const std::string& Suffix() const{ return m_suffix; }
+  const std::string& LegLabel() const{ return m_leglabel; }
+  const std::string& LegOpt() const{ return m_legopt; }
+  const std::string& StyleKey() const{ return m_stylekey; }
+  const std::string& DrawOpt() const{ return m_drawopt; }
+  const std::string& ResDrawOpt() const{ return m_res_drawopt; }
+  const std::string& DrawScale() const{ return m_drawscale; }
+  const std::string& Blinding() const{ return m_blinding; }
+  const std::string& YieldFormat() const{ return m_yield_format; }
+  const std::string& OutFileName() const{ return m_outfile_name; }
+  const std::string& InSuffix() const{ return m_in_suffix; }
+  const std::string& InPrefix() const{ return m_in_prefix; }
+  bool DrawStack() const{ return m_draw_stack; }
+  bool DoSum() const{ return m_do_sum; }
+  int ResOpt() const{ return m_res_opt; }
+  bool Write() const{ return m_write; }
+  bool NoShape() const{ return m_no_shape; }
 
 };
 
 typedef std::map<std::string, SampleAttributes*> SampleAttributesMap;
 typedef std::vector<SampleAttributes*> SampleAttributesVector;
+typedef std::vector<const SampleAttributes*> SampleAttributesConstVector;
 
 #endif

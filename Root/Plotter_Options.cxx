@@ -8,6 +8,7 @@
 //
 Plotter_Options::Plotter_Options():
   OptionsBase(),
+  m_config_delim(" : "),
   m_config_sample(""),
   m_config_variable(""),
   m_file_list(""),
@@ -93,6 +94,7 @@ Plotter_Options::Plotter_Options():
 Plotter_Options::Plotter_Options( const Plotter_Options &q ):
 OptionsBase(q)
 {
+  m_config_delim         = q.m_config_delim;
   m_config_sample        = q.m_config_sample;
   m_config_variable      = q.m_config_variable;
   m_file_list            = q.m_file_list;
@@ -184,7 +186,10 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
   std::string temp_val = value;
 
   if(!OptionsBase::IdentifyOption(argument, value)){ 
-    if( temp_arg.find("--SAMPLES") != std::string::npos ){
+    if( temp_arg.find("--DELIM") != std::string::npos ){
+      m_config_delim = temp_val;
+    } 
+    else if( temp_arg.find("--SAMPLES") != std::string::npos ){
       m_config_sample = temp_val;
     } 
     else if( temp_arg.find("--VARIABLES") != std::string::npos ){
@@ -428,6 +433,7 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
 void Plotter_Options::PrintOptions(){
     OptionsBase::PrintOptions();
     std::cout << "============== Plotter_Options ================="       << std::endl;
+    std::cout << " m_config_delim           = " << m_config_delim         << std::endl;
     std::cout << " m_config_sample          = " << m_config_sample        << std::endl;
     std::cout << " m_config_variable        = " << m_config_variable      << std::endl;
     std::cout << " m_file_list              = " << m_file_list            << std::endl;

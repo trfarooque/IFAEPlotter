@@ -5,9 +5,9 @@
 #include <map>
 #include <vector>
 
+class Plotter_Options; 
 class VariableAttributes{
  public:
-
   VariableAttributes();
   VariableAttributes(const std::string& name, const std::string& label, const std::string& do_scale
 		     , bool do_width=false, bool draw_stack=false, const std::string& draw_res="", const std::string& draw_res_err=""
@@ -53,6 +53,8 @@ class VariableAttributes{
   VariableAttributes(VariableAttributes& q);
 
   ~VariableAttributes(){ }
+
+  static std::map<std::string, VariableAttributes*> ParseVariableConfig( Plotter_Options* opt );
 
   void SetName(const std::string& name){ m_name = name; }
   void SetLabel(const std::string& label){ m_label = label; }
@@ -148,100 +150,100 @@ class VariableAttributes{
   void SetNProjBin(int nprojbin){ m_nprojbin = nprojbin; }
   void SetExtraLabel(const std::string& extralabel){ m_extralabel = extralabel; }
 
-  const std::string& Name(){ return m_name; }
-  const std::string& Label(){ return m_label; }
-  const std::string& YLabel(){ return m_ylabel; }
-  const std::string& ResLabel(){ return m_reslabel; }
-  const std::string& DoScale(){ return m_do_scale; }
-  bool DrawStack(){ return m_draw_stack; }
-  const std::string& DrawRes(){ return m_draw_res; }
-  const std::string& DrawResErr(){ return m_draw_res_err; }
-  bool IsLogY(){ return m_is_logY; }
-  bool IsLogX(){ return m_is_logX; }
-  int Rebin(){ return m_rebin; }
-  const std::string& RebinEdges(){ return m_rebinedges; }
-  bool DoWidth(){ return m_do_width; }
-  double ResMin(){ return m_resmin; }
-  double ResMax(){ return m_resmax; }
-  bool HasResMin(){ return m_has_resmin; }
-  bool HasResMax(){ return m_has_resmax; }
-  double YMin(){ return m_ymin; }
-  double YMax(){ return m_ymax; }
-  double YScale(){ return m_yscale; }
-  bool HasYMin(){ return m_has_ymin; }
-  bool HasYMax(){ return m_has_ymax; }
-  bool HasYScale(){ return m_has_yscale; }
-  double XMin(){ return m_xmin; }
-  double XMax(){ return m_xmax; }
-  bool HasXMin(){ return m_has_xmin; }
-  bool HasXMax(){ return m_has_xmax; }
-  double TitleXMin(){ return m_ttl_xmin; }
-  double TitleYMin(){ return m_ttl_ymin; }
-  double TitleXMax(){ return m_ttl_xmax; }
-  double TitleYMax(){ return m_ttl_ymax; }
-  double TitleTextSize(){ return m_ttl_textsize; }
-  double LegendTextSize(){ return m_leg_textsize; }
-  bool HasTitleXMin(){ return m_has_ttl_xmin; }
-  bool HasTitleYMin(){ return m_has_ttl_ymin; }
-  bool HasTitleXMax(){ return m_has_ttl_xmax; }
-  bool HasTitleYMax(){ return m_has_ttl_ymax; }
-  bool HasTitleTextSize(){ return m_has_ttl_textsize; }
-  bool HasLegendTextSize(){ return m_has_leg_textsize; }
+  const std::string& Name() const { return m_name; }
+  const std::string& Label() const { return m_label; }
+  const std::string& YLabel() const { return m_ylabel; }
+  const std::string& ResLabel() const { return m_reslabel; }
+  const std::string& DoScale() const { return m_do_scale; }
+  bool DrawStack() const { return m_draw_stack; }
+  const std::string& DrawRes() const { return m_draw_res; }
+  const std::string& DrawResErr() const { return m_draw_res_err; }
+  bool IsLogY() const { return m_is_logY; }
+  bool IsLogX() const { return m_is_logX; }
+  int Rebin() const { return m_rebin; }
+  const std::string& RebinEdges() const { return m_rebinedges; }
+  bool DoWidth() const { return m_do_width; }
+  double ResMin() const { return m_resmin; }
+  double ResMax() const { return m_resmax; }
+  bool HasResMin() const { return m_has_resmin; }
+  bool HasResMax() const { return m_has_resmax; }
+  double YMin() const { return m_ymin; }
+  double YMax() const { return m_ymax; }
+  double YScale() const { return m_yscale; }
+  bool HasYMin() const { return m_has_ymin; }
+  bool HasYMax() const { return m_has_ymax; }
+  bool HasYScale() const { return m_has_yscale; }
+  double XMin() const { return m_xmin; }
+  double XMax() const { return m_xmax; }
+  bool HasXMin() const { return m_has_xmin; }
+  bool HasXMax() const { return m_has_xmax; }
+  double TitleXMin() const { return m_ttl_xmin; }
+  double TitleYMin() const { return m_ttl_ymin; }
+  double TitleXMax() const { return m_ttl_xmax; }
+  double TitleYMax() const { return m_ttl_ymax; }
+  double TitleTextSize() const { return m_ttl_textsize; }
+  double LegendTextSize() const { return m_leg_textsize; }
+  bool HasTitleXMin() const { return m_has_ttl_xmin; }
+  bool HasTitleYMin() const { return m_has_ttl_ymin; }
+  bool HasTitleXMax() const { return m_has_ttl_xmax; }
+  bool HasTitleYMax() const { return m_has_ttl_ymax; }
+  bool HasTitleTextSize() const { return m_has_ttl_textsize; }
+  bool HasLegendTextSize() const { return m_has_leg_textsize; }
 
-  bool HasLegendXMin(){ return m_has_leg_xmin; }
-  bool HasLegendXMax(){ return m_has_leg_xmax; }
-  bool HasLegendYMin(){ return m_has_leg_ymin; }
-  bool HasLegendYMax(){ return m_has_leg_ymax; }
+  bool HasLegendXMin() const { return m_has_leg_xmin; }
+  bool HasLegendXMax() const { return m_has_leg_xmax; }
+  bool HasLegendYMin() const { return m_has_leg_ymin; }
+  bool HasLegendYMax() const { return m_has_leg_ymax; }
 
-  double LegendXMin(){ return m_leg_xmin; }
-  double LegendXMax(){ return m_leg_xmax; }
-  double LegendYMin(){ return m_leg_ymin; }
-  double LegendYMax(){ return m_leg_ymax; }
+  double LegendXMin() const { return m_leg_xmin; }
+  double LegendXMax() const { return m_leg_xmax; }
+  double LegendYMin() const { return m_leg_ymin; }
+  double LegendYMax() const { return m_leg_ymax; }
 
-  bool HasXTitleSize(){ return m_has_xtitle_size; }
-  bool HasXTitleOffset(){ return m_has_xtitle_offset; }
-  bool HasYTitleSize(){ return m_has_ytitle_size; }
-  bool HasYTitleOffset(){ return m_has_ytitle_offset; }
-  bool HasResTitleSize(){ return m_has_restitle_size; }
-  bool HasResTitleOffset(){ return m_has_restitle_offset; }
+  bool HasXTitleSize() const { return m_has_xtitle_size; }
+  bool HasXTitleOffset() const { return m_has_xtitle_offset; }
+  bool HasYTitleSize() const { return m_has_ytitle_size; }
+  bool HasYTitleOffset() const { return m_has_ytitle_offset; }
+  bool HasResTitleSize() const { return m_has_restitle_size; }
+  bool HasResTitleOffset() const { return m_has_restitle_offset; }
 
-  double XTitleSize(){ return m_xtitle_size; }
-  double XTitleOffset(){ return m_xtitle_offset; }
-  double YTitleSize(){ return m_ytitle_size; }
-  double YTitleOffset(){ return m_ytitle_offset; }
-  double ResTitleSize(){ return m_restitle_size; }
-  double ResTitleOffset(){ return m_restitle_offset; }
+  double XTitleSize() const { return m_xtitle_size; }
+  double XTitleOffset() const { return m_xtitle_offset; }
+  double YTitleSize() const { return m_ytitle_size; }
+  double YTitleOffset() const { return m_ytitle_offset; }
+  double ResTitleSize() const { return m_restitle_size; }
+  double ResTitleOffset() const { return m_restitle_offset; }
 
-  bool HasXLabelSize(){ return m_has_xlabel_size; }
-  bool HasXLabelOffset(){ return m_has_xlabel_offset; }
-  bool HasYLabelSize(){ return m_has_ylabel_size; }
-  bool HasYLabelOffset(){ return m_has_ylabel_offset; }
-  bool HasResLabelSize(){ return m_has_reslabel_size; }
-  bool HasResLabelOffset(){ return m_has_reslabel_offset; }
+  bool HasXLabelSize() const { return m_has_xlabel_size; }
+  bool HasXLabelOffset() const { return m_has_xlabel_offset; }
+  bool HasYLabelSize() const { return m_has_ylabel_size; }
+  bool HasYLabelOffset() const { return m_has_ylabel_offset; }
+  bool HasResLabelSize() const { return m_has_reslabel_size; }
+  bool HasResLabelOffset() const { return m_has_reslabel_offset; }
 
-  double XLabelSize(){ return m_xlabel_size; }
-  double XLabelOffset(){ return m_xlabel_offset; }
-  double YLabelSize(){ return m_ylabel_size; }
-  double YLabelOffset(){ return m_ylabel_offset; }
-  double ResLabelSize(){ return m_reslabel_size; }
-  double ResLabelOffset(){ return m_reslabel_offset; }
+  double XLabelSize() const { return m_xlabel_size; }
+  double XLabelOffset() const { return m_xlabel_offset; }
+  double YLabelSize() const { return m_ylabel_size; }
+  double YLabelOffset() const { return m_ylabel_offset; }
+  double ResLabelSize() const { return m_reslabel_size; }
+  double ResLabelOffset() const { return m_reslabel_offset; }
 
-  bool HasBottomMargin(){ return m_has_bottom_margin; }
-  bool HasTopMargin(){ return m_has_top_margin; }
-  bool HasLeftMargin(){ return m_has_left_margin; }
-  bool HasRightMargin(){ return m_has_right_margin; }
+  bool HasBottomMargin() const { return m_has_bottom_margin; }
+  bool HasTopMargin() const { return m_has_top_margin; }
+  bool HasLeftMargin() const { return m_has_left_margin; }
+  bool HasRightMargin() const { return m_has_right_margin; }
 
-  double BottomMargin(){ return m_bottom_margin; }
-  double TopMargin(){ return m_top_margin; }
-  double LeftMargin(){ return m_left_margin; }
-  double RightMargin(){ return m_right_margin; }
+  double BottomMargin() const { return m_bottom_margin; }
+  double TopMargin() const { return m_top_margin; }
+  double LeftMargin() const { return m_left_margin; }
+  double RightMargin() const { return m_right_margin; }
 
-  bool IsCount(){ return m_is_count; }
+  bool IsCount() const { return m_is_count; }
 
-  int NProjBin(){ return m_nprojbin; }
-  const std::string& ResDrawOpt(){ return m_resdrawopt; }
-  const std::string& Blinding(){ return m_blinding; }
-  const std::string& ExtraLabel(){ return m_extralabel; }
+  int NProjBin() const { return m_nprojbin; }
+  const std::string& ResDrawOpt() const { return m_resdrawopt; }
+  const std::string& Blinding() const { return m_blinding; }
+  const std::string& ExtraLabel() const { return m_extralabel; }
 
  private:  
 

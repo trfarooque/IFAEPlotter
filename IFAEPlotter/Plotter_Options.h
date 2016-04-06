@@ -14,88 +14,90 @@ public:
     ~Plotter_Options();
     virtual void PrintOptions();
 
+    inline const std::string& ConfigDelim() const { return m_config_delim; }
     inline const std::string& ConfigSample() const { return m_config_sample; }
     inline const std::string& ConfigVariable() const { return m_config_variable; }
     inline const std::string& FileList() const { return m_file_list; }
     inline const std::string& SystematicsList() const { return m_systematics_list; }
     inline const std::string& StyleLib() const { return m_style_lib; }
     inline const std::string& OutputFormat() const { return m_output_format; }
-    inline const std::string& YLabel(){ return m_ylabel; }
-    inline const std::string& ResLabel(){ return m_reslabel; }
-    inline const std::string& ResDrawOpt(){ return m_resdrawopt; }
-    inline const std::string& PrefixList(){ return m_prefixlist; }
-    inline const std::string& SuffixList(){ return m_suffixlist; }
-    inline const std::string& NumSuffix(){ return m_num_suffix; }
-    inline const std::string& DenSuffix(){ return m_den_suffix; }
-    inline const std::string& NumPrefix(){ return m_num_prefix; }
-    inline const std::string& DenPrefix(){ return m_den_prefix; }
-    inline const std::string& ProjOpt(){ return m_projopt; }
-    inline const std::string& Title(){ return m_title; }
-    inline const std::string& LegOpt(){ return m_legopt; }
-    inline const std::string& Blinding(){ return m_blinding; }
-    inline const std::string& BlindSample(){ return m_blind_sample; }
-    inline const std::string& BlindCriterion(){ return m_blind_criterion; }
-    inline const std::string& YieldFormat(){ return m_yield_format; } 
-    inline const std::string& DistributionsFile() { return m_dist_file; }
+    inline const std::string& YLabel() const { return m_ylabel; }
+    inline const std::string& ResLabel() const { return m_reslabel; }
+    inline const std::string& ResDrawOpt() const { return m_resdrawopt; }
+    inline const std::string& PrefixList() const { return m_prefixlist; }
+    inline const std::string& SuffixList() const { return m_suffixlist; }
+    inline const std::string& NumSuffix() const { return m_num_suffix; }
+    inline const std::string& DenSuffix() const { return m_den_suffix; }
+    inline const std::string& NumPrefix() const { return m_num_prefix; }
+    inline const std::string& DenPrefix() const { return m_den_prefix; }
+    inline const std::string& ProjOpt() const { return m_projopt; }
+    inline const std::string& Title() const { return m_title; }
+    inline const std::string& LegOpt() const { return m_legopt; }
+    inline const std::string& Blinding() const { return m_blinding; }
+    inline const std::string& BlindSample() const { return m_blind_sample; }
+    inline const std::string& BlindCriterion() const { return m_blind_criterion; }
+    inline const std::string& YieldFormat() const { return m_yield_format; } 
+    inline const std::string& DistributionsFile()  const { return m_dist_file; }
 
-    inline bool NewConfigFormat(){ return m_new_config_format; }
-    inline bool NewSampleFormat(){ return m_new_sample_format; }
-    inline bool NewVariableFormat(){ return m_new_variable_format; }
-    inline bool NewStyleFormat(){ return m_new_style_format; }
-    inline bool NewSystematicsFormat(){ return m_new_systematics_format; }
-    inline bool NewFileListFormat(){ return m_new_filelist_format; }
-    inline double ResMin(){ return m_resmin; }
-    inline double ResMax(){ return m_resmax; }
-    inline double YMin(){ return m_ymin; }
-    inline double YMax(){ return m_ymax; }
-    inline double YScale(){ return m_yscale; }
-    inline double XMin(){ return m_xmin; }
-    inline double XMax(){ return m_xmax; }
-    inline bool ShowYields(){ return m_show_yields; }
-    inline bool WriteHistos(){ return m_write_histos; }
-    inline bool Do1DPlots(){ return m_do1DPlots; }
-    inline bool DoProjections(){ return m_doProjections; }
-    inline bool DoEff(){ return m_doEff; }
-    inline bool DoSystematics(){ return m_doSystematics; }
-    inline double TitleXMin(){ return m_titlexmin; }
-    inline double TitleYMin(){ return m_titleymin; }
-    inline double TitleXMax(){ return m_titlexmax; }
-    inline double TitleYMax(){ return m_titleymax; }
-    inline double TitleTextSize(){ return m_title_textsize; }
-    inline double LegendTextSize(){ return m_legend_textsize; }
-    inline double LegendXMin(){ return m_legend_xmin; }
-    inline double LegendXMax(){ return m_legend_xmax; }
-    inline double LegendYMin(){ return m_legend_ymin; }
-    inline double LegendYMax(){ return m_legend_ymax; }
+    inline bool NewConfigFormat() const { return m_new_config_format; }
+    inline bool NewSampleFormat() const { return m_new_sample_format; }
+    inline bool NewVariableFormat() const { return m_new_variable_format; }
+    inline bool NewStyleFormat() const { return m_new_style_format; }
+    inline bool NewSystematicsFormat() const { return m_new_systematics_format; }
+    inline bool NewFileListFormat() const { return m_new_filelist_format; }
+    inline double ResMin() const { return m_resmin; }
+    inline double ResMax() const { return m_resmax; }
+    inline double YMin() const { return m_ymin; }
+    inline double YMax() const { return m_ymax; }
+    inline double YScale() const { return m_yscale; }
+    inline double XMin() const { return m_xmin; }
+    inline double XMax() const { return m_xmax; }
+    inline bool ShowYields() const { return m_show_yields; }
+    inline bool WriteHistos() const { return m_write_histos; }
+    inline bool Do1DPlots() const { return m_do1DPlots; }
+    inline bool DoProjections() const { return m_doProjections; }
+    inline bool DoEff() const { return m_doEff; }
+    inline bool DoSystematics() const { return m_doSystematics; }
+    inline double TitleXMin() const { return m_titlexmin; }
+    inline double TitleYMin() const { return m_titleymin; }
+    inline double TitleXMax() const { return m_titlexmax; }
+    inline double TitleYMax() const { return m_titleymax; }
+    inline double TitleTextSize() const { return m_title_textsize; }
+    inline double LegendTextSize() const { return m_legend_textsize; }
+    inline double LegendXMin() const { return m_legend_xmin; }
+    inline double LegendXMax() const { return m_legend_xmax; }
+    inline double LegendYMin() const { return m_legend_ymin; }
+    inline double LegendYMax() const { return m_legend_ymax; }
 
-    inline double XTitleOffset(){ return m_xtitle_offset; }
-    inline double XTitleSize(){ return m_xtitle_size; }
-    inline double YTitleOffset(){ return m_ytitle_offset; }
-    inline double YTitleSize(){ return m_ytitle_size; }
-    inline double ResTitleOffset(){ return m_restitle_offset; }
-    inline double ResTitleSize(){ return m_restitle_size; }
+    inline double XTitleOffset() const { return m_xtitle_offset; }
+    inline double XTitleSize() const { return m_xtitle_size; }
+    inline double YTitleOffset() const { return m_ytitle_offset; }
+    inline double YTitleSize() const { return m_ytitle_size; }
+    inline double ResTitleOffset() const { return m_restitle_offset; }
+    inline double ResTitleSize() const { return m_restitle_size; }
 
-    inline double XLabelOffset(){ return m_xlabel_offset; }
-    inline double XLabelSize(){ return m_xlabel_size; }
-    inline double YLabelOffset(){ return m_ylabel_offset; }
-    inline double YLabelSize(){ return m_ylabel_size; }
-    inline double ResLabelOffset(){ return m_reslabel_offset; }
-    inline double ResLabelSize(){ return m_reslabel_size; }
+    inline double XLabelOffset() const { return m_xlabel_offset; }
+    inline double XLabelSize() const { return m_xlabel_size; }
+    inline double YLabelOffset() const { return m_ylabel_offset; }
+    inline double YLabelSize() const { return m_ylabel_size; }
+    inline double ResLabelOffset() const { return m_reslabel_offset; }
+    inline double ResLabelSize() const { return m_reslabel_size; }
 
-    inline double BottomMargin(){ return m_bottom_margin; }
-    inline double TopMargin(){ return m_top_margin; }
-    inline double LeftMargin(){ return m_left_margin; }
-    inline double RightMargin(){ return m_right_margin; }
+    inline double BottomMargin() const { return m_bottom_margin; }
+    inline double TopMargin() const { return m_top_margin; }
+    inline double LeftMargin() const { return m_left_margin; }
+    inline double RightMargin() const { return m_right_margin; }
 
-    inline double GlobalScale(){ return m_global_scale; }
-    inline double BlindThreshold(){ return m_blind_threshold; }
-    inline bool AllFromFile(){ return m_all_from_file; }
+    inline double GlobalScale() const { return m_global_scale; }
+    inline double BlindThreshold() const { return m_blind_threshold; }
+    inline bool AllFromFile() const { return m_all_from_file; }
 
 protected:
     virtual bool IdentifyOption( const std::string &, const std::string & );
     
 private:
 
+    std::string m_config_delim;
     std::string m_config_sample;
     std::string m_config_variable;
     std::string m_file_list;
