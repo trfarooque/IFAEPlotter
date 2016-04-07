@@ -606,15 +606,15 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(var_hasXTitleSize){ var_xtitle_size = va_it->second->XTitleSize(); }
     else if(opt_hasXTitleSize){ var_xtitle_size = m_opt->XTitleSize(); }
-    else{ var_xtitle_size = 0.04; }
+    else{ var_xtitle_size = drawRes? 0.1 : 0.04; }
 
     if(var_hasXTitleOffset){ var_xtitle_offset = va_it->second->XTitleOffset(); }
     else if(opt_hasXTitleOffset){ var_xtitle_offset = m_opt->XTitleOffset(); }
-    else { var_xtitle_offset = 1.; }
+    else { var_xtitle_offset = drawRes ? 0.9 : 1.; }
 
     if(var_hasXLabelSize){ var_xlabel_size = va_it->second->XLabelSize(); }
     else if(opt_hasXLabelSize){ var_xlabel_size = m_opt->XLabelSize(); }
-    else{ var_xlabel_size = 0.04; }
+    else{ var_xlabel_size = drawRes? 0.09 : 0.04; }
 
     if(var_hasXLabelOffset){ var_xlabel_offset = va_it->second->XLabelOffset(); }
     else if(opt_hasXLabelOffset){ var_xlabel_offset = m_opt->XLabelOffset(); }
@@ -622,7 +622,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(var_hasYTitleSize){ var_ytitle_size = va_it->second->YTitleSize(); }
     else if(opt_hasYTitleSize){ var_ytitle_size = m_opt->YTitleSize(); }
-    else{ var_ytitle_size = drawRes ? 0.05 : 0.04; }
+    else{ var_ytitle_size = drawRes ? 0.07 : 0.04; }
 
     if(var_hasYTitleOffset){ var_ytitle_offset = va_it->second->YTitleOffset(); }
     else if(opt_hasYTitleOffset){ var_ytitle_offset = m_opt->YTitleOffset(); }
@@ -633,10 +633,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       else if(var_ymin < 0.01 || var_ymax > 1000.){ndig = 4; }
       else {ndig = 3; }
 
-      if( ndig<=3 ){ var_ytitle_offset = 0.7; }
-      else if( ndig>3 && ndig<6 ){ var_ytitle_offset = 1.0; }
-      else if( ndig==6 ){ var_ytitle_offset = 1.2; }
-      else{ var_ytitle_offset = 1.5; }
+      if( ndig<=3 ){ var_ytitle_offset = drawRes ? 0.7 : 1.2; }
+      else if( ndig>3 && ndig<6 ){ var_ytitle_offset = drawRes? 1.0 : 1.4; }
+      else if( ndig==6 ){ var_ytitle_offset = drawRes ? 1.2 : 1.6; }
+      else{ var_ytitle_offset = drawRes ? 1.5 : 1.8; }
     }
 
     if(var_hasYLabelSize){ var_ylabel_size = va_it->second->YLabelSize(); }
@@ -649,21 +649,19 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(var_hasResTitleSize){ var_restitle_size = va_it->second->ResTitleSize(); }
     else if(opt_hasResTitleSize){ var_restitle_size = m_opt->ResTitleSize(); }
-    else{ var_restitle_size = 0.04; }
+    else{ var_restitle_size = 0.09; }
 
     if(var_hasResTitleOffset){ var_restitle_offset = va_it->second->ResTitleOffset(); }
     else if(opt_hasResTitleOffset){ var_restitle_offset = m_opt->ResTitleOffset(); }
-    else { var_restitle_offset = 1.; }
+    else { var_restitle_offset = 0.5; }
 
     if(var_hasResLabelSize){ var_reslabel_size = va_it->second->ResLabelSize(); }
     else if(opt_hasResLabelSize){ var_reslabel_size = m_opt->ResLabelSize(); }
-    else{ var_reslabel_size = 0.04; }
+    else{ var_reslabel_size = 0.07; }
 
     if(var_hasResLabelOffset){ var_reslabel_offset = va_it->second->ResLabelOffset(); }
     else if(opt_hasResLabelOffset){ var_reslabel_offset = m_opt->ResLabelOffset(); }
     else { var_reslabel_offset = 0.005; }
-
-
 
     //==================================================== Axis title parameters set ======================================================================
 
