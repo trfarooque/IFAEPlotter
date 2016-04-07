@@ -627,16 +627,18 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     if(var_hasYTitleOffset){ var_ytitle_offset = va_it->second->YTitleOffset(); }
     else if(opt_hasYTitleOffset){ var_ytitle_offset = m_opt->YTitleOffset(); }
     else{
+
       int ndig = 0.;
-      if( var_isLogY ){ndig = 2;}
-      else if(var_ymin < 0.0001 || var_ymax > 100000.){ndig = 6; }
-      else if(var_ymin < 0.01 || var_ymax > 1000.){ndig = 4; }
+      if( var_isLogY ){ndig = 3;}
+      else if( var_ymax <=0.001 || var_ymax > 100000.){ndig = 6; }
+      else if(var_ymax <=0.1 || var_ymax > 1000.){ndig = 4; }
       else {ndig = 3; }
 
       if( ndig<=3 ){ var_ytitle_offset = drawRes ? 0.7 : 1.2; }
       else if( ndig>3 && ndig<6 ){ var_ytitle_offset = drawRes? 1.0 : 1.4; }
       else if( ndig==6 ){ var_ytitle_offset = drawRes ? 1.2 : 1.6; }
       else{ var_ytitle_offset = drawRes ? 1.5 : 1.8; }
+
     }
 
     if(var_hasYLabelSize){ var_ylabel_size = va_it->second->YLabelSize(); }
