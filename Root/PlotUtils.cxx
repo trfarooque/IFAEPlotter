@@ -76,7 +76,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists start"<<std::endl; 
 
-  bool doGraphs = ((projopt == "MEAN") || (projopt == "RMS") || (projopt == "EFF") );
+  bool doGraphs = ((projopt == "MEAN") || (projopt == "RMS") || (projopt == "FRACRMS") || (projopt == "EFF") );
   const std::string& glob_ttl = m_opt->Title();
   // int nsample = m_attrbt_map.size();
   //int ndist = m_var_map.size();
@@ -214,6 +214,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     std::string var_name       = va_it->second->Name();
     if(projopt == "MEAN"){var_name += "_MEAN";}
     else if(projopt == "RMS"){var_name += "_RMS";}
+    else if(projopt == "FRACRMS"){var_name += "_FRACRMS";}
     else if(projopt == "EFF"){var_name += "_EFF";}
  
     const std::string& var_label         = va_it->second->Label();

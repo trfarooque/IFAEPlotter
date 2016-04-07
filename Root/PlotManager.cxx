@@ -119,6 +119,7 @@ void PlotManager::Execute(){
     if( m_opt->ProjOpt().find("HIST") != std::string::npos){ m_plotUtils->OverlayHists("HIST");}
     if( m_opt->ProjOpt().find("MEAN") != std::string::npos){ m_plotUtils->OverlayHists("MEAN");}
     if( m_opt->ProjOpt().find("RMS") != std::string::npos){ m_plotUtils->OverlayHists("RMS");}
+    if( m_opt->ProjOpt().find("FRACRMS") != std::string::npos){ m_plotUtils->OverlayHists("FRACRMS");}
   }
   else if( m_opt->WriteHistos() || m_opt->Do1DPlots() ){
     FillHistManager(); 
@@ -991,6 +992,7 @@ void PlotManager::ProjectByBin(){
   bool drawHists = ( m_opt->ProjOpt().find("HIST") != std::string::npos );
   bool drawMean = ( m_opt->ProjOpt().find("MEAN") != std::string::npos );
   bool drawRMS = ( m_opt->ProjOpt().find("RMS") != std::string::npos );
+  bool drawFRACRMS = ( m_opt->ProjOpt().find("FRACRMS") != std::string::npos );
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::ProjectByBin start"<<std::endl; 
 
@@ -1021,8 +1023,8 @@ void PlotManager::ProjectByBin(){
       const std::string& ds_drawScale = samit->second->DrawScale(); 
       std::string key = var_name + "_" + ds_suffix;
       TH2D* hsample = m_hstMngr->GetTH2D( key ); 
-      TH1D* hmean = NULL; TH1D* hrms = NULL;
-      if(drawMean || drawRMS){
+      TH1D* hmean = NULL; TH1D* hrms = NULL; TH1D* hfrms = NULL;
+      if(drawMean || drawRMS || drawFRACRMS){
 	TH1D* projtemp = hsample->ProjectionX(Form("%s_px", key.c_str()));
 	if(drawMean){
 	  std::string keymean = var_name + "_MEAN_" + ds_suffix;
@@ -1034,6 +1036,12 @@ void PlotManager::ProjectByBin(){
 	  hrms = m_hstMngr->CloneTH1D(keyrms, projtemp, true);
 	  keyrms.clear();
 	}
+	if(drawFRACRMS){
+	  std::string keyfrms = var_name + "_FRACRMS_" + ds_suffix;
+	  hfrms = m_hstMngr->CloneTH1D(keyfrms, projtemp, true);
+	  keyfrms.clear();
+	}
+
       }
 
       //Project each bin in the x-axis onto a new histogram
@@ -1060,6 +1068,13 @@ void PlotManager::ProjectByBin(){
 	if(drawRMS){
 	  hrms->SetBinContent(nb, hproj->GetRMS());
 	  hrms->SetBinError(nb, hproj->GetRMSError());
+	}
+	if(drawFRACRMS){
+	  double frms = (hproj->GetMean() > 0.) ? hproj->GetRMS()/hproj->GetMean() : 0.;
+	  double frms_err = (hproj->GetMean() > 0.) ? hproj->GetRMSError()/hproj->GetMean() : 0.;
+	  hfrms->SetBinContent(nb, frms);
+	  hfrms->SetBinError(nb, frms_err);
+	  std::cout<<" fracrms = "<<frms<<" error = "<<frms_err<<std::endl;
 	}
 	if(!drawHists){
 	  m_hstMngr->ClearTH1(projname); 
