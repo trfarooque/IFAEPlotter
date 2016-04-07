@@ -465,7 +465,9 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	}
 
 	if(!doGraphs && leg_yield){ 
-	  if( !(ds_isShape || (var_blind_yield && ds_isBlind)) ){leg_yield->AddEntry(hist_a, Form(ds_yield_format.c_str(),hist_a->Integral()), ""); }
+	  if( !(ds_isShape || (var_blind_yield && ds_isBlind) || (ds_yield_format == "NONE")) ){
+	    leg_yield->AddEntry(hist_a, Form(ds_yield_format.c_str(),hist_a->Integral()), "");
+	  }
 	  else{ leg_yield->AddEntry(hist_a, " ", ""); }
 	}
 

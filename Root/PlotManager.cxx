@@ -256,7 +256,19 @@ void PlotManager::FillHistManager(){
       hsum = m_hstMngr->GetTH1D(keysum);
       keysum.clear();
     }
+
+    if(hsum && var_do_width){
+      int nbin = hsum->GetNbinsX();
+      for(int nb = 0; nb <= nbin; nb++){
+	double bc = hsum->GetBinContent(nb)/hsum->GetXaxis()->GetBinWidth(nb);
+	double be = hsum->GetBinError(nb)/hsum->GetXaxis()->GetBinWidth(nb);
+	hsum->SetBinContent(nb, bc);
+	hsum->SetBinError(nb, be);
+      }
+    }
+
     double intgl_sum = (hsum) ? hsum->Integral() : 1.;
+
     if(var_do_blind_threshold && (hsum==NULL)){std::cout<<" Cannot find SUM histogram required to calculate blinding threshold. Program will crash"<<std::endl;}
     for(SampleAttributesMap::iterator samit = m_attr_map.begin(); samit != m_attr_map.end(); ++samit){
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" Sample : "<<samit->first<<std::endl; 
@@ -265,10 +277,11 @@ void PlotManager::FillHistManager(){
       const std::string& samp_blinding = samit->second->Blinding();
       const std::string& ds_suffix = samit->second->Suffix();
       const std::string& ds_drawScale = samit->second->DrawScale(); 
+      const std::string& ds_scaleToRef = samit->second->ScaleToRef();
 
       std::string key = var_name + "_" + ds_suffix;
       TH1D* hsample = m_hstMngr->GetTH1D( key ); 
-      if(var_do_width){
+      if(var_do_width && (samit->first != "SUM") ){ //bin width normalisation for SUM has already been done 
 	int nbin = hsample->GetNbinsX();
 	for(int nb = 0; nb <= nbin; nb++){
 	  double bc = hsample->GetBinContent(nb)/hsample->GetXaxis()->GetBinWidth(nb);
@@ -316,19 +329,31 @@ void PlotManager::FillHistManager(){
       }//signal sample for blinding thresh
 
       //Scaling
-      if( b_var_isShape && !var_draw_stack && samit->second->NoShape() ){continue;}
       if(var_rebin > 0){
-	if(var_rebinedges_ptr != NULL){ VariableRebinning(key, hsample, var_rebin, var_rebinedges_ptr); }
+	if(var_rebinedges_ptr != NULL){ hsample = VariableRebinning(key, hsample, var_rebin, var_rebinedges_ptr); }
 	else{ hsample->Rebin(var_rebin); }
       }
-      if( b_var_isShape || (ds_drawScale == "SHAPE") ){
+
+      if( b_var_isShape && !var_draw_stack && samit->second->NoShape() ){continue;} //-perhaps move upstream?
+      if(  b_var_isShape || (ds_drawScale == "SHAPE") || (!b_var_isShape && (ds_scaleToRef !="")) ){
 	double intgl = hsample->Integral();
 	double sc = 1.; 
 	if(intgl > 0.){
 	  sc = ( b_var_isShape && var_draw_stack && (samit->first != "SUM") && (ds_drawScale == "NORM") ) ? 1./intgl_sum : 1./intgl;
 	}
+	if(ds_scaleToRef != ""){
+	  SampleAttributesMap::iterator refit = m_attr_map.find(ds_scaleToRef);
+	  if( refit == m_attr_map.end() ){
+	    std::cerr<<"ERROR : Cannot find reference sample "<<ds_scaleToRef<<" to which sample"<<samit->first<<" is to be scaled. Please check"<<std::endl;
+	    continue;
+	  }
+	  double intgl_ref = m_hstMngr->GetTH1D( var_name + "_" + refit->second->Suffix() )->Integral();
+	  sc *= intgl_ref;
+	}
+
 	hsample->Scale(sc);
-      }
+      }//Sample properly scaled
+
       key.clear();
     }//sample loop
 
@@ -1154,7 +1179,7 @@ TH1D* PlotManager::VariableRebinning(const std::string& histname, TH1D* horig, i
   hnew->SetName(histname.c_str());
 
   histname_temp.clear();
-  return 0;
+  return hnew;
 
 }
 

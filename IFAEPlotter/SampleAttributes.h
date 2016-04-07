@@ -12,7 +12,7 @@ class SampleAttributes{
   SampleAttributes();
   SampleAttributes(const std::string& name, const std::string& suffix, const std::string& leglabel, const std::string& stylekey
 		   , const std::string& drawopt="hist", const std::string& legopt = ""
-		   , const std::string& drawscale="NORM", bool draw_stack=false, bool do_sum=false
+		   , const std::string& drawscale="NORM", const std::string& scale_to_ref="", bool draw_stack=false, bool do_sum=false
 		   , int res_opt=-1, const std::string& resdrawopt="" 
 		   , const std::string& blinding="NONE", const std::string& yield_format=""
 		   , bool write=false, const std::string& outfile_name = ""
@@ -29,6 +29,7 @@ class SampleAttributes{
   std::string m_drawopt;
   std::string m_res_drawopt;
   std::string m_drawscale;
+  std::string m_scale_to_ref;
   std::string m_legopt; 
   std::string m_blinding;
   std::string m_yield_format;
@@ -49,6 +50,7 @@ class SampleAttributes{
   void SetDrawOpt(const std::string& drawopt){ m_drawopt = drawopt; }
   void SetResDrawOpt(const std::string& resdrawopt){ m_res_drawopt = resdrawopt; }
   void SetDrawScale(const std::string& drawscale){ m_drawscale = drawscale; }
+  void SetScaleToRef(const std::string& scale_to_ref){ m_scale_to_ref = scale_to_ref; }
   void SetLegLabel(const std::string& leglabel){ m_leglabel = leglabel; }
   void SetLegOpt(const std::string& legopt){ m_legopt = legopt; }
   void SetBlinding(const std::string& blinding){ m_blinding = blinding; }
@@ -70,6 +72,7 @@ class SampleAttributes{
   const std::string& DrawOpt() const{ return m_drawopt; }
   const std::string& ResDrawOpt() const{ return m_res_drawopt; }
   const std::string& DrawScale() const{ return m_drawscale; }
+  const std::string& ScaleToRef() const{ return m_scale_to_ref; }
   const std::string& Blinding() const{ return m_blinding; }
   const std::string& YieldFormat() const{ return m_yield_format; }
   const std::string& OutFileName() const{ return m_outfile_name; }

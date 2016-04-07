@@ -5,7 +5,8 @@
 #include <iostream>
 
 SampleAttributes::SampleAttributes(const std::string& name, const std::string& suffix, const std::string& leglabel, const std::string& stylekey
-				   , const std::string& drawopt, const std::string& legopt, const std::string& drawscale
+				   , const std::string& drawopt, const std::string& legopt
+				   , const std::string& drawscale, const std::string& scale_to_ref
 				   , bool draw_stack, bool do_sum, int res_opt, const std::string& resdrawopt
 				   , const std::string& blinding, const std::string& yield_format
 				   , bool write, const std::string& outfile_name
@@ -17,6 +18,7 @@ SampleAttributes::SampleAttributes(const std::string& name, const std::string& s
   m_drawopt(drawopt),
   m_res_drawopt(resdrawopt),
   m_drawscale(drawscale),
+  m_scale_to_ref(scale_to_ref),
   m_legopt(legopt),
   m_blinding(blinding),
   m_yield_format(yield_format),
@@ -41,6 +43,7 @@ SampleAttributes::SampleAttributes(SampleAttributes& q){
   m_drawopt          = q.m_drawopt;
   m_res_drawopt      = q.m_res_drawopt;
   m_drawscale        = q.m_drawscale;
+  m_scale_to_ref     = q.m_scale_to_ref;
   m_legopt           = q.m_legopt;
   m_blinding         = q.m_blinding;
   m_yield_format     = q.m_yield_format;
@@ -98,6 +101,7 @@ SampleAttributesMap SampleAttributes::ParseSampleConfig( Plotter_Options* opt ){
     if( keymap.find("RESDRAWOPT") != keymap.end() ){ sampleObj->SetResDrawOpt(keymap["RESDRAWOPT"]); }
     if( keymap.find("LEGOPT") != keymap.end() ){ sampleObj->SetLegOpt(keymap["LEGOPT"]); }
     if( keymap.find("DRAWSCALE") != keymap.end() ){ sampleObj->SetDrawScale(keymap["DRAWSCALE"]); }
+    if( keymap.find("SCALETOREF") != keymap.end() ){ sampleObj->SetScaleToRef(keymap["SCALETOREF"]); }
     if( keymap.find("DRAWSTACK") != keymap.end() ){ sampleObj->SetDrawStack(AnalysisUtils::BoolValue(keymap["DRAWSTACK"], "DRAWSTACK")); }
     if( keymap.find("DOSUM") != keymap.end() && (keymap["DOSUM"] != "") ){ sampleObj->SetDoSum(AnalysisUtils::BoolValue(keymap["DOSUM"], "DOSUM")); }
     else{ sampleObj->SetDoSum( sampleObj->DrawStack() ); }

@@ -1,6 +1,8 @@
 2016-03-07 Trisha Farooque <farooqu2@cern.ch>
 	- Corrected default values of axis title and label sizes and offsets
 	- Added frcational RMS option to histogram projections
+	- Scaling a sample to another sample
+	- Scaling to shape should now work properly with variable width bins
 	
 2016-03-01 Trisha Farooque <farooqu2@cern.ch>
 	- Configurable text size and offset for axis titles and labels
