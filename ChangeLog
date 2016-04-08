@@ -1,3 +1,41 @@
+2016-03-07 Trisha Farooque <farooqu2@cern.ch>
+	- Corrected default values of axis title and label sizes and offsets
+	- Added frcational RMS option to histogram projections
+	- Scaling a sample to another sample
+	- Scaling to shape should now work properly with variable width bins
+	
+2016-03-01 Trisha Farooque <farooqu2@cern.ch>
+	- Configurable text size and offset for axis titles and labels
+	- Configurable position for top right of legend
+	- Centered x-axis labels for count plots
+	- Configurable canvas margins
+	
+2016-02-28 Trisha Farooque <farooque@cern.ch>
+	- Integer axis ticks
+	- Axis ticks on top and right
+	
+2016-02-21 Trisha Farooque <farooque@cern.ch>
+	- Configurable text size in title box and legend box
+	- Configurable stretch factor for histogram y-range
+	
+2016-02-19 Trisha Farooque <farooque@cern.ch>
+	- Automatic scaling of histograms to remove legend overlap
+	- Bug fix: TLegend now written to ROOT file
+	- Systematics calculations added
+	
+2016-02-09 Trisha Farooque <farooque@cern.ch>
+	- SystmaticsAttributes class added
+	- ParseConfigFiles made into static public functions
+	
+2016-01-30 Trisha Farooque <farooque@cern.ch>
+	- Added option to read single scale for files with multiple sample names
+	
+2016-01-27 Trisha Farooque <farooque@cern.ch>
+	- Adapted makeConfigurationFiles_TTH.cxx to make file lists from sample_info.dat files 
+
+2016-01-26 Trisha Farooque <farooque@cern.ch>
+	- Added option to read multiple samples from same file
+	
 2016-01-22 Trisha Farooque <farooque@cern.ch>
 	- Added FileKeyAttributes class
 	- Optimised configuration file parsing

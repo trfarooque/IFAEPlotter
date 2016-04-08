@@ -3,11 +3,9 @@
 
 #include <map>
 #include <string>
-//#include "TColor.h"
-//#include "TStyle.h"
-//#include "TWidth.h"
 #include "Rtypes.h"
 
+class Plotter_Options;
 
 struct StyleStruct{
   std::string key;
@@ -27,6 +25,7 @@ class StyleDictionary{
   StyleDictionary(const std::string& name);
   ~StyleDictionary(){ }
 
+  int ParseStyleConfig(Plotter_Options* opt);
   void AddStyle(const std::string& key); 
   void AddStyle(const std::string& key, const std::string& val_lnCol, int val_lnStyle, int val_lnWdt
 		, const std::string& val_markCol, int val_markStyle, int val_markWdt
@@ -57,16 +56,16 @@ class StyleDictionary{
   void SetMarkerSize(const std::string &key, int value);
   void SetMarkerSize(const std::string &key, Size_t size);
 
-  std::string Name(){return m_name;}
-  Color_t LineColour(const std::string& key);
-  Width_t LineWidth(const std::string& key);
-  Style_t LineStyle(const std::string& key);
-  Color_t FillColour(const std::string& key);
-  Style_t FillStyle(const std::string& key);
-  Color_t MarkerColour(const std::string& key);
-  Style_t MarkerStyle(const std::string& key);
-  Size_t MarkerSize(const std::string& key);
-  unsigned int NStyles(){ return m_style_map.size(); }
+  std::string Name() const{return m_name;}
+  Color_t LineColour(const std::string& key) const;
+  Width_t LineWidth(const std::string& key) const;
+  Style_t LineStyle(const std::string& key) const;
+  Color_t FillColour(const std::string& key) const;
+  Style_t FillStyle(const std::string& key) const;
+  Color_t MarkerColour(const std::string& key) const;
+  Style_t MarkerStyle(const std::string& key) const;
+  Size_t MarkerSize(const std::string& key) const;
+  unsigned int NStyles() const{ return m_style_map.size(); }
   static Color_t ParseColourString(const std::string& value);
 
 

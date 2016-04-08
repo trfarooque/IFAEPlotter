@@ -25,7 +25,7 @@ class PlotUtils{
 
   void OverlayHists(const std::string& projopt);
 
-  int SetStyleCanvas(TCanvas& canv, bool divide);
+  int SetStyleCanvas(TCanvas& canv, bool divide, double bottommargin=0.2, double topmargin=0.05, double leftmargin=0.15, double rightmargin=0.05);
   int SetStyleHist(std::string hname, std::string key_style);
   int SetStyleLegend(TLegend& leg, double textsize=0.03, int textfont=42, double margin=0.3);
   int ResizeLegend(TLegend& leg, double xpt=-1., double ypt=0.89, const std::string& justify="r");
