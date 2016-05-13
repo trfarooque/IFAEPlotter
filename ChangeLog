@@ -1,3 +1,7 @@
+2016-05-13 Trisha Farooque <farooque@cern.ch>
+	- Added OUTPUTFOLDER as an option for individual variables 
+	- Added configuration file maker for 2016 SUSY analysis
+	
 2016-03-07 Trisha Farooque <farooqu2@cern.ch>
 	- Corrected default values of axis title and label sizes and offsets
 	- Added frcational RMS option to histogram projections
