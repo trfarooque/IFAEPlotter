@@ -115,6 +115,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   bool opt_hasRightMargin    = (m_opt->OptStr().find("--RIGHTMARGIN") != std::string::npos);
   
   bool var_draw_stack = 0;
+  bool var_do_width = false;
   bool var_isLogY = false;
   bool var_isLogX = false;
   bool var_isShape = false;
@@ -184,6 +185,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   double var_left_margin = 0.;
   double var_right_margin = 0.;
 
+  std::string var_yield_opt = "";
+
   bool var_isCount = false;
   bool ds_draw_stack = false;
   int ds_res_opt = -1;
@@ -228,7 +231,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     var_isCount        = va_it->second->IsCount();
     var_isShape        = !doGraphs && (va_it->second->DoScale() == "SHAPE"); 
-    //var_do_width       = !doGraphs && va_it->second->DoWidth();
+    var_do_width       = !doGraphs && va_it->second->DoWidth();
+    var_yield_opt      = (var_do_width) ? "width" : "";
     var_draw_stack     = !doGraphs && va_it->second->DrawStack();
     var_isLogY         = !doGraphs && va_it->second->IsLogY();
     var_isLogX         = !doGraphs && va_it->second->IsLogX();
@@ -467,7 +471,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
 	if(!doGraphs && leg_yield){ 
 	  if( !(ds_isShape || (var_blind_yield && ds_isBlind) || (ds_yield_format == "NONE")) ){
-	    leg_yield->AddEntry(hist_a, Form(ds_yield_format.c_str(),hist_a->Integral()), "");
+	    leg_yield->AddEntry(hist_a, Form(ds_yield_format.c_str(),hist_a->Integral(var_yield_opt.c_str())), "");
 	  }
 	  else{ leg_yield->AddEntry(hist_a, " ", ""); }
 	}
