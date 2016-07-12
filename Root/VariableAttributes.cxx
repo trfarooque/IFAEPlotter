@@ -40,10 +40,9 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
 					, bool has_left_margin, bool has_right_margin
 					, double bottom_margin, double top_margin
 					, double left_margin, double right_margin
-					
 					, bool is_count 
 					, const std::string& resdrawopt, const std::string& extralabel
-					, int rebin, const std::string& rebinedges, const std::string& blinding) :
+				       , int rebin, const std::string& rebinedges, const std::string& output_folder, const std::string& blinding) :
   
   m_name(name),
   m_label(label),
@@ -137,7 +136,8 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
   m_nprojbin(-1),
   m_resdrawopt(resdrawopt),
   m_blinding(blinding),
-  m_extralabel(extralabel)
+  m_extralabel(extralabel),
+  m_output_folder(output_folder)
 { }
 
 VariableAttributes::VariableAttributes() : VariableAttributes("", "", "NONE"){}
@@ -234,8 +234,10 @@ VariableAttributes::VariableAttributes(VariableAttributes& q){
   m_is_count           = q.m_is_count;
   m_nprojbin           = q.m_nprojbin;
   m_resdrawopt         = q.m_resdrawopt;
-  m_extralabel         = q.m_extralabel;
   m_blinding           = q.m_blinding;
+  m_extralabel         = q.m_extralabel;
+  m_output_folder      = q.m_output_folder;
+
 }
 
 VariableAttributesMap VariableAttributes::ParseVariableConfig( Plotter_Options* opt ){
@@ -283,6 +285,7 @@ VariableAttributesMap VariableAttributes::ParseVariableConfig( Plotter_Options* 
     if( keymap.find("DOWIDTH") != keymap.end() ){ varObj->SetDoWidth(AnalysisUtils::BoolValue(keymap["DOWIDTH"], "DOWIDTH")); }
     if( keymap.find("RESDRAWOPT") != keymap.end() ){ varObj->SetResDrawOpt(keymap["RESDRAWOPT"]); }
     if( keymap.find("BLINDING") != keymap.end() ){ varObj->SetBlinding(keymap["BLINDING"]); }
+    if( keymap.find("OUTPUTFOLDER") != keymap.end() ){ varObj->SetOutputFolder(keymap["OUTPUTFOLDER"]); }
 
 
     if( keymap.find("RESMIN") != keymap.end() && (keymap["RESMIN"] != "") ){ 

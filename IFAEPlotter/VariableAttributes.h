@@ -49,7 +49,7 @@ class VariableAttributes{
 
 		     , bool is_count=false 
 		     , const std::string& resdrawopt="", const std::string& extralabel=""
-		     , int rebin=0, const std::string& rebinedges="", const std::string& blinding="");
+		     , int rebin=0, const std::string& rebinedges="", const std::string& output_folder="", const std::string& blinding="");
   VariableAttributes(VariableAttributes& q);
 
   ~VariableAttributes(){ }
@@ -149,6 +149,7 @@ class VariableAttributes{
   void SetIsCount(bool is_count){ m_is_count = is_count; }
   void SetNProjBin(int nprojbin){ m_nprojbin = nprojbin; }
   void SetExtraLabel(const std::string& extralabel){ m_extralabel = extralabel; }
+  void SetOutputFolder(const std::string& output_folder){ m_output_folder = output_folder; }
 
   const std::string& Name() const { return m_name; }
   const std::string& Label() const { return m_label; }
@@ -244,6 +245,7 @@ class VariableAttributes{
   const std::string& ResDrawOpt() const { return m_resdrawopt; }
   const std::string& Blinding() const { return m_blinding; }
   const std::string& ExtraLabel() const { return m_extralabel; }
+  const std::string& OutputFolder() const { return m_output_folder; }
 
  private:  
 
@@ -341,6 +343,7 @@ class VariableAttributes{
   std::string m_resdrawopt;
   std::string m_blinding;
   std::string m_extralabel;
+  std::string m_output_folder;
 };
 
 typedef std::map<std::string, VariableAttributes*> VariableAttributesMap;
