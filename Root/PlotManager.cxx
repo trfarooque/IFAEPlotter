@@ -223,7 +223,7 @@ void PlotManager::FillHistManager(){
     const std::string& var_rebinedges = varit->second->RebinEdges();
     double* var_rebinedges_ptr = 0;
     if( (var_rebin > 0) && (var_rebinedges != "") ){ 
-      var_rebinedges_ptr = new double[var_rebin]();
+      var_rebinedges_ptr = new double[var_rebin+1]();
       ParseRebinEdges(var_rebin, var_rebinedges, var_rebinedges_ptr);
     }
 
@@ -281,6 +281,13 @@ void PlotManager::FillHistManager(){
 
       std::string key = var_name + "_" + ds_suffix;
       TH1D* hsample = m_hstMngr->GetTH1D( key ); 
+
+      //REBIN FIRST
+      if(var_rebin > 0){
+	if(var_rebinedges_ptr != NULL){ hsample = VariableRebinning(key, hsample, var_rebin, var_rebinedges_ptr); }
+	else{ hsample->Rebin(var_rebin); }
+      }
+
       if(var_do_width && (samit->first != "SUM") ){ //bin width normalisation for SUM has already been done 
 	int nbin = hsample->GetNbinsX();
 	for(int nb = 0; nb <= nbin; nb++){
@@ -329,11 +336,6 @@ void PlotManager::FillHistManager(){
       }//signal sample for blinding thresh
 
       //Scaling
-      if(var_rebin > 0){
-	if(var_rebinedges_ptr != NULL){ hsample = VariableRebinning(key, hsample, var_rebin, var_rebinedges_ptr); }
-	else{ hsample->Rebin(var_rebin); }
-      }
-
       if( b_var_isShape && !var_draw_stack && samit->second->NoShape() ){continue;} //-perhaps move upstream?
       if(  b_var_isShape || (ds_drawScale == "SHAPE") || (!b_var_isShape && (ds_scaleToRef !="")) ){
 	double intgl = hsample->Integral();
@@ -375,7 +377,6 @@ void PlotManager::FillHistManager(){
 
     if(!makeBlinder && (blinder_key != "")){m_hstMngr->ClearTH1(blinder_key);}
     blinder_key.clear();
-
     delete var_rebinedges_ptr;
 
   }//variable loop
