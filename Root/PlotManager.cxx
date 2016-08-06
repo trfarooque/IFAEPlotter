@@ -35,16 +35,16 @@ PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
     gSystem->mkdir(m_opt->OutputFolder().c_str(), "TRUE");
   }
   if(m_opt->OutputFormat().find("PNG") != std::string::npos){ 
-    gSystem->mkdir( Form("%s/PNG",output_dir.c_str()), "TRUE");
+    gSystem->mkdir( Form("%sIFP_PNG",output_dir.c_str()), "TRUE");
   }
   if(m_opt->OutputFormat().find("PDF") != std::string::npos){ 
-    gSystem->mkdir( Form("%s/PDF",output_dir.c_str()), "TRUE");
+    gSystem->mkdir( Form("%sIFP_PDF",output_dir.c_str()), "TRUE");
   }
   if(m_opt->OutputFormat().find("EPS") != std::string::npos){ 
-    gSystem->mkdir( Form("%s/EPS",output_dir.c_str()), "TRUE");
+    gSystem->mkdir( Form("%sIFP_EPS",output_dir.c_str()), "TRUE");
   }
   if(m_opt->OutputFormat().find("CPP") != std::string::npos){ 
-    gSystem->mkdir( Form("%s/CPP",output_dir.c_str()), "TRUE");
+    gSystem->mkdir( Form("%sIFP_CPP",output_dir.c_str()), "TRUE");
   }
   //-------------------------------------------------------------------------------------------------
 
