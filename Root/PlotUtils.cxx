@@ -835,25 +835,43 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     //Write to output file/ print to a png
     std::string var_outdir = va_it->second->OutputFolder();
-    if(var_outdir != ""){
-      if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
-      gSystem->mkdir(Form("%s%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
-    }
 
     if(m_opt->OutputFormat().find("PNG") != std::string::npos){ 
-      canv_a->SaveAs(Form("%s%s%s.png" ,m_output_dir.c_str(), var_outdir.c_str() ,canv_name.c_str())); 
+
+      if(var_outdir != ""){
+	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
+	gSystem->mkdir(Form("%sPNG/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+      }
+
+      canv_a->SaveAs(Form("%sPNG/%s%s.png" ,m_output_dir.c_str(), var_outdir.c_str() ,canv_name.c_str())); 
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".png"<<std::endl;
     }
     if(m_opt->OutputFormat().find("EPS") != std::string::npos){ 
-      canv_a->SaveAs(Form("%s%s%s.eps" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));  
+
+      if(var_outdir != ""){
+	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
+	gSystem->mkdir(Form("%sEPS/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+      }
+
+      canv_a->SaveAs(Form("%sEPS/%s%s.eps" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));  
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".eps"<<std::endl;
    }
     if(m_opt->OutputFormat().find("PDF") != std::string::npos){
-      canv_a->SaveAs(Form("%s%s%s.pdf" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));
+      if(var_outdir != ""){
+	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
+	gSystem->mkdir(Form("%sPDF/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+      }
+
+      canv_a->SaveAs(Form("%sPDF/%s%s.pdf" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".pdf"<<std::endl;
     }
     if(m_opt->OutputFormat().find("CPP") != std::string::npos){
-      canv_a->SaveAs(Form("%s%s%s.C" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));
+      if(var_outdir != ""){
+	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
+	gSystem->mkdir(Form("%sCPP/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+      }
+
+      canv_a->SaveAs(Form("%sCPP/%s%s.C" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists writing "<<canv_name<<".C"<<std::endl;
     }
     if(m_opt->OutputFormat().find("ROOT") != std::string::npos){ 
