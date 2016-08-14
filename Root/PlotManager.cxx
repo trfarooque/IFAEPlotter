@@ -27,7 +27,27 @@ PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
   m_sys_map.clear();
   m_filekey_map.clear(); 
 
-  if(m_opt->OutputFolder() != ""){ gSystem->mkdir(m_opt->OutputFolder().c_str(), "TRUE"); }
+  //-------------------- Make the output directories for each type of file format -------------------
+  std::string output_dir = "";
+  if(m_opt->OutputFolder() != ""){
+    output_dir = m_opt->OutputFolder(); 
+    if(output_dir.substr(output_dir.size()-1) != "/"){output_dir += "/";}
+    gSystem->mkdir(m_opt->OutputFolder().c_str(), "TRUE");
+  }
+  if(m_opt->OutputFormat().find("PNG") != std::string::npos){ 
+    gSystem->mkdir( Form("%sIFP_PNG",output_dir.c_str()), "TRUE");
+  }
+  if(m_opt->OutputFormat().find("PDF") != std::string::npos){ 
+    gSystem->mkdir( Form("%sIFP_PDF",output_dir.c_str()), "TRUE");
+  }
+  if(m_opt->OutputFormat().find("EPS") != std::string::npos){ 
+    gSystem->mkdir( Form("%sIFP_EPS",output_dir.c_str()), "TRUE");
+  }
+  if(m_opt->OutputFormat().find("CPP") != std::string::npos){ 
+    gSystem->mkdir( Form("%sIFP_CPP",output_dir.c_str()), "TRUE");
+  }
+  //-------------------------------------------------------------------------------------------------
+
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"Parsing sample configuration"<<std::endl; 
   
