@@ -219,6 +219,7 @@ void PlotManager::FillHistManager(){
 
   for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
     const std::string& var_name = varit->second->Name();
+    //--
     int var_rebin = varit->second->Rebin();
     const std::string& var_rebinedges = varit->second->RebinEdges();
     double* var_rebinedges_ptr = 0;
@@ -226,7 +227,10 @@ void PlotManager::FillHistManager(){
       var_rebinedges_ptr = new double[var_rebin+1]();
       ParseRebinEdges(var_rebin, var_rebinedges, var_rebinedges_ptr);
     }
-
+    //---
+    bool   var_has_binshift = varit->second->HasBinShift();
+    double var_binshift = varit->second->BinShift();
+    //---
     const std::string& var_doScale = varit->second->DoScale(); 
     bool b_var_isShape = (var_doScale == "SHAPE");
     bool var_draw_stack = varit->second->DrawStack();
@@ -281,6 +285,21 @@ void PlotManager::FillHistManager(){
 
       std::string key = var_name + "_" + ds_suffix;
       TH1D* hsample = m_hstMngr->GetTH1D( key ); 
+      //SHIFT BIN EDGES IF NEEDED
+      if(var_has_binshift){
+	int nbin = hsample->GetNbinsX();
+	double oldmin = hsample->GetBinLowEdge(1);
+	double oldmax = hsample->GetBinLowEdge(nbin) + hsample->GetBinWidth(nbin);
+	TH1D* hsample_shifted = new TH1D(hsample->GetName(), hsample->GetTitle(), nbin, oldmin + var_binshift, oldmax+var_binshift);
+	for(int i = 1; i <= nbin; i++){
+	  hsample_shifted->SetBinContent( i, hsample->GetBinContent(i) );
+	  hsample_shifted->SetBinError( i, hsample->GetBinError(i) );
+	}
+	hsample_shifted->SetEntries( hsample->GetEntries() );
+	m_hstMngr->ReplaceTH1D(key, hsample_shifted);
+	hsample = hsample_shifted;
+      }//shift bin edges
+
 
       //REBIN FIRST
       if(var_rebin > 0){

@@ -53,7 +53,7 @@ class VariableAttributes{
 
 		     , bool is_count=false 
 		     , const std::string& resdrawopt="", const std::string& extralabel=""
-		     , int rebin=0, const std::string& rebinedges="", const std::string& output_folder="", const std::string& blinding="");
+		     , int rebin=0, const std::string& rebinedges="", double binshift=0., const std::string& output_folder="", const std::string& blinding="");
   VariableAttributes(VariableAttributes& q);
 
   ~VariableAttributes(){ }
@@ -68,6 +68,9 @@ class VariableAttributes{
   void SetIsLogX(bool isLogX){ m_is_logX = isLogX; }
   void SetRebin(int rebin){ m_rebin = rebin; }
   void SetRebinEdges(const std::string& rebinedges){ m_rebinedges = rebinedges; }
+  void SetHasBinShift(bool has_binshift){ m_has_binshift = has_binshift; }
+  void SetBinShift(double binshift){ m_binshift = binshift; }
+
   void SetDoScale(const std::string& do_scale){ m_do_scale = do_scale; }
   void SetDrawStack(bool draw_stack){ m_draw_stack = draw_stack; }
   void SetDrawRes(const std::string& draw_res){ m_draw_res = draw_res; }
@@ -175,6 +178,8 @@ class VariableAttributes{
   bool IsLogX() const { return m_is_logX; }
   int Rebin() const { return m_rebin; }
   const std::string& RebinEdges() const { return m_rebinedges; }
+  bool HasBinShift() const {return m_has_binshift; }
+  double BinShift() const {return m_binshift; }
   bool DoWidth() const { return m_do_width; }
   double ResMin() const { return m_resmin; }
   double ResMax() const { return m_resmax; }
@@ -282,6 +287,8 @@ class VariableAttributes{
   bool m_is_logX;
   int m_rebin;
   std::string m_rebinedges;
+  bool m_has_binshift;
+  double m_binshift;
   bool m_do_width;
   double m_resmin;
   double m_resmax; 
