@@ -148,6 +148,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   bool var_hasResLabelSize   = false;
   bool var_hasResLabelOffset = false;
 
+  bool var_has_xaxis_ndiv = false;
+  bool var_has_yaxis_ndiv = false;
+  bool var_has_resaxis_ndiv = false;
+
   bool var_hasBottomMargin = false;
   bool var_hasTopMargin    = false;
   bool var_hasLeftMargin   = false;
@@ -179,6 +183,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   double var_ylabel_offset = 0.;
   double var_reslabel_size = 0.;
   double var_reslabel_offset = 0.;
+
+  int var_xaxis_ndiv    = 0;
+  int var_yaxis_ndiv    = 0;
+  int var_resaxis_ndiv  = 0;
 
   double var_bottom_margin = 0.;
   double var_top_margin = 0.;
@@ -267,10 +275,18 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     var_hasResLabelSize   = va_it->second->HasResLabelSize();
     var_hasResLabelOffset = va_it->second->HasResLabelOffset();
 
+    var_has_xaxis_ndiv   = va_it->second->HasXAxisNdiv();
+    var_has_yaxis_ndiv   = va_it->second->HasYAxisNdiv();
+    var_has_resaxis_ndiv = va_it->second->HasResAxisNdiv();
+
     var_hasBottomMargin = va_it->second->HasBottomMargin();
     var_hasTopMargin    = va_it->second->HasTopMargin();
     var_hasLeftMargin   = va_it->second->HasLeftMargin();
     var_hasRightMargin  = va_it->second->HasRightMargin();
+
+    var_xaxis_ndiv   = va_it->second->XAxisNdiv();
+    var_yaxis_ndiv   = va_it->second->YAxisNdiv();
+    var_resaxis_ndiv = va_it->second->ResAxisNdiv();
 
     var_xmin = 0.; 
     var_xmax = 0.; 
@@ -693,10 +709,16 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       }
       if(var_ylabel != ""){ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle(var_ylabel.c_str()); }
       else{ hs_stack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_stack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
-      if(var_isCount){
-	hs_stack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false);
-	hs_stack_a->GetHistogram()->GetXaxis()->CenterLabels();
-      }
+
+      if(var_has_xaxis_ndiv){ hs_stack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xaxis_ndiv, false); }
+      else if(var_isCount)  { hs_stack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false); }
+      if(var_has_yaxis_ndiv){ hs_stack_a->GetHistogram()->GetYaxis()->SetNdivisions(var_yaxis_ndiv, false); }
+
+
+      //if(var_has_resaxis_ndiv){ hs_stack_a->GetHistogram()->GetYaxis()->SetNdivisions(var_resaxis_ndiv, false); }
+
+
+      if(var_isCount){ hs_stack_a->GetHistogram()->GetXaxis()->CenterLabels(); }
 
       hs_stack_a->GetHistogram()->GetYaxis()->SetTitleOffset(var_ytitle_offset);
       hs_stack_a->GetHistogram()->GetYaxis()->SetTitleSize(var_ytitle_size);
@@ -726,10 +748,11 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       if(var_ylabel != ""){ hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle(var_ylabel.c_str()); }
       else{ hs_nostack_a->GetHistogram()->GetYaxis()->SetTitle( ((TH1D*)(hs_nostack_a->GetStack()->First()))->GetYaxis()->GetTitle() ) ; }
 
-      if(var_isCount){
-	hs_nostack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false);
-	hs_nostack_a->GetHistogram()->GetXaxis()->CenterLabels();
-      }
+      if(var_has_xaxis_ndiv){ hs_nostack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xaxis_ndiv, false); }
+      else if(var_isCount)  { hs_nostack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false); }
+      if(var_has_yaxis_ndiv){ hs_nostack_a->GetHistogram()->GetYaxis()->SetNdivisions(var_yaxis_ndiv, false); }
+
+      if(var_isCount){ hs_nostack_a->GetHistogram()->GetXaxis()->CenterLabels(); }
 
       hs_nostack_a->GetHistogram()->GetYaxis()->SetTitleOffset(var_ytitle_offset);
       hs_nostack_a->GetHistogram()->GetYaxis()->SetTitleSize(var_ytitle_size);
@@ -808,10 +831,11 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       hs_res_a->SetMaximum(r_max);
       lnref->DrawClone("same");
 
-      if(var_isCount){
-	hs_res_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false);
-	hs_res_a->GetHistogram()->GetXaxis()->CenterLabels();
-      }
+      if(var_has_xaxis_ndiv){ hs_res_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xaxis_ndiv, false); }
+      else if(var_isCount)  { hs_res_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false); }
+      if(var_has_resaxis_ndiv){ hs_res_a->GetHistogram()->GetYaxis()->SetNdivisions(var_resaxis_ndiv, false); }
+
+      if(var_isCount){ hs_res_a->GetHistogram()->GetXaxis()->CenterLabels(); }
 
       hs_res_a->GetHistogram()->GetXaxis()->SetTitleOffset(var_xtitle_offset);
       hs_res_a->GetHistogram()->GetYaxis()->SetTitleOffset(var_restitle_offset);
