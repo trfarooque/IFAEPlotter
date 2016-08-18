@@ -42,6 +42,10 @@ class VariableAttributes{
 		     , bool has_reslabel_size=false, bool has_reslabel_offset=false
 		     , double reslabel_size=0., double reslabel_offset=0.
 
+		     , bool has_xaxis_ndiv=false, int xaxis_ndiv=0
+		     , bool has_yaxis_ndiv=false, int yaxis_ndiv=0
+		     , bool has_resaxis_ndiv=false, int resaxis_ndiv=0
+
 		     , bool has_bottom_margin=false, bool has_top_margin=false
 		     , bool has_left_margin=false, bool has_right_margin=false
 		     , double bottom_margin=0., double top_margin=0.
@@ -136,6 +140,14 @@ class VariableAttributes{
   void SetResLabelOffset(double reslabel_offset){ m_reslabel_offset = reslabel_offset; }
   void SetResLabelSize(double reslabel_size){ m_reslabel_size = reslabel_size; }
 
+  void SetHasXAxisNdiv(bool has_xaxis_ndiv){ m_has_xaxis_ndiv = has_xaxis_ndiv; }
+  void SetHasYAxisNdiv(bool has_yaxis_ndiv){ m_has_yaxis_ndiv = has_yaxis_ndiv; }
+  void SetHasResAxisNdiv(bool has_resaxis_ndiv){ m_has_resaxis_ndiv = has_resaxis_ndiv; }
+
+  void SetXAxisNdiv(int xaxis_ndiv){ m_xaxis_ndiv = xaxis_ndiv; }
+  void SetYAxisNdiv(int yaxis_ndiv){ m_yaxis_ndiv = yaxis_ndiv; }
+  void SetResAxisNdiv(int resaxis_ndiv){ m_resaxis_ndiv = resaxis_ndiv; }
+
   void SetHasBottomMargin(bool has_bottom_margin){ m_has_bottom_margin = has_bottom_margin; }
   void SetHasTopMargin(bool has_top_margin){ m_has_top_margin = has_top_margin; }
   void SetHasLeftMargin(bool has_left_margin){ m_has_left_margin = has_left_margin; }
@@ -228,6 +240,15 @@ class VariableAttributes{
   double YLabelOffset() const { return m_ylabel_offset; }
   double ResLabelSize() const { return m_reslabel_size; }
   double ResLabelOffset() const { return m_reslabel_offset; }
+
+  bool HasXAxisNdiv() const { return m_has_xaxis_ndiv; }
+  bool HasYAxisNdiv() const { return m_has_yaxis_ndiv; }
+  bool HasResAxisNdiv() const { return m_has_resaxis_ndiv; }
+
+  int XAxisNdiv() const { return m_xaxis_ndiv; }
+  int YAxisNdiv() const { return m_yaxis_ndiv; }
+  int ResAxisNdiv() const { return m_resaxis_ndiv; }
+
 
   bool HasBottomMargin() const { return m_has_bottom_margin; }
   bool HasTopMargin() const { return m_has_top_margin; }
@@ -326,6 +347,14 @@ class VariableAttributes{
   double m_ylabel_offset;
   double m_reslabel_size;
   double m_reslabel_offset;
+
+  bool m_has_xaxis_ndiv;
+  bool m_has_yaxis_ndiv;
+  bool m_has_resaxis_ndiv;
+
+  int m_xaxis_ndiv;
+  int m_yaxis_ndiv;
+  int m_resaxis_ndiv;
 
   bool m_has_bottom_margin;
   bool m_has_top_margin;

@@ -35,7 +35,11 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
 					, double ylabel_size, double ylabel_offset
 					, bool has_reslabel_size, bool has_reslabel_offset
 					, double reslabel_size, double reslabel_offset
-					
+				       
+				       , bool has_xaxis_ndiv, int xaxis_ndiv
+				       , bool has_yaxis_ndiv, int yaxis_ndiv
+				       , bool has_resaxis_ndiv, int resaxis_ndiv
+				       
 					, bool has_bottom_margin, bool has_top_margin
 					, bool has_left_margin, bool has_right_margin
 					, double bottom_margin, double top_margin
@@ -121,6 +125,14 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
   m_ylabel_offset(ylabel_offset),
   m_reslabel_size(reslabel_size),
   m_reslabel_offset(reslabel_offset),
+
+  m_has_xaxis_ndiv(has_xaxis_ndiv),
+  m_has_yaxis_ndiv(has_yaxis_ndiv),
+  m_has_resaxis_ndiv(has_resaxis_ndiv),
+
+  m_xaxis_ndiv(xaxis_ndiv),
+  m_yaxis_ndiv(yaxis_ndiv),
+  m_resaxis_ndiv(resaxis_ndiv),
 
   m_has_bottom_margin(has_bottom_margin),
   m_has_top_margin(has_top_margin),
@@ -225,6 +237,14 @@ VariableAttributes::VariableAttributes(VariableAttributes& q){
   m_has_top_margin     = q.m_has_top_margin;
   m_has_left_margin    = q.m_has_left_margin;
   m_has_right_margin   = q.m_has_right_margin;
+
+  m_has_xaxis_ndiv     = q.m_has_xaxis_ndiv;
+  m_has_yaxis_ndiv     = q.m_has_yaxis_ndiv;
+  m_has_resaxis_ndiv   = q.m_has_resaxis_ndiv;
+
+  m_xaxis_ndiv         = q.m_xaxis_ndiv;
+  m_yaxis_ndiv         = q.m_yaxis_ndiv;
+  m_resaxis_ndiv       = q.m_resaxis_ndiv;
 
   m_bottom_margin      = q.m_bottom_margin;
   m_top_margin         = q.m_top_margin;
@@ -410,6 +430,20 @@ VariableAttributesMap VariableAttributes::ParseVariableConfig( Plotter_Options* 
     if( keymap.find("RESLABELOFFSET") != keymap.end() && (keymap["RESLABELOFFSET"] != "") ){ 
       varObj->SetResLabelOffset(atof(keymap["RESLABELOFFSET"].c_str())); 
       varObj->SetHasResLabelOffset(true);
+    }
+
+    //------------
+    if( keymap.find("XAXISNDIV") != keymap.end() && (keymap["XAXISNDIV"] != "") ){ 
+      varObj->SetXAxisNdiv(atoi(keymap["XAXISNDIV"].c_str())); 
+      varObj->SetHasXAxisNdiv(true);
+    }
+    if( keymap.find("YAXISNDIV") != keymap.end() && (keymap["YAXISNDIV"] != "") ){ 
+      varObj->SetYAxisNdiv(atoi(keymap["YAXISNDIV"].c_str())); 
+      varObj->SetHasYAxisNdiv(true);
+    }
+    if( keymap.find("RESAXISNDIV") != keymap.end() && (keymap["RESAXISNDIV"] != "") ){ 
+      varObj->SetResAxisNdiv(atoi(keymap["RESAXISNDIV"].c_str())); 
+      varObj->SetHasResAxisNdiv(true);
     }
 
     //------------
