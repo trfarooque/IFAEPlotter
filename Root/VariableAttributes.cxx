@@ -46,7 +46,7 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
 					, double left_margin, double right_margin
 					, bool is_count 
 					, const std::string& resdrawopt, const std::string& extralabel
-				       , int rebin, const std::string& rebinedges, const std::string& output_folder, const std::string& blinding) :
+				       , int rebin, const std::string& rebinedges, double binshift, const std::string& output_folder, const std::string& blinding) :
   
   m_name(name),
   m_label(label),
@@ -60,6 +60,7 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
   m_is_logX(isLogX),
   m_rebin(rebin),
   m_rebinedges(rebinedges),
+  m_binshift(binshift),
   m_do_width(do_width),
   m_resmin(resmin),
   m_resmax(resmax),
@@ -167,6 +168,8 @@ VariableAttributes::VariableAttributes(VariableAttributes& q){
   m_is_logX            = q.m_is_logX;
   m_rebin              = q.m_rebin;
   m_rebinedges         = q.m_rebinedges;
+  m_has_binshift       = q.m_has_binshift;
+  m_binshift           = q.m_binshift;
   m_do_width           = q.m_do_width;
   m_resmin             = q.m_resmin;
   m_resmax             = q.m_resmax;
@@ -307,6 +310,10 @@ VariableAttributesMap VariableAttributes::ParseVariableConfig( Plotter_Options* 
     if( keymap.find("BLINDING") != keymap.end() ){ varObj->SetBlinding(keymap["BLINDING"]); }
     if( keymap.find("OUTPUTFOLDER") != keymap.end() ){ varObj->SetOutputFolder(keymap["OUTPUTFOLDER"]); }
 
+    if( keymap.find("BINSHIFT") != keymap.end() && (keymap["BINSHIFT"] != "") ){ 
+      varObj->SetBinShift(atof(keymap["BINSHIFT"].c_str())); 
+      varObj->SetHasBinShift(true);
+    }
 
     if( keymap.find("RESMIN") != keymap.end() && (keymap["RESMIN"] != "") ){ 
       varObj->SetResMin(atof(keymap["RESMIN"].c_str())); 
