@@ -451,6 +451,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       ds_draw_stack = !doGraphs && at_it->second->DrawStack();
       ds_res_opt = at_it->second->ResOpt();
       bool ds_isBlind = (ds_name == m_opt->BlindSample());
+
       std::string hist_name = var_name + "_" + ds_suffix;
       SetStyleHist(hist_name, ds_stylekey);
       TH1D* hist_a = m_hstMngr->GetTH1D(hist_name);
@@ -562,11 +563,16 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     if(var_hasYMin){var_ymin = va_it->second->YMin();}
     else if(opt_hasYMin){var_ymin = m_opt->YMin();}
     else{
-      stretch_min = var_isLogY ? 1.E-2 : 0.5; 
-      var_ymin = (hs_nostack_a->GetNhists() > 0) ? hs_nostack_a->GetMinimum() : var_ymin;
+      var_ymin = (hs_nostack_a->GetNhists() > 0) ? hs_nostack_a->GetMinimum("nostack") : var_ymin;
       if(var_draw_stack && (hs_stack_a->GetNhists() > 0)){
-	var_ymin = min(var_ymin, hs_stack_a->GetMinimum());
+	var_ymin = min(var_ymin, hs_stack_a->GetMinimum("nostack"));
       }
+
+      if(var_ymin > 0.){
+	stretch_min = var_isLogY ? 1.E-2 : 0.5; 
+      }
+      else{ stretch_min = 1.35;  }
+
       var_ymin = stretch_min*var_ymin;
     }
 
@@ -584,7 +590,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       else{ 
 	stretch_max = 1.35; 
 	double stretch_max_leg = ( leg_a->GetY1NDC() > 0. ) ? 1./leg_a->GetY1NDC() : 1.35;
-
 	if(stretch_max_leg > stretch_max){
 
 	  //The x-range of the legend
@@ -612,19 +617,27 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	  }
 
 	  if(var_isLogY){ var_ymax_legrange = pow(var_ymax_legrange, stretch_max_leg)/pow(var_ymin, stretch_max_leg -1.); }
-	  else{ var_ymax_legrange = stretch_max_leg*var_ymax_legrange - (1. - stretch_max_leg)*var_ymin; }
+	  else{ var_ymax_legrange = stretch_max_leg*var_ymax_legrange + (1. - stretch_max_leg)*var_ymin; }
 
 	}//if legend extent is more than default stretch factor
 
       } //if stretch factor is not provided
 
       if(var_isLogY){ var_ymax = pow(var_ymax, stretch_max)/pow(var_ymin, stretch_max -1.); }
-      else{ var_ymax = stretch_max*var_ymax - (1. - stretch_max)*var_ymin; }
+      else{ var_ymax = stretch_max*var_ymax + (1. - stretch_max)*var_ymin; }
       var_ymax = max(var_ymax, var_ymax_legrange);
 
     }//if ymax coordinate not provided
-    if(drawRes && !var_isLogY && var_ymin <= 1.e-5){var_ymin = 1.1e-5;}
-    else if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
+
+    if(!(var_hasYMin || opt_hasYMin)){
+      if(var_ymin >= 0){
+	if(drawRes && !var_isLogY && var_ymin <= 1.e-5){var_ymin = 1.e-5;} //to hide the zero
+	else if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; } //for logy to work
+
+	if(drawRes && !var_isLogY && var_ymin <= 1.e-5){var_ymin = 1.e-5;} //to hide the zero
+	else if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; } //for logy to work
+      }
+    }
 
     //==================================================== Resizing done ======================================================================
 
@@ -714,10 +727,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       else if(var_isCount)  { hs_stack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false); }
       if(var_has_yaxis_ndiv){ hs_stack_a->GetHistogram()->GetYaxis()->SetNdivisions(var_yaxis_ndiv, false); }
 
-
-      //if(var_has_resaxis_ndiv){ hs_stack_a->GetHistogram()->GetYaxis()->SetNdivisions(var_resaxis_ndiv, false); }
-
-
       if(var_isCount){ hs_stack_a->GetHistogram()->GetXaxis()->CenterLabels(); }
 
       hs_stack_a->GetHistogram()->GetYaxis()->SetTitleOffset(var_ytitle_offset);
@@ -778,7 +787,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	if(h_blinder->GetBinContent(b) > 0){h_blinder->SetBinContent(b, var_ymax);}
       }
       std::string blinder_drawopt = "same" + m_attrbt_map["BLINDER"]->DrawOpt();
-      //canv_a->cd(1);
       h_blinder->Draw(blinder_drawopt.c_str());
       blinder_drawopt.clear();
     }
@@ -796,9 +804,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     if(drawRes){
       curpad = (TPad*)(canv_a->cd(2));
       if(var_isLogX){curpad->SetLogx();}
-
-      //double r_min = 0.9*hs_res_a->GetHistogram()->GetMinimum();
-      //double r_max = 1.1*hs_res_a->GetHistogram()->GetMaximum();
 
       double r_min = 0.; double r_max = 0.;
       if(var_hasResMin){r_min = va_it->second->ResMin();}

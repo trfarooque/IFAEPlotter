@@ -291,6 +291,8 @@ void PlotManager::FillHistManager(){
 	double oldmin = hsample->GetBinLowEdge(1);
 	double oldmax = hsample->GetBinLowEdge(nbin) + hsample->GetBinWidth(nbin);
 	TH1D* hsample_shifted = new TH1D(hsample->GetName(), hsample->GetTitle(), nbin, oldmin + var_binshift, oldmax+var_binshift);
+	hsample_shifted->GetXaxis()->SetTitle( hsample_shifted->GetXaxis()->GetTitle() ); 
+	hsample_shifted->GetYaxis()->SetTitle( hsample_shifted->GetYaxis()->GetTitle() ); 
 	for(int i = 1; i <= nbin; i++){
 	  hsample_shifted->SetBinContent( i, hsample->GetBinContent(i) );
 	  hsample_shifted->SetBinError( i, hsample->GetBinError(i) );
@@ -299,7 +301,6 @@ void PlotManager::FillHistManager(){
 	m_hstMngr->ReplaceTH1D(key, hsample_shifted);
 	hsample = hsample_shifted;
       }//shift bin edges
-
 
       //REBIN FIRST
       if(var_rebin > 0){
