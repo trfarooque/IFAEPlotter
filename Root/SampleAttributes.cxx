@@ -8,9 +8,9 @@ SampleAttributes::SampleAttributes(const std::string& name, const std::string& s
 				   , const std::string& drawopt, const std::string& legopt
 				   , const std::string& drawscale, const std::string& scale_to_ref
 				   , bool draw_stack, bool do_sum, int res_opt, const std::string& resdrawopt
-				   , const std::string& blinding, const std::string& yield_format
+				   , const std::string& blinding, const std::string& print_format
 				   , bool write, const std::string& outfile_name
-				   , const std::string& in_suffix, const std::string& in_prefix, bool no_shape) : 
+				   , const std::string& in_suffix, const std::string& in_prefix, bool no_shape, const std::string& print_value) : 
   m_name(name),
   m_suffix(suffix),
   m_leglabel(leglabel),
@@ -21,10 +21,11 @@ SampleAttributes::SampleAttributes(const std::string& name, const std::string& s
   m_scale_to_ref(scale_to_ref),
   m_legopt(legopt),
   m_blinding(blinding),
-  m_yield_format(yield_format),
+  m_print_format(print_format),
   m_outfile_name(outfile_name),
   m_in_suffix(in_suffix),
   m_in_prefix(in_prefix),
+  m_print_value(print_value),
   m_draw_stack(draw_stack),
   m_do_sum(do_sum),
   m_res_opt(res_opt),
@@ -46,10 +47,11 @@ SampleAttributes::SampleAttributes(SampleAttributes& q){
   m_scale_to_ref     = q.m_scale_to_ref;
   m_legopt           = q.m_legopt;
   m_blinding         = q.m_blinding;
-  m_yield_format     = q.m_yield_format;
+  m_print_format     = q.m_print_format;
   m_outfile_name     = q.m_outfile_name;
   m_in_suffix        = q.m_in_suffix;
   m_in_prefix        = q.m_in_prefix;
+  m_print_value      = q.m_print_value;
   m_draw_stack       = q.m_draw_stack;
   m_do_sum           = q.m_do_sum;
   m_res_opt          = q.m_res_opt;
@@ -113,7 +115,9 @@ SampleAttributesMap SampleAttributes::ParseSampleConfig( Plotter_Options* opt ){
       else{ std::cout<<"UNknown value "<<keymap["RESOPT"]<<" for RESOPT option"<<std::endl; }
     }
     if( keymap.find("BLINDING") != keymap.end() ){ sampleObj->SetBlinding(keymap["BLINDING"]); }
-    if( keymap.find("YIELDFORMAT") != keymap.end() ){ sampleObj->SetYieldFormat(keymap["YIELDFORMAT"]); }
+    if( keymap.find("YIELDFORMAT") != keymap.end() ){ sampleObj->SetPrintFormat(keymap["YIELDFORMAT"]); }
+    if( keymap.find("PRINTFORMAT") != keymap.end() ){ sampleObj->SetPrintFormat(keymap["PRINTFORMAT"]); }
+    if( keymap.find("PRINTVALUE") != keymap.end() ){ sampleObj->SetPrintValue(keymap["PRINTVALUE"]); }
     if( keymap.find("WRITE") != keymap.end() ){ sampleObj->SetWrite(AnalysisUtils::BoolValue(keymap["WRITE"], "WRITE")); }
     if( keymap.find("OUTFILENAME") != keymap.end() ){ sampleObj->SetOutFileName(keymap["OUTFILENAME"]); }
     if( keymap.find("NOSHAPE") != keymap.end() ){ sampleObj->SetNoShape(AnalysisUtils::BoolValue(keymap["NOSHAPE"], "NOSHAPE")); }

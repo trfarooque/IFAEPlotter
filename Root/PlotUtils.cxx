@@ -1,4 +1,4 @@
-//////////// THIS SIDE UP ///////////////////////////////////////////////////////
+/////////// THIS SIDE UP ///////////////////////////////////////////////////////
 #include "IFAEPlotter/PlotUtils.h"
 #include "IFAEPlotter/StyleDictionary.h"
 #include "IFAEPlotter/Plotter_Options.h"
@@ -78,9 +78,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists start"<<std::endl; 
 
   bool doGraphs = ((projopt == "MEAN") || (projopt == "RMS") || (projopt == "FRACRMS") || (projopt == "EFF") );
-  const std::string& glob_ttl = m_opt->Title();
-  // int nsample = m_attrbt_map.size();
-  //int ndist = m_var_map.size();
+  const std::string& glob_ttl        = m_opt->Title();
 
   bool opt_hasResMin = (m_opt->OptStr().find("--RESMIN") != std::string::npos); 
   bool opt_hasResMax = (m_opt->OptStr().find("--RESMAX") != std::string::npos);
@@ -113,7 +111,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   bool opt_hasTopMargin      = (m_opt->OptStr().find("--TOPMARGIN") != std::string::npos);
   bool opt_hasLeftMargin     = (m_opt->OptStr().find("--LEFTMARGIN") != std::string::npos);
   bool opt_hasRightMargin    = (m_opt->OptStr().find("--RIGHTMARGIN") != std::string::npos);
-  
+
   bool var_draw_stack = 0;
   bool var_do_width = false;
   bool var_isLogY = false;
@@ -199,7 +197,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   bool ds_draw_stack = false;
   int ds_res_opt = -1;
   std::string ds_res_erropt = "";
-
+  std::string ds_print_text = "";
   //One preliminary loop to find the baseline sample
   std::string s_base_name = ""; 
   std::string s_base_suffix = "";
@@ -366,7 +364,9 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     //---------------------------------------------------------
     TLegend* leg_a = new TLegend();
-    TLegend* leg_yield = (m_opt->ShowYields() && (!var_isShape || var_draw_stack) ) ? new TLegend() : NULL;
+    bool print_text = (m_opt->ShowYields() && (!var_isShape || var_draw_stack) ) || (m_opt->PrintValue() != "") ;
+
+    TLegend* leg_text = print_text ? new TLegend() : NULL;
 
     double leg_textsize=0.;
     if(va_it->second->HasLegendTextSize()){ leg_textsize = va_it->second->LegendTextSize(); }
@@ -377,9 +377,9 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     SetStyleLegend(*leg_a, leg_textsize);
     leg_a->Clear();
-    if(leg_yield){
-      SetStyleLegend(*leg_yield, leg_textsize, 42, 0.04);
-      leg_yield->Clear();
+    if(leg_text){
+      SetStyleLegend(*leg_text, leg_textsize, 42, 0.04);
+      leg_text->Clear();
     }
     //---------------------------------------------------------------
     TPaveText* ttlbox = NULL;
@@ -434,6 +434,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       //if( (m_samples_noshape != NULL) && var_isShape && (std::find(m_samples_noshape->begin(), m_samples_noshape->end(), at_it->first) != m_samples_noshape->end()) ){continue;}
       if(at_it->first == "BLINDER" && !var_drawBlinder){continue;}
 
+
       const std::string& ds_name = at_it->second->Name();
       const std::string& ds_suffix = at_it->second->Suffix();
       const std::string& ds_leglabel = at_it->second->LegLabel();
@@ -441,7 +442,9 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       const std::string& ds_drawopt = at_it->second->DrawOpt();
       const std::string& ds_resdrawopt = at_it->second->ResDrawOpt();
       const std::string& ds_legopt =  at_it->second->LegOpt();
-      const std::string& ds_yield_format = (at_it->second->YieldFormat() != "") ? at_it->second->YieldFormat() : m_opt->YieldFormat();
+      const std::string& ds_print_format = (at_it->second->PrintFormat() != "") ? at_it->second->PrintFormat() : m_opt->PrintFormat();
+      const std::string& ds_print_value = m_opt->ShowYields() ? "YIELD" : 
+	( (at_it->second->PrintValue() != "") ? at_it->second->PrintValue() : m_opt->PrintValue() );
 
       ds_res_erropt = "";
       if( var_draw_res_err  == "REFBAND" ){ ds_res_erropt = "SCALE"; } //scale both REF and INC sample error by the factor used for the division
@@ -451,6 +454,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       ds_draw_stack = !doGraphs && at_it->second->DrawStack();
       ds_res_opt = at_it->second->ResOpt();
       bool ds_isBlind = (ds_name == m_opt->BlindSample());
+
+      bool ds_leg_empty = (leg_text==NULL) || (var_blind_yield && ds_isBlind) || (ds_print_format == "NONE") 
+	|| (ds_print_value == "NONE") || (ds_isShape && ds_print_value == "YIELD");
+
       std::string hist_name = var_name + "_" + ds_suffix;
       SetStyleHist(hist_name, ds_stylekey);
       TH1D* hist_a = m_hstMngr->GetTH1D(hist_name);
@@ -485,12 +492,33 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	  legopt.clear();
 	}
 
-	if(!doGraphs && leg_yield){ 
-	  if( !(ds_isShape || (var_blind_yield && ds_isBlind) || (ds_yield_format == "NONE")) ){
-	    leg_yield->AddEntry(hist_a, Form(ds_yield_format.c_str(),hist_a->Integral(var_yield_opt.c_str())), "");
+	ds_print_text = "";
+	if(!doGraphs && leg_text){ 
+	  if(ds_leg_empty){ leg_text->AddEntry(hist_a, " ", ""); }
+	  else{
+	    //Find correct text to insert into legend
+	    if(ds_print_value.find("YIELD") != std::string::npos){
+	      if(!ds_print_text.empty()){ ds_print_text += "  "; }
+	      ds_print_text += Form(ds_print_format.c_str(),hist_a->Integral(var_yield_opt.c_str()));
+	    }
+	    if(ds_print_value.find("ENTRIES") != std::string::npos){
+	      if(!ds_print_text.empty()){ ds_print_text += "  "; }
+	      ds_print_text += Form(ds_print_format.c_str(),hist_a->GetEntries());
+	    }
+	    if(ds_print_value.find("MEAN") != std::string::npos){
+	      if(!ds_print_text.empty()){ ds_print_text += "  "; }
+	      ds_print_text += Form(ds_print_format.c_str(),hist_a->GetMean());
+	    }
+	    if(ds_print_value.find("RMS") != std::string::npos){
+	      if(!ds_print_text.empty()){ ds_print_text += "  "; }
+	      ds_print_text += Form(ds_print_format.c_str(),hist_a->GetRMS());
+	    }
+	    leg_text->AddEntry(hist_a, ds_print_text.c_str(), "");
 	  }
-	  else{ leg_yield->AddEntry(hist_a, " ", ""); }
-	}
+
+	}//If drawing a legend for text
+
+	//==================================
 
       }//if leglabel was not provided, then clearly the sample is not meant to be added to the legend
 
@@ -546,9 +574,9 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     if(var_hasLegendYMin){ var_legend_ymin = va_it->second->LegendYMin(); }
     else if(opt_hasLegendYMin){ var_legend_ymin = m_opt->LegendYMin(); }
     */
-    if(leg_yield){
-      ResizeLegend(*leg_yield, var_legend_xmax, var_legend_ymax);
-      ResizeLegend(*leg_a, leg_yield->GetX1NDC(), leg_yield->GetY2NDC() );
+    if(leg_text){
+      ResizeLegend(*leg_text, var_legend_xmax, var_legend_ymax);
+      ResizeLegend(*leg_a, leg_text->GetX1NDC(), leg_text->GetY2NDC() );
     }
     else{ ResizeLegend(*leg_a, var_legend_xmax, var_legend_ymax );}
 
@@ -787,7 +815,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     curpad->RedrawAxis();
 
     leg_a->Draw();
-    if(leg_yield){ leg_yield->Draw(); }
+    if(leg_text){ leg_text->Draw(); }
 
     curpad->Update();
     curpad->Modified();
@@ -912,7 +940,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     delete ttlbox;
     curpad = NULL;
     delete leg_a;
-    delete leg_yield;
+    delete leg_text;
     //Clear strings
     //var_name.clear();
     //var_label.clear();

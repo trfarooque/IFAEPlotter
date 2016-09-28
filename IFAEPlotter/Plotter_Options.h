@@ -36,7 +36,7 @@ public:
     inline const std::string& Blinding() const { return m_blinding; }
     inline const std::string& BlindSample() const { return m_blind_sample; }
     inline const std::string& BlindCriterion() const { return m_blind_criterion; }
-    inline const std::string& YieldFormat() const { return m_yield_format; } 
+    inline const std::string& PrintFormat() const { return m_print_format; } 
     inline const std::string& DistributionsFile()  const { return m_dist_file; }
 
     inline bool NewConfigFormat() const { return m_new_config_format; }
@@ -52,7 +52,8 @@ public:
     inline double YScale() const { return m_yscale; }
     inline double XMin() const { return m_xmin; }
     inline double XMax() const { return m_xmax; }
-    inline bool ShowYields() const { return m_show_yields; }
+    inline bool ShowYields() const { return m_show_yields; }//backward compatibility
+    inline const std::string PrintValue() const { return m_print_value; }
     inline bool WriteHistos() const { return m_write_histos; }
     inline bool Do1DPlots() const { return m_do1DPlots; }
     inline bool DoProjections() const { return m_doProjections; }
@@ -119,8 +120,9 @@ private:
     std::string m_blinding;
     std::string m_blind_sample;
     std::string m_blind_criterion;
-    std::string m_yield_format;
+    std::string m_print_format;
     std::string m_dist_file;
+    std::string m_print_value;
 
     bool m_new_config_format;
     bool m_new_sample_format;
