@@ -53,10 +53,11 @@ class VariableAttributes{
 
 		     , bool is_count=false 
 		     , const std::string& resdrawopt="", const std::string& extralabel=""
-		     , int rebin=0, const std::string& rebinedges="", double binshift=0., const std::string& output_folder="", const std::string& blinding="");
+		     , int rebin=0, const std::string& rebinedges="", double binshift=0., const std::string& bin_labels_str=""
+		     , const std::string& output_folder="", const std::string& blinding="");
   VariableAttributes(VariableAttributes& q);
 
-  ~VariableAttributes(){ }
+  ~VariableAttributes();
 
   static std::map<std::string, VariableAttributes*> ParseVariableConfig( Plotter_Options* opt );
 
@@ -70,6 +71,7 @@ class VariableAttributes{
   void SetRebinEdges(const std::string& rebinedges){ m_rebinedges = rebinedges; }
   void SetHasBinShift(bool has_binshift){ m_has_binshift = has_binshift; }
   void SetBinShift(double binshift){ m_binshift = binshift; }
+  void SetBinLabelsStr(const std::string& bin_labels_str){ m_bin_labels_str = bin_labels_str; }
 
   void SetDoScale(const std::string& do_scale){ m_do_scale = do_scale; }
   void SetDrawStack(bool draw_stack){ m_draw_stack = draw_stack; }
@@ -165,6 +167,7 @@ class VariableAttributes{
   void SetNProjBin(int nprojbin){ m_nprojbin = nprojbin; }
   void SetExtraLabel(const std::string& extralabel){ m_extralabel = extralabel; }
   void SetOutputFolder(const std::string& output_folder){ m_output_folder = output_folder; }
+  void SetBinLabelsMap(std::map<int, std::string>* bin_labels_map){ m_bin_labels_map = bin_labels_map; }
 
   const std::string& Name() const { return m_name; }
   const std::string& Label() const { return m_label; }
@@ -178,8 +181,10 @@ class VariableAttributes{
   bool IsLogX() const { return m_is_logX; }
   int Rebin() const { return m_rebin; }
   const std::string& RebinEdges() const { return m_rebinedges; }
-  bool HasBinShift() const {return m_has_binshift; }
-  double BinShift() const {return m_binshift; }
+  bool HasBinShift() const { return m_has_binshift; }
+  double BinShift() const { return m_binshift; }
+  const std::string& BinLabelsStr() const{ return m_bin_labels_str; } 
+
   bool DoWidth() const { return m_do_width; }
   double ResMin() const { return m_resmin; }
   double ResMax() const { return m_resmax; }
@@ -273,6 +278,8 @@ class VariableAttributes{
   const std::string& ExtraLabel() const { return m_extralabel; }
   const std::string& OutputFolder() const { return m_output_folder; }
 
+  std::map<int, std::string>* BinLabelsMap() const{ return m_bin_labels_map; }
+
  private:  
 
   std::string m_name;
@@ -289,6 +296,7 @@ class VariableAttributes{
   std::string m_rebinedges;
   bool m_has_binshift;
   double m_binshift;
+  std::string m_bin_labels_str;
   bool m_do_width;
   double m_resmin;
   double m_resmax; 
@@ -380,6 +388,11 @@ class VariableAttributes{
   std::string m_blinding;
   std::string m_extralabel;
   std::string m_output_folder;
+
+  std::map<int, std::string>* m_bin_labels_map;
+
+  void ParseBinLabels();
+
 };
 
 typedef std::map<std::string, VariableAttributes*> VariableAttributesMap;

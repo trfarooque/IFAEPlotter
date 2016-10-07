@@ -4,49 +4,50 @@
 #include <iostream>
 
 VariableAttributes::VariableAttributes(const std::string& name, const std::string& label, const std::string& do_scale
-					, bool do_width, bool draw_stack, const std::string& draw_res, const std::string& draw_res_err
-					, bool isLogY, bool isLogX
-					, const std::string& ylabel, const std::string& reslabel
-					, bool has_resmin, bool has_resmax, double resmin, double resmax
-					, bool has_ymin, bool has_ymax, bool has_yscale
-					, double ymin, double ymax, double yscale 
-					, bool has_xmin, bool has_xmax, double xmin, double xmax
-					
-					, bool has_ttl_xmin, bool has_ttl_xmax, double ttl_xmin, double ttl_xmax
-					, bool has_ttl_ymin, bool has_ttl_ymax, double ttl_ymin, double ttl_ymax   
-					, bool has_ttl_textsize, double ttl_textsize 
-					, bool has_leg_textsize, double leg_textsize 
-					
-					, bool has_leg_ymin, bool has_leg_ymax
-					, double leg_ymin, double leg_ymax 
-					, bool has_leg_xmin, bool has_leg_xmax
-					, double leg_xmin, double leg_xmax 
-					
-					, bool has_xtitle_size, bool has_xtitle_offset
-					, double xtitle_size, double xtitle_offset
-					, bool has_ytitle_size, bool has_ytitle_offset
-					, double ytitle_size, double ytitle_offset
-					, bool has_restitle_size, bool has_restitle_offset
-					, double restitle_size, double restitle_offset
-
-					, bool has_xlabel_size, bool has_xlabel_offset
-					, double xlabel_size, double xlabel_offset
-					, bool has_ylabel_size, bool has_ylabel_offset
-					, double ylabel_size, double ylabel_offset
-					, bool has_reslabel_size, bool has_reslabel_offset
-					, double reslabel_size, double reslabel_offset
+				       , bool do_width, bool draw_stack, const std::string& draw_res, const std::string& draw_res_err
+				       , bool isLogY, bool isLogX
+				       , const std::string& ylabel, const std::string& reslabel
+				       , bool has_resmin, bool has_resmax, double resmin, double resmax
+				       , bool has_ymin, bool has_ymax, bool has_yscale
+				       , double ymin, double ymax, double yscale 
+				       , bool has_xmin, bool has_xmax, double xmin, double xmax
+				       
+				       , bool has_ttl_xmin, bool has_ttl_xmax, double ttl_xmin, double ttl_xmax
+				       , bool has_ttl_ymin, bool has_ttl_ymax, double ttl_ymin, double ttl_ymax   
+				       , bool has_ttl_textsize, double ttl_textsize 
+				       , bool has_leg_textsize, double leg_textsize 
+				       
+				       , bool has_leg_ymin, bool has_leg_ymax
+				       , double leg_ymin, double leg_ymax 
+				       , bool has_leg_xmin, bool has_leg_xmax
+				       , double leg_xmin, double leg_xmax 
+				       
+				       , bool has_xtitle_size, bool has_xtitle_offset
+				       , double xtitle_size, double xtitle_offset
+				       , bool has_ytitle_size, bool has_ytitle_offset
+				       , double ytitle_size, double ytitle_offset
+				       , bool has_restitle_size, bool has_restitle_offset
+				       , double restitle_size, double restitle_offset
+				       
+				       , bool has_xlabel_size, bool has_xlabel_offset
+				       , double xlabel_size, double xlabel_offset
+				       , bool has_ylabel_size, bool has_ylabel_offset
+				       , double ylabel_size, double ylabel_offset
+				       , bool has_reslabel_size, bool has_reslabel_offset
+				       , double reslabel_size, double reslabel_offset
 				       
 				       , bool has_xaxis_ndiv, int xaxis_ndiv
 				       , bool has_yaxis_ndiv, int yaxis_ndiv
 				       , bool has_resaxis_ndiv, int resaxis_ndiv
 				       
-					, bool has_bottom_margin, bool has_top_margin
-					, bool has_left_margin, bool has_right_margin
-					, double bottom_margin, double top_margin
-					, double left_margin, double right_margin
-					, bool is_count 
-					, const std::string& resdrawopt, const std::string& extralabel
-				       , int rebin, const std::string& rebinedges, double binshift, const std::string& output_folder, const std::string& blinding) :
+				       , bool has_bottom_margin, bool has_top_margin
+				       , bool has_left_margin, bool has_right_margin
+				       , double bottom_margin, double top_margin
+				       , double left_margin, double right_margin
+				       , bool is_count 
+				       , const std::string& resdrawopt, const std::string& extralabel
+				       , int rebin, const std::string& rebinedges, double binshift, const std::string& bin_labels_str
+				       , const std::string& output_folder, const std::string& blinding) :
   
   m_name(name),
   m_label(label),
@@ -61,6 +62,7 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
   m_rebin(rebin),
   m_rebinedges(rebinedges),
   m_binshift(binshift),
+  m_bin_labels_str(bin_labels_str),
   m_do_width(do_width),
   m_resmin(resmin),
   m_resmax(resmax),
@@ -150,8 +152,15 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
   m_resdrawopt(resdrawopt),
   m_blinding(blinding),
   m_extralabel(extralabel),
-  m_output_folder(output_folder)
-{ }
+  m_output_folder(output_folder),
+  m_bin_labels_map(NULL)
+{
+
+  m_bin_labels_map = new std::map<int, std::string>();
+  m_bin_labels_map->clear();
+  if(!m_bin_labels_str.empty()){ ParseBinLabels(); }
+
+ }
 
 VariableAttributes::VariableAttributes() : VariableAttributes("", "", "NONE"){}
 
@@ -170,6 +179,7 @@ VariableAttributes::VariableAttributes(VariableAttributes& q){
   m_rebinedges         = q.m_rebinedges;
   m_has_binshift       = q.m_has_binshift;
   m_binshift           = q.m_binshift;
+  m_bin_labels_str     = q.m_bin_labels_str;
   m_do_width           = q.m_do_width;
   m_resmin             = q.m_resmin;
   m_resmax             = q.m_resmax;
@@ -260,7 +270,13 @@ VariableAttributes::VariableAttributes(VariableAttributes& q){
   m_blinding           = q.m_blinding;
   m_extralabel         = q.m_extralabel;
   m_output_folder      = q.m_output_folder;
+  m_bin_labels_map     = q.m_bin_labels_map;
 
+}
+
+VariableAttributes::~VariableAttributes(){
+  m_bin_labels_map->clear();
+  delete m_bin_labels_map;
 }
 
 VariableAttributesMap VariableAttributes::ParseVariableConfig( Plotter_Options* opt ){
@@ -313,6 +329,11 @@ VariableAttributesMap VariableAttributes::ParseVariableConfig( Plotter_Options* 
     if( keymap.find("BINSHIFT") != keymap.end() && (keymap["BINSHIFT"] != "") ){ 
       varObj->SetBinShift(atof(keymap["BINSHIFT"].c_str())); 
       varObj->SetHasBinShift(true);
+    }
+
+    if( keymap.find("BINLABELS") != keymap.end() ){
+      varObj->SetBinLabelsStr(keymap["BINLABELS"]);
+      if(!keymap["BINLABELS"].empty()){ varObj->ParseBinLabels(); }
     }
 
     if( keymap.find("RESMIN") != keymap.end() && (keymap["RESMIN"] != "") ){ 
@@ -484,5 +505,36 @@ VariableAttributesMap VariableAttributes::ParseVariableConfig( Plotter_Options* 
   parsed_map.clear();
   return var_map;
   
+
+}
+
+void VariableAttributes::ParseBinLabels(){
+
+  m_bin_labels_map->clear();
+
+  //Parse bindef
+  std::string parseString = m_bin_labels_str;
+  std::string sparse = ""; int nbins = 1;
+  std::string::size_type pos = 0;
+  std::string delim_bins = ",";
+  std::string delim_l = ":";
+
+  std::string parseString_l = "";
+  std::string sparse_l = ""; 
+  std::string::size_type pos_l = 0;
+
+  do{
+    pos = AnalysisUtils::ParseString(parseString, sparse, delim_bins);
+
+    parseString_l = sparse;
+    sparse_l = ""; 
+    pos_l = AnalysisUtils::ParseString(parseString_l, sparse_l, delim_l);
+
+    if(pos_l == std::string::npos){ m_bin_labels_map->insert( std::pair<int, std::string>(nbins, sparse) );  }
+    else{  m_bin_labels_map->insert( std::pair<int, std::string>(atoi(sparse_l.c_str()), parseString_l) );  }
+    nbins++;
+  } while(pos != std::string::npos); 
+
+  return; 
 
 }

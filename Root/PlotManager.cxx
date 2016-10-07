@@ -247,7 +247,8 @@ void PlotManager::FillHistManager(){
       var_rebinedges_ptr = new double[var_rebin+1]();
       ParseRebinEdges(var_rebin, var_rebinedges, var_rebinedges_ptr);
     }
-    //---
+
+    //-------------
     bool   var_has_binshift = varit->second->HasBinShift();
     double var_binshift = varit->second->BinShift();
     //---
@@ -281,14 +282,17 @@ void PlotManager::FillHistManager(){
       keysum.clear();
     }
 
+    //ALERTRISHA - Use new GetHistByBinWidth 
     if(hsum && var_do_width){
       int nbin = hsum->GetNbinsX();
+      int nentries = hsum->GetEntries();
       for(int nb = 0; nb <= nbin; nb++){
 	double bc = hsum->GetBinContent(nb)/hsum->GetXaxis()->GetBinWidth(nb);
 	double be = hsum->GetBinError(nb)/hsum->GetXaxis()->GetBinWidth(nb);
 	hsum->SetBinContent(nb, bc);
 	hsum->SetBinError(nb, be);
       }
+      hsum->SetEntries(nentries);
     }
 
     double intgl_sum = (hsum) ? hsum->Integral() : 1.;
@@ -306,6 +310,7 @@ void PlotManager::FillHistManager(){
       std::string key = var_name + "_" + ds_suffix;
       TH1D* hsample = m_hstMngr->GetTH1D( key ); 
       //SHIFT BIN EDGES IF NEEDED
+      //ALERTRISHA - Write HistTreater::ShiftBinEdges
       if(var_has_binshift){
 	int nbin = hsample->GetNbinsX();
 	double oldmin = hsample->GetBinLowEdge(1);
@@ -327,18 +332,25 @@ void PlotManager::FillHistManager(){
 	else{ hsample->Rebin(var_rebin); }
       }
 
+      //SET BIN LABELS
+
+
+      //ALERTRISHA - GetHistByBinWidth
       if(var_do_width && (samit->first != "SUM") ){ //bin width normalisation for SUM has already been done 
 	int nbin = hsample->GetNbinsX();
+	int nentries = hsample->GetEntries();
 	for(int nb = 0; nb <= nbin; nb++){
 	  double bc = hsample->GetBinContent(nb)/hsample->GetXaxis()->GetBinWidth(nb);
 	  double be = hsample->GetBinError(nb)/hsample->GetXaxis()->GetBinWidth(nb);
 	  hsample->SetBinContent(nb, bc);
 	  hsample->SetBinError(nb, be);
 	}
+	hsample->SetEntries(nentries);
       }
 
       if( var_do_blinding && (h_blinder==NULL) ){ h_blinder = m_hstMngr->CloneTH1D(blinder_key, hsample, true); }
 
+      //ALERTRISHA : HistTreater::Blind
       if(var_do_blind_threshold  && (samp_blinding == "SIGNAL")){
 	if(var_do_blind_bin){
 	  for( int b = 1; b <= hsample->GetNbinsX(); b++ ){
@@ -560,6 +572,8 @@ void PlotManager::makeEfficiencyHistograms(){
 
 //}
 
+
+//ALERTRISHA - Systematics class
 int PlotManager::PrintSystematics(){
   TH1D* h_nominal = NULL;
   TH1D* h_up = NULL;
@@ -847,6 +861,7 @@ int PlotManager::ReadAllSystematics(FileKeyAttributes* fk_att){
 
 }
 
+//ALERTRISHA  - Move to HistTreater
 void PlotManager::QuadraticHistSum(const std::string& h_orig_name, const std::string& h_add_name){
 
   TH1D* h_orig = m_hstMngr->GetTH1D(h_orig_name);
@@ -862,6 +877,7 @@ void PlotManager::QuadraticHistSum(const std::string& h_orig_name, const std::st
   return;
 }
 
+//ALERTRISHA  - Move to HistTreater
 void PlotManager::QuadraticHistSum(TH1D* h_orig, TH1D* h_add){
 
   if(h_orig->GetNbinsX() != h_add->GetNbinsX()){
@@ -1180,6 +1196,7 @@ void PlotManager::ProjectByBin(){
   return;
 }
 
+
 void PlotManager::ParseRebinEdges(const int nbin, const std::string& bindef, double* xbins_new_ptr){
 
   //Parse bindef
@@ -1222,4 +1239,5 @@ TH1D* PlotManager::VariableRebinning(const std::string& histname, TH1D* horig, i
   return hnew;
 
 }
+
 

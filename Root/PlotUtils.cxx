@@ -194,6 +194,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   std::string var_yield_opt = "";
 
   bool var_isCount = false;
+
+  std::string var_binlabels_str = "";
+  std::map<int, std::string> *var_binlabels_map = NULL;
+
   bool ds_draw_stack = false;
   int ds_res_opt = -1;
   std::string ds_res_erropt = "";
@@ -285,6 +289,11 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     var_xaxis_ndiv   = va_it->second->XAxisNdiv();
     var_yaxis_ndiv   = va_it->second->YAxisNdiv();
     var_resaxis_ndiv = va_it->second->ResAxisNdiv();
+
+    var_binlabels_str = va_it->second->BinLabelsStr();
+    var_binlabels_map = va_it->second->BinLabelsMap();
+ 
+    //==================================================
 
     var_xmin = 0.; 
     var_xmax = 0.; 
@@ -497,25 +506,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	  if(ds_leg_empty){ leg_text->AddEntry(hist_a, " ", ""); }
 	  else{
 	    //Find correct text to insert into legend
-	    if(ds_print_value.find("YIELD") != std::string::npos){
-	      if(!ds_print_text.empty()){ ds_print_text += "  "; }
-	      ds_print_text += Form(ds_print_format.c_str(),hist_a->Integral(var_yield_opt.c_str()));
-	    }
-	    if(ds_print_value.find("ENTRIES") != std::string::npos){
-	      if(!ds_print_text.empty()){ ds_print_text += "  "; }
-	      ds_print_text += Form(ds_print_format.c_str(),hist_a->GetEntries());
-	    }
-	    if(ds_print_value.find("MEAN") != std::string::npos){
-	      if(!ds_print_text.empty()){ ds_print_text += "  "; }
-	      ds_print_text += Form(ds_print_format.c_str(),hist_a->GetMean());
-	    }
-	    if(ds_print_value.find("RMS") != std::string::npos){
-	      if(!ds_print_text.empty()){ ds_print_text += "  "; }
-	      ds_print_text += Form(ds_print_format.c_str(),hist_a->GetRMS());
-	    }
-	    leg_text->AddEntry(hist_a, ds_print_text.c_str(), "");
+	    ds_print_text = MakeMomentText(hist_a, ds_print_value, ds_print_format);
 	  }
-
 	}//If drawing a legend for text
 
 	//==================================
@@ -742,10 +734,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       else if(var_isCount)  { hs_stack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false); }
       if(var_has_yaxis_ndiv){ hs_stack_a->GetHistogram()->GetYaxis()->SetNdivisions(var_yaxis_ndiv, false); }
 
-
-      //if(var_has_resaxis_ndiv){ hs_stack_a->GetHistogram()->GetYaxis()->SetNdivisions(var_resaxis_ndiv, false); }
-
-
       if(var_isCount){ hs_stack_a->GetHistogram()->GetXaxis()->CenterLabels(); }
 
       hs_stack_a->GetHistogram()->GetYaxis()->SetTitleOffset(var_ytitle_offset);
@@ -761,6 +749,14 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	hs_stack_a->GetHistogram()->GetXaxis()->SetTitleSize(var_xtitle_size);
 	hs_stack_a->GetHistogram()->GetXaxis()->SetLabelOffset(var_xlabel_offset);
 	hs_stack_a->GetHistogram()->GetXaxis()->SetLabelSize(var_xlabel_size);
+
+	//if have bin labels, set them here
+	if( !var_binlabels_str.empty() ){
+	  for( std::pair<int, std::string> label : *var_binlabels_map ){
+	    hs_stack_a->GetHistogram()->GetXaxis()->SetBinLabel(label.first, label.second.c_str());
+	  }
+	}
+
       }
 
     }//if var_draw_stack
@@ -795,6 +791,13 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	hs_nostack_a->GetHistogram()->GetXaxis()->SetTitleSize(var_xtitle_size);
 	hs_nostack_a->GetHistogram()->GetXaxis()->SetLabelOffset(var_xlabel_offset);
 	hs_nostack_a->GetHistogram()->GetXaxis()->SetLabelSize(var_xlabel_size);
+
+	//if have bin labels, set them here
+	if( !var_binlabels_str.empty() ){
+	  for( std::pair<int, std::string> label : *var_binlabels_map ){
+	    hs_nostack_a->GetHistogram()->GetXaxis()->SetBinLabel(label.first, label.second.c_str());
+	  }
+	}
 
       }
 
@@ -877,6 +880,13 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       hs_res_a->GetHistogram()->GetYaxis()->SetLabelSize(var_reslabel_size);
       
       hs_res_a->GetHistogram()->GetYaxis()->CenterTitle();
+
+      //if have bin labels, set them here
+      if( !var_binlabels_str.empty() ){
+	for( std::pair<int, std::string> label : *var_binlabels_map ){
+	  hs_res_a->GetHistogram()->GetXaxis()->SetBinLabel(label.first, label.second.c_str());
+	}
+      }
 
       curpad->Update();
       curpad->Modified();
@@ -1161,4 +1171,117 @@ int PlotUtils::ResizeLegend(TLegend& leg, double xpt, double ypt, const std::str
   leg.SetY2NDC(Y2);
 
   return 0;
+}
+
+
+std::vector<std::string> PlotUtils::ParseMomentsTableHeader(const std::string& header_line, const std::string& delim ){
+
+  std::vector<std::string> moment_list; moment_list.clear();
+
+  //Header gives the sequence of configuration variables
+  std::string moment; moment.clear();
+  std::string lineString = header_line;
+  std::string::size_type pos = 0;
+  do{ 
+    pos = AnalysisUtils::ParseString(lineString, moment, delim);
+    AnalysisUtils::TrimString(moment);
+    moment_list.push_back(moment);
+  }while(pos != std::string::npos);
+
+  return moment_list;
+
+}
+
+std::string PlotUtils::MakeMomentText(TH1D* hist, const std::string& moment, const std::string& print_format){
+
+  std::string moment_text = "";
+  if(moment == "YIELD"){
+    moment_text = Form(print_format.c_str(), hist->Integral());
+  }
+  else if(moment == "ENTRIES"){
+    moment_text = Form(print_format.c_str(), hist->GetEntries());
+  }
+  else if(moment == "MEAN"){
+    moment_text = Form(print_format.c_str(), hist->GetMean());
+  }
+  else if(moment == "RMS"){
+    moment_text = Form(print_format.c_str(), hist->GetRMS());
+  }
+
+  else if(moment == "YIELDANDERROR"){
+    double err = 0.;
+    double intgl = hist->IntegralAndError(0.,-1.,err);
+    moment_text = Form(print_format.c_str(), intgl, err);
+  }
+  else if(moment == "MEANANDERROR"){
+    moment_text = Form(print_format.c_str(), hist->GetMean(), hist->GetMeanError());
+  }
+
+  return moment_text;
+}
+ 
+
+std::string PlotUtils::MakeMomentsTableRow(TH1D* hist, const std::vector<std::string>& moment_list, const std::string& print_format, const bool use_width){
+
+  TH1D* _hist = NULL;
+  if(use_width){ _hist = GetHistTimesBinWidth(hist); }
+  else{ _hist = hist; }
+
+  std::string row_string="";
+  for( std::string moment : moment_list){
+    if(!row_string.empty()){ row_string += " & "; } 
+    row_string += MakeMomentText(_hist, moment, print_format); 
+  }
+  row_string += "\\\\";
+
+  return row_string;
+
+}
+
+//Given bin labels, use them
+//If not given, use the labels already set in the bins
+std::string MakeHistTableRow(TH1D* hist, const std::string& print_format, const bool print_error){
+
+  std::string row_string="";
+  for(int ibin = 1; ibin < hist->GetNbinsX(); ibin++){
+    if(!row_string.empty()){ row_string += " & "; }
+    if(print_error){
+      row_string += Form(print_format.c_str(), hist->GetBinContent(ibin), hist->GetBinError(ibin));
+    }
+    else{
+      row_string += Form(print_format.c_str(), hist->GetBinContent(ibin));
+    }
+  }
+  return row_string;
+
+}
+
+TH1D* PlotUtils::GetHistByBinWidth(TH1D* hist){
+
+  TH1D* _hist = NULL;
+  std::string _histname = hist->GetName();
+  _histname += "_by_width";
+  _hist = (TH1D*)(hist->Clone(_histname.c_str()));
+  for(int i = 1; i<= hist->GetNbinsX(); i++){
+    _hist->SetBinContent(i, hist->GetBinContent(i)/hist->GetBinWidth(i));
+    _hist->SetBinError(i, hist->GetBinError(i)/hist->GetBinWidth(i));
+  }
+  _hist->SetEntries(hist->GetEntries());
+
+  return _hist;
+}
+
+TH1D* PlotUtils::GetHistTimesBinWidth(TH1D* hist){
+
+  TH1D* _hist = NULL;
+  std::string _histname = hist->GetName();
+  _histname += "_times_weighted";
+  _hist = (TH1D*)(hist->Clone(_histname.c_str()));
+  for(int i = 1; i<= hist->GetNbinsX(); i++){
+    _hist->SetBinContent(i, hist->GetBinContent(i)*hist->GetBinWidth(i));
+    _hist->SetBinError(i, hist->GetBinError(i)*hist->GetBinWidth(i));
+  }
+  _hist->SetEntries(hist->GetEntries());
+
+  return _hist;
 }
