@@ -204,6 +204,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   //One preliminary loop to find the baseline sample
   std::string s_base_name = ""; 
   std::string s_base_suffix = "";
+
   for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
     if(at_it->second->ResOpt() == 1){
       if(s_base_name != ""){ std::cout<<"Error: More than one baseline specified for residual calculation"<<std::endl; }
@@ -1007,12 +1008,15 @@ void PlotUtils::MakeTableFromHists (const bool opt_bin){
   //One preliminary loop to find the baseline sample
   std::string s_base_name = ""; 
   std::string s_base_suffix = "";
+  std::string s_base_leglabel = "";
+
   for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
     if(at_it->second->ResOpt() == 1){
       if(s_base_name != ""){ std::cout<<"Error: More than one baseline specified for residual calculation"<<std::endl; }
       else{ 
 	s_base_name = at_it->first;
 	s_base_suffix = at_it->second->Suffix();
+	s_base_leglabel = at_it->second->LegLabel();
       }
     }
   } 
@@ -1051,6 +1055,7 @@ void PlotUtils::MakeTableFromHists (const bool opt_bin){
     if(drawRes && (s_base_name == "") ){std::cout<<"No reference sample specified for residual calculation"<<std::endl;}
 
     std::string hbasename = var_name + "_" + s_base_suffix;
+    TH1D* hist_base = m_hstMngr->GetTH1D(hbasename);
 
     //---------------------------------------------------------
 
@@ -1091,18 +1096,19 @@ void PlotUtils::MakeTableFromHists (const bool opt_bin){
       
       ds_print_text = ds_leglabel + "  &  " + ds_print_text;
       //============================================================================================
-      
       if(var_draw_stack && ds_do_sum){ v_str_sum_a.push_back(ds_print_text); }
       else{ v_str_nosum_a.push_back(ds_print_text); }
       
       if(drawRes && ( (ds_res_opt == 0) || ((ds_res_opt == 1) && (var_draw_res_err == "REFBAND")) ) ){
-	std::string resname_a = var_name + "_" + ds_suffix + "_res_" + s_base_suffix;
+	std::string resname_a = var_name + "_" + ds_suffix + "_res_tab_" + s_base_suffix;
 	TH1D* hist_res_a = makeResidual(resname_a, hist_name, hbasename, var_draw_res, ds_res_erropt);
-	
-	if( opt_bin ){ v_str_res_a.push_back(MakeHistTableRow(hist_res_a, ds_print_format, true, var_binlabels_map)); }
-	else{ v_str_res_a.push_back(MakeHistTableRow(hist_res_a, ds_print_format, true, var_binlabels_map)); }
-	delete hist_res_a;
-	resname_a.clear();
+	std::string res_print_text = ""; 
+	if( opt_bin ){  res_print_text = MakeHistTableRow(hist_res_a, ds_print_format, true, var_binlabels_map); }
+	else{ res_print_text = MakeResidualMomentsTableRow(hist_a, hist_base, ds_moments_list, ds_print_format, var_do_width);	}
+	res_print_text = ds_leglabel+"/"+s_base_leglabel + "  &  " + res_print_text;
+	v_str_res_a.push_back(res_print_text);
+	//delete hist_res_a;
+	resname_a.clear(); res_print_text.clear();
       }//if residual histogram needed 
       
       //Clear strings
