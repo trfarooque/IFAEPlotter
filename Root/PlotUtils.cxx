@@ -1507,6 +1507,8 @@ std::string PlotUtils::MakeHistTableRow(TH1D* hist, const std::string& print_for
       row_string += Form(print_format.c_str(), hist->GetBinContent(ibin));
     }
   }
+  row_string += "\\\\";
+
   return row_string;
 
 }
