@@ -141,9 +141,11 @@ void PlotManager::Execute(){
     if( m_opt->ProjOpt().find("RMS") != std::string::npos){ m_plotUtils->OverlayHists("RMS");}
     if( m_opt->ProjOpt().find("FRACRMS") != std::string::npos){ m_plotUtils->OverlayHists("FRACRMS");}
   }
-  else if( m_opt->WriteHistos() || m_opt->Do1DPlots() ){
+  else if( m_opt->WriteHistos() || m_opt->Do1DPlots() || m_opt->MakeBinsTable() || m_opt->MakeMomentsTable() ){
     FillHistManager(); 
     if( m_opt->Do1DPlots() ){ m_plotUtils->OverlayHists("NONE"); }
+    if( m_opt->MakeBinsTable() ){ m_plotUtils->MakeTableFromHists(true); }
+    if( m_opt->MakeMomentsTable() ){ m_plotUtils->MakeTableFromHists(false); }
     if( m_opt->WriteHistos() ){ WriteHistogramsToFile(); }
   } 
   else if( m_opt->DoSystematics() ){

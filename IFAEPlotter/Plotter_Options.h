@@ -59,6 +59,8 @@ public:
     inline bool DoProjections() const { return m_doProjections; }
     inline bool DoEff() const { return m_doEff; }
     inline bool DoSystematics() const { return m_doSystematics; }
+    inline bool MakeBinsTable() const { return m_make_bins_table; }
+    inline bool MakeMomentsTable() const { return m_make_moments_table; }
     inline double TitleXMin() const { return m_titlexmin; }
     inline double TitleYMin() const { return m_titleymin; }
     inline double TitleXMax() const { return m_titlexmax; }
@@ -135,6 +137,8 @@ private:
     bool m_doProjections;
     bool m_doEff;
     bool m_doSystematics;
+    bool m_make_bins_table;
+    bool m_make_moments_table;
     bool m_show_yields;
     bool m_all_from_file;
 

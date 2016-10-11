@@ -16,6 +16,7 @@
 #include "TLatex.h"
 #include "TLine.h"
 #include <algorithm>
+#include <fstream>
 
 PlotUtils::PlotUtils(Plotter_Options* opt, HistManager* hstMngr, SampleAttributesMap& attrbt_map, VariableAttributesMap& var_map, StyleDictionary* style_dict ) : 
   m_opt(opt),
@@ -113,7 +114,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   bool opt_hasRightMargin    = (m_opt->OptStr().find("--RIGHTMARGIN") != std::string::npos);
 
   bool var_draw_stack = 0;
-  bool var_do_width = false;
+  //bool var_do_width = false;
   bool var_isLogY = false;
   bool var_isLogX = false;
   bool var_isShape = false;
@@ -191,8 +192,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   double var_left_margin = 0.;
   double var_right_margin = 0.;
 
-  std::string var_yield_opt = "";
-
   bool var_isCount = false;
 
   std::string var_binlabels_str = "";
@@ -241,8 +240,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     var_isCount        = va_it->second->IsCount();
     var_isShape        = !doGraphs && (va_it->second->DoScale() == "SHAPE"); 
-    var_do_width       = !doGraphs && va_it->second->DoWidth();
-    var_yield_opt      = (var_do_width) ? "width" : "";
+    //var_do_width       = !doGraphs && va_it->second->DoWidth();
     var_draw_stack     = !doGraphs && va_it->second->DrawStack();
     var_isLogY         = !doGraphs && va_it->second->IsLogY();
     var_isLogX         = !doGraphs && va_it->second->IsLogX();
@@ -969,6 +967,188 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
 }
 
+
+//========================================================= 
+void PlotUtils::MakeTableFromHists (const bool opt_bin){
+
+  //Draw stack now has no meaning or purpose, since the SUM histogram will have already been created
+  //Better to use the DoSum option for a sample to determine the order in which it should appear
+
+  //Summed histogram contributions
+  //SUM
+  //non-stacked contributions
+
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists start"<<std::endl; 
+
+  bool var_draw_stack = 0;
+  bool var_do_width = false;
+  bool var_isShape = false;
+
+  std::string var_binlabels_str = "";
+  std::map<int, std::string> *var_binlabels_map = NULL;
+
+  bool ds_do_sum = false;
+  int ds_res_opt = -1;
+  std::string ds_res_erropt = "";
+  std::string ds_print_text = "";
+
+  std::vector<std::string> glob_moments_list = ParseMomentsTableHeader(m_opt->PrintValue());
+  std::string str_moments_header = "";
+  if(!m_opt->PrintValue().empty()){
+    for( std::string moment : glob_moments_list){
+      if(!str_moments_header.empty()){ str_moments_header += " & "; }
+      str_moments_header += moment;
+    }
+    str_moments_header += " \\\\";
+  }
+
+  std::vector<std::string> ds_moments_list; ds_moments_list.clear();
+
+  //One preliminary loop to find the baseline sample
+  std::string s_base_name = ""; 
+  std::string s_base_suffix = "";
+  for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
+    if(at_it->second->ResOpt() == 1){
+      if(s_base_name != ""){ std::cout<<"Error: More than one baseline specified for residual calculation"<<std::endl; }
+      else{ 
+	s_base_name = at_it->first;
+	s_base_suffix = at_it->second->Suffix();
+      }
+    }
+  } 
+
+  std::vector<std::string> v_str_sum_a;   v_str_sum_a.clear();
+  std::vector<std::string> v_str_nosum_a; v_str_nosum_a.clear();
+  std::vector<std::string> v_str_res_a;   v_str_res_a.clear();
+
+  VariableAttributesMap* var_loop_map =  &m_var_map;
+  for(VariableAttributesMap::iterator va_it = var_loop_map->begin(); va_it != var_loop_map->end(); ++va_it){
+
+    const std::string& var_blinding = (va_it->second->Blinding() != "") ?  va_it->second->Blinding() : m_opt->Blinding();
+    bool var_blind_yield = (var_blinding.find("YIELD") != std::string::npos);
+
+    v_str_sum_a.clear();
+    v_str_nosum_a.clear();
+    v_str_res_a.clear();
+
+    std::string var_name       = va_it->second->Name();
+ 
+    const std::string& var_label         = va_it->second->Label();
+    const std::string& var_draw_res      = va_it->second->DrawRes();
+    const std::string& var_draw_res_err  = va_it->second->DrawResErr();
+
+    var_isShape        = (va_it->second->DoScale() == "SHAPE"); 
+    var_do_width       = va_it->second->DoWidth();
+    var_draw_stack     = va_it->second->DrawStack();
+
+    var_binlabels_str = va_it->second->BinLabelsStr();
+    var_binlabels_map = va_it->second->BinLabelsMap();
+ 
+    //==================================================
+
+    std::string hname_sum = m_drawSum ? var_name + "_" + m_attrbt_map["SUM"]->Suffix() : "";
+    bool drawRes = ( (var_draw_res != "") && (var_draw_res != "NONE") );
+    if(drawRes && (s_base_name == "") ){std::cout<<"No reference sample specified for residual calculation"<<std::endl;}
+
+    std::string hbasename = var_name + "_" + s_base_suffix;
+
+    //---------------------------------------------------------
+
+    for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
+      if( var_isShape ){
+	if( !var_draw_stack && ( (at_it->first == "SUM")  || at_it->second->NoShape() ) ){continue;}
+      }
+
+      if(at_it->first == "BLINDER"){continue;}
+
+      const std::string& ds_name = at_it->second->Name();
+      const std::string& ds_suffix = at_it->second->Suffix();
+      const std::string& ds_leglabel = at_it->second->LegLabel();
+      const std::string& ds_print_format = (at_it->second->PrintFormat() != "") ? at_it->second->PrintFormat() : m_opt->PrintFormat();
+      const std::string& ds_print_value =  at_it->second->PrintValue(); 
+      ds_moments_list.clear();
+      ds_moments_list = !(ds_print_value.empty()) ? ParseMomentsTableHeader(ds_print_value) : ParseMomentsTableHeader(m_opt->PrintValue());
+
+      ds_res_erropt = "";
+      //bool ds_isShape = (at_it->second->DrawScale() == "SHAPE"); 
+      ds_do_sum = at_it->second->DoSum();
+      ds_res_opt = at_it->second->ResOpt();
+      bool ds_isBlind = (ds_name == m_opt->BlindSample());
+
+      std::string hist_name = var_name + "_" + ds_suffix;
+      TH1D* hist_a = m_hstMngr->GetTH1D(hist_name);
+
+      if( opt_bin ){ ds_print_text = MakeHistTableRow(hist_a, ds_print_format, true, var_binlabels_map); }
+      else{  
+	if(var_blind_yield && ds_isBlind){
+	  for(unsigned int i = 0; i < ds_moments_list.size(); i++){
+	    if(!ds_print_text.empty()){ ds_print_text += " &"; }
+	    ds_print_text += " "; 
+	  }
+	}
+	else{ ds_print_text = MakeMomentsTableRow(hist_a, ds_moments_list, ds_print_format, var_do_width); }
+      }
+      
+      ds_print_text = ds_leglabel + "  &  " + ds_print_text;
+      //============================================================================================
+      
+      if(var_draw_stack && ds_do_sum){ v_str_sum_a.push_back(ds_print_text); }
+      else{ v_str_nosum_a.push_back(ds_print_text); }
+      
+      if(drawRes && ( (ds_res_opt == 0) || ((ds_res_opt == 1) && (var_draw_res_err == "REFBAND")) ) ){
+	std::string resname_a = var_name + "_" + ds_suffix + "_res_" + s_base_suffix;
+	TH1D* hist_res_a = makeResidual(resname_a, hist_name, hbasename, var_draw_res, ds_res_erropt);
+	
+	if( opt_bin ){ v_str_res_a.push_back(MakeHistTableRow(hist_res_a, ds_print_format, true, var_binlabels_map)); }
+	else{ v_str_res_a.push_back(MakeHistTableRow(hist_res_a, ds_print_format, true, var_binlabels_map)); }
+	delete hist_res_a;
+	resname_a.clear();
+      }//if residual histogram needed 
+      
+      //Clear strings
+      hist_name.clear();
+    }//sample loop
+    
+    //=================================== PRINT THE TABLE =========================================================
+    std::string s_IFP_DIR = (opt_bin) ? "IFP_TABLES_BINS" : "IFP_TABLES_MOMENTS";
+    std::string var_outdir = va_it->second->OutputFolder();
+
+    if(var_outdir != ""){
+      if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
+      gSystem->mkdir(Form("%s%s/%s" ,m_output_dir.c_str(), s_IFP_DIR.c_str(), var_outdir.c_str()), "TRUE");
+    }
+    std::ofstream var_tab_file; 
+    var_tab_file.open(Form("%s%s/%s%s.txt" ,m_output_dir.c_str(), s_IFP_DIR.c_str(), var_outdir.c_str() ,var_name.c_str())); 
+    var_tab_file << "============== " << var_label << "============== " << std::endl;
+    if(v_str_sum_a.size() > 0){
+      for(std::string row : v_str_sum_a){ var_tab_file << row << std::endl; }
+      var_tab_file << "\\hline \\\\"<<std::endl;
+    }
+    if(v_str_nosum_a.size() > 0){
+      for(std::string row : v_str_nosum_a){ var_tab_file << row << std::endl; }
+    }
+    if(v_str_res_a.size() > 0){
+      var_tab_file << "\\hline\\hline \\\\"<<std::endl;
+      for(std::string row : v_str_res_a){ var_tab_file << row << std::endl; }
+    }
+
+    var_outdir.clear();
+
+    v_str_sum_a.clear();
+    v_str_sum_a.clear();
+    v_str_sum_a.clear();
+
+    hname_sum.clear();
+    hbasename.clear();
+  }//variables loop
+
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists end"<<std::endl; 
+
+  return;
+
+}
+//================================================================================
+
 //TH1D* hist_res_a = makeResidual(resname_a, hist_name, hbasename, var_draw_res);
 //erropt by default empty
 //can change to "NONE" or "SCALE"
@@ -1219,6 +1399,59 @@ std::string PlotUtils::MakeMomentText(TH1D* hist, const std::string& moment, con
 
   return moment_text;
 }
+
+
+std::string PlotUtils::MakeResidualMomentText(TH1D* hist, TH1D* href, const std::string& moment, const std::string& print_format){
+
+  std::string moment_text = "";
+
+  if(moment == "YIELD"){
+    moment_text = (href->Integral() != 0.) ? Form(print_format.c_str(), hist->Integral()/href->Integral()) : Form(print_format.c_str(), 0.);
+  }
+  else if(moment == "ENTRIES"){
+    moment_text = (href->GetEntries() != 0.) ? Form(print_format.c_str(), hist->GetEntries()/href->GetEntries()) : Form(print_format.c_str(), 0.);
+  }
+  else if(moment == "MEAN"){
+    moment_text = (href->GetMean() != 0.) ? Form(print_format.c_str(), hist->GetMean()/href->GetMean()) : Form(print_format.c_str(), 0.);
+  }
+  else if(moment == "RMS"){
+    moment_text = (href->GetRMS() != 0.) ? Form(print_format.c_str(), hist->GetRMS()/href->GetRMS()) : Form(print_format.c_str(), 0.);
+  }
+
+  else if(moment == "YIELDANDERROR"){
+    double err = 0.; double err_ref = 0.;
+    double intgl = hist->IntegralAndError(0.,-1.,err);
+    double intgl_ref = hist->IntegralAndError(0.,-1.,err_ref);
+
+    double intgl_ratio = (intgl_ref != 0.) ? intgl/intgl_ref : 0.;
+
+    double ferr = (intgl != 0 ) ? err/intgl : 0.;
+    double ferr_ref = (intgl_ref != 0 ) ? err_ref/intgl_ref : 0.;
+
+    double err_ratio = intgl_ratio*sqrt(ferr*ferr + ferr_ref*ferr_ref);
+
+    moment_text = Form(print_format.c_str(), intgl_ratio, err_ratio);
+  }
+  else if(moment == "MEANANDERROR"){
+    double mean = hist->GetMean();
+    double err = hist->GetMeanError();
+
+    double mean_ref = href->GetMean();
+    double err_ref = href->GetMeanError();
+
+    double mean_ratio = (mean_ref != 0.) ? mean/mean_ref : 0.;
+
+    double ferr = (mean != 0 ) ? err/mean : 0.;
+    double ferr_ref = (mean_ref != 0 ) ? err_ref/mean_ref : 0.;
+
+    double err_ratio = mean_ratio*sqrt(ferr*ferr + ferr_ref*ferr_ref);
+
+    moment_text = Form(print_format.c_str(), mean_ratio, err_ratio);
+  }
+
+  return moment_text;
+}
+
  
 
 std::string PlotUtils::MakeMomentsTableRow(TH1D* hist, const std::vector<std::string>& moment_list, const std::string& print_format, const bool use_width){
@@ -1238,12 +1471,28 @@ std::string PlotUtils::MakeMomentsTableRow(TH1D* hist, const std::vector<std::st
 
 }
 
+ std::string PlotUtils::MakeResidualMomentsTableRow(TH1D* hist, TH1D* href, const std::vector<std::string>& moment_list, const std::string& print_format, const bool /*use_width*/){
+
+  std::string row_string="";
+  for( std::string moment : moment_list){
+    if(!row_string.empty()){ row_string += " & "; } 
+    row_string += MakeResidualMomentText(hist, href, moment, print_format); 
+  }
+  row_string += "\\\\";
+
+  return row_string;
+
+}
+
+
 //Given bin labels, use them
 //If not given, use the labels already set in the bins
-std::string MakeHistTableRow(TH1D* hist, const std::string& print_format, const bool print_error){
+std::string PlotUtils::MakeHistTableRow(TH1D* hist, const std::string& print_format, const bool print_error, const std::map<int, std::string> *bin_labels){
 
   std::string row_string="";
   for(int ibin = 1; ibin < hist->GetNbinsX(); ibin++){
+    if( bin_labels  && (bin_labels->size() > 0) && (bin_labels->find(ibin)==bin_labels->end()) ){ continue; }
+
     if(!row_string.empty()){ row_string += " & "; }
     if(print_error){
       row_string += Form(print_format.c_str(), hist->GetBinContent(ibin), hist->GetBinError(ibin));

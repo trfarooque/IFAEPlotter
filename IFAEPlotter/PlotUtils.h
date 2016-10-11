@@ -24,6 +24,7 @@ class PlotUtils{
   ~PlotUtils();
 
   void OverlayHists(const std::string& projopt);
+  void MakeTableFromHists(const bool opt_bin);
 
   //StyleSetter
   int SetStyleCanvas(TCanvas& canv, bool divide, double bottommargin=0.2, double topmargin=0.05, double leftmargin=0.15, double rightmargin=0.05);
@@ -39,8 +40,10 @@ class PlotUtils{
   //TextFormatter
   std::vector<std::string> ParseMomentsTableHeader(const std::string& header_line, const std::string& delim="," ); 
   std::string MakeMomentText(TH1D* hist, const std::string& moment="YIELD", const std::string& print_format="%4g");
+  std::string MakeResidualMomentText(TH1D* hist, TH1D* href, const std::string& moment="YIELD", const std::string& print_format="%4g");
   std::string MakeMomentsTableRow(TH1D* hist, const std::vector<std::string>& moment_list, const std::string& print_format="%4g", const bool use_width=false);
-  std::string MakeHistTableRow(TH1D* hist, const std::string& print_format="%4g", const bool print_error=true);
+  std::string MakeResidualMomentsTableRow(TH1D* hist, TH1D* href, const std::vector<std::string>& moment_list, const std::string& print_format="%4g", const bool /*use_width*/=false);
+  std::string MakeHistTableRow(TH1D* hist, const std::string& print_format="%4g", const bool print_error=true, const std::map<int, std::string>* bin_labels = NULL);
   //std::string MakeLegendPrintText(const std::string& print_value);
 
   //HistTreater

@@ -45,6 +45,8 @@ Plotter_Options::Plotter_Options():
   m_doProjections(false),
   m_doEff(false),
   m_doSystematics(false),
+  m_make_bins_table(false),
+  m_make_moments_table(false),
   m_show_yields(false),
   m_all_from_file(false),
 
@@ -132,6 +134,8 @@ OptionsBase(q)
   m_doProjections        = q.m_doProjections;
   m_doEff                = q.m_doEff;
   m_doSystematics        = q.m_doSystematics;
+  m_make_bins_table      = q.m_make_bins_table;
+  m_make_moments_table   = q.m_make_moments_table;
   m_show_yields          = q.m_show_yields;
   m_all_from_file        = q.m_all_from_file;
 
@@ -298,6 +302,12 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     } 
     else if( temp_arg.find("--DOSYSTEMATICS") != std::string::npos ){
       m_doSystematics = AnalysisUtils::BoolValue(temp_val, temp_arg);
+    } 
+    else if( temp_arg.find("--MAKEBINSTABLE") != std::string::npos ){
+      m_make_bins_table = AnalysisUtils::BoolValue(temp_val, temp_arg);
+    } 
+    else if( temp_arg.find("--MAKEMOMENTSTABLE") != std::string::npos ){
+      m_make_moments_table = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
     else if( temp_arg.find("--SHOWYIELDS") != std::string::npos ){
       m_show_yields = AnalysisUtils::BoolValue(temp_val, temp_arg);
@@ -469,6 +479,8 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_doProjections          = " << m_doProjections        << std::endl;
     std::cout << " m_doEff                  = " << m_doEff                << std::endl;
     std::cout << " m_doSystematics          = " << m_doSystematics        << std::endl;
+    std::cout << " m_make_bins_table        = " << m_make_bins_table      << std::endl;
+    std::cout << " m_make_moments_table     = " << m_make_moments_table   << std::endl;
     std::cout << " m_show_yields            = " << m_show_yields          << std::endl;
     std::cout << " m_all_from_file          = " << m_all_from_file        << std::endl;
 
