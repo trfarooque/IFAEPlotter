@@ -11,7 +11,7 @@ class VariableAttributes{
   VariableAttributes();
   VariableAttributes(const std::string& name, const std::string& label, const std::string& do_scale
 		     , bool do_width=false, bool draw_stack=false, const std::string& draw_res="", const std::string& draw_res_err=""
-		     , bool isLogY=false, bool isLogX=false
+		     , bool isLogY=false, bool isLogX=false, bool isLogRes=false
 		     , const std::string& ylabel="", const std::string& reslabel=""
 		     , bool has_resmin=false, bool has_resmax=false, double resmin=0.5, double resmax=1.5
 		     , bool has_ymin=false, bool has_ymax=false, bool has_yscale=false
@@ -46,6 +46,8 @@ class VariableAttributes{
 		     , bool has_yaxis_ndiv=false, int yaxis_ndiv=0
 		     , bool has_resaxis_ndiv=false, int resaxis_ndiv=0
 
+		     , bool has_res_refline=false, double res_refline=0.
+
 		     , bool has_bottom_margin=false, bool has_top_margin=false
 		     , bool has_left_margin=false, bool has_right_margin=false
 		     , double bottom_margin=0., double top_margin=0.
@@ -67,6 +69,7 @@ class VariableAttributes{
   void SetResLabel(const std::string& reslabel){ m_reslabel = reslabel; }
   void SetIsLogY(bool isLogY){ m_is_logY = isLogY; }
   void SetIsLogX(bool isLogX){ m_is_logX = isLogX; }
+  void SetIsLogRes(bool isLogRes){ m_is_logRes = isLogRes; }
   void SetRebin(int rebin){ m_rebin = rebin; }
   void SetRebinEdges(const std::string& rebinedges){ m_rebinedges = rebinedges; }
   void SetHasBinShift(bool has_binshift){ m_has_binshift = has_binshift; }
@@ -80,6 +83,10 @@ class VariableAttributes{
   void SetDoWidth(bool do_width){ m_do_width = do_width; }
   void SetResDrawOpt(const std::string& resdrawopt){ m_resdrawopt = resdrawopt; }
   void SetBlinding(const std::string& blinding){ m_blinding = blinding; }
+
+  void SetResRefLine(double res_refline){ m_res_refline = res_refline; }
+  void SetHasResRefLine(bool has_res_refline){ m_has_res_refline = has_res_refline; }
+
   void SetResMin(double resmin){ m_resmin = resmin; }
   void SetResMax(double resmax){ m_resmax = resmax; }
   void SetHasResMin(bool has_resmin){ m_has_resmin = has_resmin; }
@@ -179,11 +186,15 @@ class VariableAttributes{
   const std::string& DrawResErr() const { return m_draw_res_err; }
   bool IsLogY() const { return m_is_logY; }
   bool IsLogX() const { return m_is_logX; }
+  bool IsLogRes() const { return m_is_logRes; }
   int Rebin() const { return m_rebin; }
   const std::string& RebinEdges() const { return m_rebinedges; }
   bool HasBinShift() const { return m_has_binshift; }
   double BinShift() const { return m_binshift; }
   const std::string& BinLabelsStr() const{ return m_bin_labels_str; } 
+
+  double ResRefLine() const { return m_res_refline; }
+  bool HasResRefLine() const { return m_has_res_refline; }
 
   bool DoWidth() const { return m_do_width; }
   double ResMin() const { return m_resmin; }
@@ -292,12 +303,17 @@ class VariableAttributes{
   std::string m_draw_res_err;
   bool m_is_logY;
   bool m_is_logX;
+  bool m_is_logRes;
   int m_rebin;
   std::string m_rebinedges;
   bool m_has_binshift;
   double m_binshift;
   std::string m_bin_labels_str;
   bool m_do_width;
+
+  double m_res_refline;
+  bool m_has_res_refline;
+
   double m_resmin;
   double m_resmax; 
   bool m_has_resmin;

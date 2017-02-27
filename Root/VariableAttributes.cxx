@@ -5,7 +5,7 @@
 
 VariableAttributes::VariableAttributes(const std::string& name, const std::string& label, const std::string& do_scale
 				       , bool do_width, bool draw_stack, const std::string& draw_res, const std::string& draw_res_err
-				       , bool isLogY, bool isLogX
+				       , bool isLogY, bool isLogX, bool isLogRes
 				       , const std::string& ylabel, const std::string& reslabel
 				       , bool has_resmin, bool has_resmax, double resmin, double resmax
 				       , bool has_ymin, bool has_ymax, bool has_yscale
@@ -39,6 +39,8 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
 				       , bool has_xaxis_ndiv, int xaxis_ndiv
 				       , bool has_yaxis_ndiv, int yaxis_ndiv
 				       , bool has_resaxis_ndiv, int resaxis_ndiv
+
+				       , bool has_res_refline, double res_refline
 				       
 				       , bool has_bottom_margin, bool has_top_margin
 				       , bool has_left_margin, bool has_right_margin
@@ -59,11 +61,14 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
   m_draw_res_err(draw_res_err),
   m_is_logY(isLogY),
   m_is_logX(isLogX),
+  m_is_logRes(isLogRes),
   m_rebin(rebin),
   m_rebinedges(rebinedges),
   m_binshift(binshift),
   m_bin_labels_str(bin_labels_str),
   m_do_width(do_width),
+  m_res_refline(res_refline),
+  m_has_res_refline(has_res_refline),
   m_resmin(resmin),
   m_resmax(resmax),
   m_has_resmin(has_resmin),
@@ -175,12 +180,15 @@ VariableAttributes::VariableAttributes(VariableAttributes& q){
   m_draw_res_err       = q.m_draw_res_err;
   m_is_logY            = q.m_is_logY;
   m_is_logX            = q.m_is_logX;
+  m_is_logRes          = q.m_is_logRes;
   m_rebin              = q.m_rebin;
   m_rebinedges         = q.m_rebinedges;
   m_has_binshift       = q.m_has_binshift;
   m_binshift           = q.m_binshift;
   m_bin_labels_str     = q.m_bin_labels_str;
   m_do_width           = q.m_do_width;
+  m_res_refline        = q.m_res_refline;
+  m_has_res_refline    = q.m_has_res_refline;
   m_resmin             = q.m_resmin;
   m_resmax             = q.m_resmax;
   m_has_resmin         = q.m_has_resmin;
@@ -316,6 +324,7 @@ VariableAttributesMap VariableAttributes::ParseVariableConfig( Plotter_Options* 
     if( keymap.find("DRAWRESERR") != keymap.end() ){ varObj->SetDrawResErr(keymap["DRAWRESERR"]);}
     if( keymap.find("ISLOGY") != keymap.end() ){ varObj->SetIsLogY(AnalysisUtils::BoolValue(keymap["ISLOGY"], "ISLOGY")); }
     if( keymap.find("ISLOGX") != keymap.end() ){ varObj->SetIsLogX(AnalysisUtils::BoolValue(keymap["ISLOGX"], "ISLOGX")); }
+    if( keymap.find("ISLOGRES") != keymap.end() ){ varObj->SetIsLogRes(AnalysisUtils::BoolValue(keymap["ISLOGRES"], "ISLOGRES")); }
  
 
     if( keymap.find("REBIN") != keymap.end() ){ varObj->SetRebin(atoi(keymap["REBIN"].c_str())); }
@@ -334,6 +343,11 @@ VariableAttributesMap VariableAttributes::ParseVariableConfig( Plotter_Options* 
     if( keymap.find("BINLABELS") != keymap.end() ){
       varObj->SetBinLabelsStr(keymap["BINLABELS"]);
       if(!keymap["BINLABELS"].empty()){ varObj->ParseBinLabels(); }
+    }
+
+    if( keymap.find("RESREFLINE") != keymap.end() && (keymap["RESREFLINE"] != "") ){ 
+      varObj->SetResRefLine(atof(keymap["RESREFLINE"].c_str())); 
+      varObj->SetHasResRefLine(true);
     }
 
     if( keymap.find("RESMIN") != keymap.end() && (keymap["RESMIN"] != "") ){ 
