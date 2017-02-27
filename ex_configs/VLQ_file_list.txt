@@ -1,0 +1,12 @@
+BEGIN
+KEY : FILE : SCALE
+0_Data : /eos/atlas/user/f/farooque/VLQMoriond2017/VLQHISTS/VLQ-00-03-06FIX_DataMC_NOTRF/outVLQAnalysis_Data_nominal_HIST.root : 1.
+11_ttbarbb : /eos/atlas/user/f/farooque/VLQMoriond2017/VLQHISTS/VLQ-00-03-06FIX_DataMC_NOTRF/outVLQAnalysis_ttbarbb_nominal_HIST.root : 1.
+12_ttbarcc : /eos/atlas/user/f/farooque/VLQMoriond2017/VLQHISTS/VLQ-00-03-06FIX_DataMC_NOTRF/outVLQAnalysis_ttbarcc_nominal_HIST.root : 1.
+13_ttbarlight : /eos/atlas/user/f/farooque/VLQMoriond2017/VLQHISTS/VLQ-00-03-06FIX_DataMC_NOTRF/outVLQAnalysis_ttbarlight_nominal_HIST.root : 1.
+2_singletop : /eos/atlas/user/f/farooque/VLQMoriond2017/VLQHISTS/VLQ-00-03-06FIX_DataMC_NOTRF/outVLQAnalysis_Singletop_nominal_HIST.root : 1.
+3_Wjets : /eos/atlas/user/f/farooque/VLQMoriond2017/VLQHISTS/VLQ-00-03-06FIX_DataMC_NOTRF/outVLQAnalysis_Wjets_nominal_HIST.root : 1.
+4_Zjets : /eos/atlas/user/f/farooque/VLQMoriond2017/VLQHISTS/VLQ-00-03-06FIX_DataMC_NOTRF/outVLQAnalysis_Zjets_nominal_HIST.root : 1.
+5_topEW : /eos/atlas/user/f/farooque/VLQMoriond2017/VLQHISTS/VLQ-00-03-06FIX_DataMC_NOTRF/outVLQAnalysis_topEW_nominal_HIST.root : 1.
+6_others : /eos/atlas/user/f/farooque/VLQMoriond2017/VLQHISTS/VLQ-00-03-06FIX_DataMC_NOTRF/outVLQAnalysis_others_nominal_HIST.root : 1.
+END
