@@ -1,11 +1,14 @@
 #include "IFAEPlotter/Plotter_Options.h"
 #include "IFAEPlotter/PlotManager.h"
+#include "TStyle.h"
 
 int main(int argc, char** argv){
 
   //run as:
   //plot --samples sample_config.txt --variables variable_config.txt --style stylelib.txt --files filelist.txt 
   //global flags --outputfile --outputformat 
+
+  gStyle->SetOptStat(0);
   Plotter_Options* opt = new Plotter_Options();
   opt->ParseUserOpts(argc, argv);
   PlotManager* plotMngr = new PlotManager(opt); 

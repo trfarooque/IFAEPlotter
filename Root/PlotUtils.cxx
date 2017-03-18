@@ -114,7 +114,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   bool opt_hasRightMargin    = (m_opt->OptStr().find("--RIGHTMARGIN") != std::string::npos);
 
   bool var_draw_stack = 0;
-  //bool var_do_width = false;
+  bool var_do_width = false;
   bool var_isLogY = false;
   bool var_isLogX = false;
   bool var_isLogRes = false;
@@ -243,7 +243,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     var_isCount        = va_it->second->IsCount();
     var_isShape        = !doGraphs && (va_it->second->DoScale() == "SHAPE"); 
-    //var_do_width       = !doGraphs && va_it->second->DoWidth();
+    var_do_width       = !doGraphs && va_it->second->DoWidth();
     var_draw_stack     = !doGraphs && va_it->second->DrawStack();
     var_isLogY         = !doGraphs && va_it->second->IsLogY();
     var_isLogX         = !doGraphs && va_it->second->IsLogX();
@@ -508,8 +508,12 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	if(!doGraphs && leg_text){ 
 	  if(ds_leg_empty){ leg_text->AddEntry(hist_a, " ", ""); }
 	  else{
-	    //Find correct text to insert into legend
-	    ds_print_text = MakeMomentText(hist_a, ds_print_value, ds_print_format);
+	    TH1D* _hist_print = NULL;
+	    if(var_do_width){ _hist_print = GetHistTimesBinWidth(hist_a); }
+	    else{ _hist_print = hist_a; }
+
+	    ds_print_text = MakeMomentText(_hist_print, ds_print_value, ds_print_format);
+	    if(var_do_width){ delete _hist_print; }
 	    leg_text->AddEntry(hist_a, ds_print_text.c_str(), "");
 	  }
 	}//If drawing a legend for text
@@ -1487,6 +1491,7 @@ std::string PlotUtils::MakeMomentsTableRow(TH1D* hist, const std::vector<std::st
     row_string += MakeMomentText(_hist, moment, print_format); 
   }
   //row_string += "\\\\";
+  if(use_width){ delete _hist; }
 
   return row_string;
 
