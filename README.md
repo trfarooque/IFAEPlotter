@@ -13,15 +13,16 @@ rc clean
 rc compile
 ```
 
-
 Currently recommended versions
 ----------------------------
 See the most recent tag in the tab 'tag' above.
 
 Help and support
 --------------------
-trisha.farooque@cern.ch
- 
+```diff
+trisha.farooque@SPAMNOTcern.ch
+```
+
 Overview
 --------------
 
@@ -63,7 +64,7 @@ must have identical names.
 Configuration parameters
 --------------------------
 
-***1. Global options:***
+### 1. Global options:
 
 In general, global options are applied to all samples and variables. If the same option exists in a config 
 file, the config file option will override the global option for a given sample/variable.
@@ -196,6 +197,10 @@ of each sample is used to determine the style of the legend entry
 
 Options can be concatenated. Overriden by variable configuration.  
 
+----
+
+***Blinding options***
+
 --BLINDSAMPLE : Sample to blind (e.g. Data)
 
 --BLINDTHRESHOLD : Threshold above which to blind
@@ -205,6 +210,8 @@ Options can be concatenated. Overriden by variable configuration.
  * SBYB = SIGNAL/SUM as specified in the sample configuration file.
 
  * NSIG = Number of events in SIGNAL sample. 
+
+----
 
 --GLOBALSCALE : A global constant by which all histograms are scaled. Multiplied to the individual sample scales.
 
@@ -216,7 +223,7 @@ Options can be concatenated. Overriden by variable configuration.
 
 ***Other global options exist***
 
-***2. Sample attributes:*** 
+### 2. Sample attributes: 
 
 NAME : Name of sample. Histograms are currently stacked in alphabetical order using this name.
 
@@ -248,6 +255,8 @@ for the bottom panel.
 
  * INC : Residuals are calculated and drawn for all samples indicating "INC"
 
+----
+
 BLINDING : SIGNAL or NONE. Contamination is calculated as the maximum value over all SIGNAL samples. 
 SBYB values are always calulated assuming SUM to be the total background.
 
@@ -270,7 +279,7 @@ INSUFFIX : Suffix to be appended to name of histogram (NAME in Variable attribut
 INPREFIX : Prefix to be added to name of histogram (NAME in Variable attribute) when reading from file
 
 
-***3. Variable attributes:***
+### 3. Variable attributes:
 
 NAME : Name of histogram in file
 
