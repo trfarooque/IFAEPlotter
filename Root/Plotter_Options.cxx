@@ -14,6 +14,7 @@ Plotter_Options::Plotter_Options():
   m_file_list(""),
   m_systematics_list(""),
   m_style_lib("IFAEPlotter/share/test_style_config.txt"),
+  m_input_dir(""),
   m_output_format("png"),
   m_ylabel("Events"),
   m_reslabel("Data/MC"),
@@ -103,6 +104,7 @@ OptionsBase(q)
   m_file_list            = q.m_file_list;
   m_systematics_list     = q.m_systematics_list;
   m_style_lib            = q.m_style_lib;
+  m_input_dir            = q.m_input_dir;
   m_output_format        = q.m_output_format;
   m_ylabel               = q.m_ylabel;
   m_reslabel             = q.m_reslabel;
@@ -210,6 +212,9 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     } 
     else if( temp_arg.find("--STYLELIB") != std::string::npos ){
       m_style_lib = temp_val;
+    } 
+    else if( temp_arg.find("--INPUTDIR") != std::string::npos ){
+      m_input_dir = temp_val;
     } 
     else if( temp_arg.find("--OUTFORMAT") != std::string::npos ){
       std::transform(temp_val.begin(), temp_val.end(), temp_val.begin(), toupper);
@@ -448,6 +453,7 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_file_list              = " << m_file_list            << std::endl;
     std::cout << " m_systematics_list       = " << m_systematics_list     << std::endl;
     std::cout << " m_style_lib              = " << m_style_lib            << std::endl;
+    std::cout << " m_input_dir              = " << m_input_dir            << std::endl;
     std::cout << " m_output_format          = " << m_output_format        << std::endl;
     std::cout << " m_ylabel                 = " << m_ylabel               << std::endl;
     std::cout << " m_reslabel               = " << m_reslabel             << std::endl;

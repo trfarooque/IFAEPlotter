@@ -10,7 +10,8 @@ SampleAttributes::SampleAttributes(const std::string& name, const std::string& s
 				   , bool draw_stack, bool do_sum, int res_opt, const std::string& resdrawopt
 				   , const std::string& blinding, const std::string& print_format
 				   , bool write, const std::string& outfile_name
-				   , const std::string& in_suffix, const std::string& in_prefix, bool no_shape, const std::string& print_value) : 
+				   , const std::string& in_pattern, const std::string& in_suffix, const std::string& in_prefix
+				   , bool no_shape, const std::string& print_value) : 
   m_name(name),
   m_suffix(suffix),
   m_leglabel(leglabel),
@@ -23,6 +24,7 @@ SampleAttributes::SampleAttributes(const std::string& name, const std::string& s
   m_blinding(blinding),
   m_print_format(print_format),
   m_outfile_name(outfile_name),
+  m_in_pattern(in_pattern),
   m_in_suffix(in_suffix),
   m_in_prefix(in_prefix),
   m_print_value(print_value),
@@ -49,6 +51,7 @@ SampleAttributes::SampleAttributes(SampleAttributes& q){
   m_blinding         = q.m_blinding;
   m_print_format     = q.m_print_format;
   m_outfile_name     = q.m_outfile_name;
+  m_in_pattern       = q.m_in_pattern;
   m_in_suffix        = q.m_in_suffix;
   m_in_prefix        = q.m_in_prefix;
   m_print_value      = q.m_print_value;
@@ -90,6 +93,7 @@ SampleAttributesMap SampleAttributes::ParseSampleConfig( Plotter_Options* opt ){
     sampleObj->SetName( name ); 
 
 
+    if( keymap.find("INPATTERN") != keymap.end() ){ sampleObj->SetInPattern(keymap["INPATTERN"]); }
     if( keymap.find("INSUFFIX") != keymap.end() ){ sampleObj->SetInSuffix(keymap["INSUFFIX"]); }
     if( keymap.find("INPREFIX") != keymap.end() ){ sampleObj->SetInPrefix(keymap["INPREFIX"]); }
 

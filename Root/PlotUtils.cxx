@@ -113,7 +113,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   bool opt_hasLeftMargin     = (m_opt->OptStr().find("--LEFTMARGIN") != std::string::npos);
   bool opt_hasRightMargin    = (m_opt->OptStr().find("--RIGHTMARGIN") != std::string::npos);
 
-  bool var_draw_stack = 0;
+  bool var_draw_stack = false;
+  bool var_draw_res_stack = false;
   bool var_do_width = false;
   bool var_isLogY = false;
   bool var_isLogX = false;
@@ -245,6 +246,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     var_isShape        = !doGraphs && (va_it->second->DoScale() == "SHAPE"); 
     var_do_width       = !doGraphs && va_it->second->DoWidth();
     var_draw_stack     = !doGraphs && va_it->second->DrawStack();
+    var_draw_res_stack     = !doGraphs && va_it->second->DrawResStack();
     var_isLogY         = !doGraphs && va_it->second->IsLogY();
     var_isLogX         = !doGraphs && va_it->second->IsLogX();
     var_isLogRes       = !doGraphs && va_it->second->IsLogRes();
@@ -354,7 +356,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     bool drawRes = ( (var_draw_res != "") && (var_draw_res != "NONE") );
     if(drawRes && (s_base_name == "") ){std::cout<<"No reference sample specified for residual calculation"<<std::endl;}
 
-    std::string canv_name = "canv_" + var_name;
+    std::string canv_name = "canv_" + AnalysisUtils::ReplaceString(var_name,"*","");
     TCanvas* canv_a = new TCanvas(canv_name.c_str(), "", 800, 800);
     SetStyleCanvas( *canv_a, drawRes, var_bottom_margin, var_top_margin, var_left_margin, var_right_margin );
  
@@ -366,7 +368,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     std::string hs_res_name = "hs_res_" + var_name;
     //std::string hs_res_ref_name = "hs_res_ref_" + var_name;
 
-    THStack* hs_res_a = drawRes ? new THStack(hs_res_name.c_str(), "") : NULL;
+    THStack* hs_res_a       = drawRes ? new THStack(hs_res_name.c_str(), "")       : NULL;
     //THStack* hs_res_ref_a = drawRes ? new THStack(hs_res_ref_name.c_str(), "") : NULL;
     std::string hbasename = var_name + "_" + s_base_suffix;
     //TH1D* h_base = drawRes ? m_hstMngr->GetTH1D(hbasename) : NULL;
@@ -541,11 +543,11 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	    //else{ resdrawopt = "E0"; hist_res_a->SetFillStyle(0); }
 	    //}
 	  else{ resdrawopt = ds_drawopt; }
-	  hs_res_a->Add(hist_res_a, resdrawopt.c_str());
 
+	  hs_res_a->Add(hist_res_a, resdrawopt.c_str());
 	  resname_a.clear(); resdrawopt.clear();
 	}//if residual histogram needed 
-
+	
       }//if not a BLINDER
 
       //Clear strings
@@ -651,9 +653,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       var_ymax = max(var_ymax, var_ymax_legrange);
 
     }//if ymax coordinate not provided
-    if(drawRes && !var_isLogY && var_ymin <= 1.e-5){var_ymin = 1.1e-5;}
-    else if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
-
+    if(!var_hasYMin){
+      if(drawRes && !var_isLogY && var_ymin <= 1.e-5){var_ymin = 1.1e-5;}
+      else if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
+    }
     //==================================================== Resizing done ======================================================================
 
     if(var_hasXTitleSize){ var_xtitle_size = va_it->second->XTitleSize(); }
@@ -857,7 +860,12 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       else if(var_draw_res == "RATIO"){ r_max = 1.5;}
       else if(var_draw_res == "INVRATIO"){ r_max = 1.5;}
 
-      hs_res_a->Draw("nostack");
+      if(var_draw_res_stack){
+	hs_res_a->Draw();
+      }
+      else{
+	hs_res_a->Draw("nostack");
+      }
       if(var_modXRange){ hs_res_a->GetXaxis()->SetRangeUser(var_xmin, var_xmax); }
 
       double ry = (var_hasResRefLine) ? va_it->second->ResRefLine() : ( ( (var_draw_res == "RESIDUAL") || (var_draw_res == "DIFF") ) ? 0. : 1. );
@@ -913,38 +921,38 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
       if(var_outdir != ""){
 	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
-	gSystem->mkdir(Form("%sIFP_PNG/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+	gSystem->mkdir(Form("IFP_PNG/%s/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
       }
 
-      canv_a->SaveAs(Form("%sIFP_PNG/%s%s.png" ,m_output_dir.c_str(), var_outdir.c_str() ,canv_name.c_str())); 
+      canv_a->SaveAs(Form("IFP_PNG/%s/%s%s.png" ,m_output_dir.c_str(), var_outdir.c_str() ,canv_name.c_str())); 
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".png"<<std::endl;
     }
     if(m_opt->OutputFormat().find("EPS") != std::string::npos){ 
 
       if(var_outdir != ""){
 	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
-	gSystem->mkdir(Form("%sIFP_EPS/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+	gSystem->mkdir(Form("IFP_EPS/%s/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
       }
 
-      canv_a->SaveAs(Form("%sIFP_EPS/%s%s.eps" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));  
+      canv_a->SaveAs(Form("IFP_EPS/%s/%s%s.eps" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));  
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".eps"<<std::endl;
    }
     if(m_opt->OutputFormat().find("PDF") != std::string::npos){
       if(var_outdir != ""){
 	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
-	gSystem->mkdir(Form("%sIFP_PDF/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+	gSystem->mkdir(Form("IFP_PDF/%s/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
       }
 
-      canv_a->SaveAs(Form("%sIFP_PDF/%s%s.pdf" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));
+      canv_a->SaveAs(Form("IFP_PDF/%s/%s%s.pdf" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".pdf"<<std::endl;
     }
     if(m_opt->OutputFormat().find("CPP") != std::string::npos){
       if(var_outdir != ""){
 	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
-	gSystem->mkdir(Form("%sIFP_CPP/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+	gSystem->mkdir(Form("IFP_CPP/%s/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
       }
 
-      canv_a->SaveAs(Form("%sIFP_CPP/%s%s.C" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));
+      canv_a->SaveAs(Form("IFP_CPP/%s/%s%s.C" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists writing "<<canv_name<<".C"<<std::endl;
     }
     if(m_opt->OutputFormat().find("ROOT") != std::string::npos){ 
@@ -1139,10 +1147,10 @@ void PlotUtils::MakeTableFromHists (const bool opt_bin){
     std::string var_outdir = va_it->second->OutputFolder();
     if(var_outdir != ""){
       if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
-      gSystem->mkdir(Form("%s%s/%s" ,m_output_dir.c_str(), s_IFP_DIR.c_str(), var_outdir.c_str()), "TRUE");
+      gSystem->mkdir(Form("%s/%s/%s" , s_IFP_DIR.c_str(),m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
     }
     std::ofstream var_tab_file; 
-    var_tab_file.open(Form("%s%s/%s%s.txt" ,m_output_dir.c_str(), s_IFP_DIR.c_str(), var_outdir.c_str() ,var_name.c_str())); 
+    var_tab_file.open(Form("%s/%s/%s%s.txt" , s_IFP_DIR.c_str(),m_output_dir.c_str(), var_outdir.c_str() ,var_name.c_str())); 
     var_tab_file << "============== " << var_label << "============== " << std::endl;
     if(v_str_sum_a.size() > 0){
       for(std::string row : v_str_sum_a){ var_tab_file << row << " \\\\"<< std::endl; }

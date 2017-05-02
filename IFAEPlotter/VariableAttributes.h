@@ -10,7 +10,8 @@ class VariableAttributes{
  public:
   VariableAttributes();
   VariableAttributes(const std::string& name, const std::string& label, const std::string& do_scale
-		     , bool do_width=false, bool draw_stack=false, const std::string& draw_res="", const std::string& draw_res_err=""
+		     , bool do_width=false, bool draw_stack=false, const std::string& do_cumulative=""
+		     , const std::string& draw_res="", const std::string& draw_res_err="", bool draw_res_stack=false
 		     , bool isLogY=false, bool isLogX=false, bool isLogRes=false
 		     , const std::string& ylabel="", const std::string& reslabel=""
 		     , bool has_resmin=false, bool has_resmax=false, double resmin=0.5, double resmax=1.5
@@ -77,9 +78,11 @@ class VariableAttributes{
   void SetBinLabelsStr(const std::string& bin_labels_str){ m_bin_labels_str = bin_labels_str; }
 
   void SetDoScale(const std::string& do_scale){ m_do_scale = do_scale; }
+  void SetDoCumulative(const std::string& do_cumulative){ m_do_cumulative = do_cumulative; }
   void SetDrawStack(bool draw_stack){ m_draw_stack = draw_stack; }
   void SetDrawRes(const std::string& draw_res){ m_draw_res = draw_res; }
   void SetDrawResErr(const std::string& draw_res_err){ m_draw_res_err = draw_res_err; }
+  void SetDrawResStack(bool draw_res_stack){ m_draw_res_stack = draw_res_stack; }
   void SetDoWidth(bool do_width){ m_do_width = do_width; }
   void SetResDrawOpt(const std::string& resdrawopt){ m_resdrawopt = resdrawopt; }
   void SetBlinding(const std::string& blinding){ m_blinding = blinding; }
@@ -181,9 +184,11 @@ class VariableAttributes{
   const std::string& YLabel() const { return m_ylabel; }
   const std::string& ResLabel() const { return m_reslabel; }
   const std::string& DoScale() const { return m_do_scale; }
+  const std::string& DoCumulative() const { return m_do_cumulative; }
   bool DrawStack() const { return m_draw_stack; }
   const std::string& DrawRes() const { return m_draw_res; }
   const std::string& DrawResErr() const { return m_draw_res_err; }
+  bool DrawResStack() const { return m_draw_res_stack; }
   bool IsLogY() const { return m_is_logY; }
   bool IsLogX() const { return m_is_logX; }
   bool IsLogRes() const { return m_is_logRes; }
@@ -299,8 +304,10 @@ class VariableAttributes{
   std::string m_reslabel;
   int m_draw_stack;
   std::string m_do_scale;
+  std::string m_do_cumulative;
   std::string m_draw_res;
   std::string m_draw_res_err;
+  bool m_draw_res_stack;
   bool m_is_logY;
   bool m_is_logX;
   bool m_is_logRes;

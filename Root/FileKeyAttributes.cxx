@@ -129,7 +129,7 @@ FileKeyAttributesMap FileKeyAttributes::ParseFileList(Plotter_Options* opt, cons
 	  if(b_multiscale){
 	    vscales->push_back( std::vector<double>() );
 	  }
-	  if( !b_multiname && ( (cur_samp->InSuffix() != "") || (cur_samp->InPrefix() != "") ) ){
+	  if( !b_multiname && ( (cur_samp->InPattern() != "") || (cur_samp->InSuffix() != "") || (cur_samp->InPrefix() != "") ) ){
 	    b_multiname = true; fkey->SetMultiName(true);
 	  }
 	} while(pos != std::string::npos); //subsamples

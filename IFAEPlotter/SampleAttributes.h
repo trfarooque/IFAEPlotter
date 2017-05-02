@@ -16,7 +16,8 @@ class SampleAttributes{
 		   , int res_opt=-1, const std::string& resdrawopt="" 
 		   , const std::string& blinding="NONE", const std::string& print_format=""
 		   , bool write=false, const std::string& outfile_name = ""
-		   , const std::string& in_suffix = "", const std::string& in_prefix = "", bool no_shape=false, const std::string& print_value="");
+		   , const std::string& in_pattern = "", const std::string& in_suffix = "", const std::string& in_prefix = ""
+		   , bool no_shape=false, const std::string& print_value="");
   SampleAttributes(SampleAttributes& q);
   ~SampleAttributes();
   static std::map<std::string, SampleAttributes*> ParseSampleConfig( Plotter_Options* opt );
@@ -34,6 +35,7 @@ class SampleAttributes{
   std::string m_blinding;
   std::string m_print_format;
   std::string m_outfile_name;
+  std::string m_in_pattern;
   std::string m_in_suffix;
   std::string m_in_prefix;
   std::string m_print_value;
@@ -62,6 +64,7 @@ class SampleAttributes{
   void SetWrite(bool write){ m_write = write; }
   void SetOutFileName(const std::string& outfile_name){ m_outfile_name = outfile_name; }
   void SetInSuffix(const std::string& in_suffix){ m_in_suffix = in_suffix; }
+  void SetInPattern(const std::string& in_pattern){ m_in_pattern = in_pattern; }
   void SetInPrefix(const std::string& in_prefix){ m_in_prefix = in_prefix; }
   void SetPrintValue(const std::string& print_value){ m_print_value = print_value; }
 
@@ -79,6 +82,7 @@ class SampleAttributes{
   const std::string& Blinding() const{ return m_blinding; }
   const std::string& PrintFormat() const{ return m_print_format; }
   const std::string& OutFileName() const{ return m_outfile_name; }
+  const std::string& InPattern() const{ return m_in_pattern; }
   const std::string& InSuffix() const{ return m_in_suffix; }
   const std::string& InPrefix() const{ return m_in_prefix; }
   const std::string& PrintValue() const{ return m_print_value; }

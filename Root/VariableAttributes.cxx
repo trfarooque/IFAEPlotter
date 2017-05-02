@@ -4,7 +4,8 @@
 #include <iostream>
 
 VariableAttributes::VariableAttributes(const std::string& name, const std::string& label, const std::string& do_scale
-				       , bool do_width, bool draw_stack, const std::string& draw_res, const std::string& draw_res_err
+				       , bool do_width, bool draw_stack, const std::string& do_cumulative
+				       , const std::string& draw_res, const std::string& draw_res_err, bool draw_res_stack
 				       , bool isLogY, bool isLogX, bool isLogRes
 				       , const std::string& ylabel, const std::string& reslabel
 				       , bool has_resmin, bool has_resmax, double resmin, double resmax
@@ -57,8 +58,10 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
   m_reslabel(reslabel),
   m_draw_stack(draw_stack),
   m_do_scale(do_scale),
+  m_do_cumulative(do_cumulative),
   m_draw_res(draw_res),
   m_draw_res_err(draw_res_err),
+  m_draw_res_stack(draw_res_stack),
   m_is_logY(isLogY),
   m_is_logX(isLogX),
   m_is_logRes(isLogRes),
@@ -176,8 +179,10 @@ VariableAttributes::VariableAttributes(VariableAttributes& q){
   m_reslabel           = q.m_reslabel;
   m_draw_stack         = q.m_draw_stack;
   m_do_scale           = q.m_do_scale;
+  m_do_cumulative      = q.m_do_cumulative;
   m_draw_res           = q.m_draw_res;
   m_draw_res_err       = q.m_draw_res_err;
+  m_draw_res_stack     = q.m_draw_res_stack;
   m_is_logY            = q.m_is_logY;
   m_is_logX            = q.m_is_logX;
   m_is_logRes          = q.m_is_logRes;
@@ -322,6 +327,7 @@ VariableAttributesMap VariableAttributes::ParseVariableConfig( Plotter_Options* 
     if( keymap.find("DRAWSTACK") != keymap.end() ){ varObj->SetDrawStack(AnalysisUtils::BoolValue(keymap["DRAWSTACK"], "DRAWSTACK")); }
     if( keymap.find("DRAWRES") != keymap.end() ){ varObj->SetDrawRes(keymap["DRAWRES"]); }
     if( keymap.find("DRAWRESERR") != keymap.end() ){ varObj->SetDrawResErr(keymap["DRAWRESERR"]);}
+    if( keymap.find("DRAWRESSTACK") != keymap.end() ){ varObj->SetDrawResStack(AnalysisUtils::BoolValue(keymap["DRAWRESSTACK"], "DRAWRESSTACK")); }
     if( keymap.find("ISLOGY") != keymap.end() ){ varObj->SetIsLogY(AnalysisUtils::BoolValue(keymap["ISLOGY"], "ISLOGY")); }
     if( keymap.find("ISLOGX") != keymap.end() ){ varObj->SetIsLogX(AnalysisUtils::BoolValue(keymap["ISLOGX"], "ISLOGX")); }
     if( keymap.find("ISLOGRES") != keymap.end() ){ varObj->SetIsLogRes(AnalysisUtils::BoolValue(keymap["ISLOGRES"], "ISLOGRES")); }
@@ -330,6 +336,7 @@ VariableAttributesMap VariableAttributes::ParseVariableConfig( Plotter_Options* 
     if( keymap.find("REBIN") != keymap.end() ){ varObj->SetRebin(atoi(keymap["REBIN"].c_str())); }
     if( keymap.find("REBINVAR") != keymap.end() ){ varObj->SetRebinEdges(keymap["REBINVAR"]); }
     if( keymap.find("DOSCALE") != keymap.end() ){ varObj->SetDoScale(keymap["DOSCALE"]); }
+    if( keymap.find("DOCUMULATIVE") != keymap.end() ){ varObj->SetDoCumulative(keymap["DOCUMULATIVE"]); }
     if( keymap.find("DOWIDTH") != keymap.end() ){ varObj->SetDoWidth(AnalysisUtils::BoolValue(keymap["DOWIDTH"], "DOWIDTH")); }
     if( keymap.find("RESDRAWOPT") != keymap.end() ){ varObj->SetResDrawOpt(keymap["RESDRAWOPT"]); }
     if( keymap.find("BLINDING") != keymap.end() ){ varObj->SetBlinding(keymap["BLINDING"]); }

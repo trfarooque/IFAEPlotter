@@ -19,6 +19,7 @@ public:
     inline const std::string& ConfigVariable() const { return m_config_variable; }
     inline const std::string& FileList() const { return m_file_list; }
     inline const std::string& SystematicsList() const { return m_systematics_list; }
+    inline const std::string& InputDir() const { return m_input_dir; }
     inline const std::string& StyleLib() const { return m_style_lib; }
     inline const std::string& OutputFormat() const { return m_output_format; }
     inline const std::string& YLabel() const { return m_ylabel; }
@@ -105,6 +106,7 @@ private:
     std::string m_config_variable;
     std::string m_file_list;
     std::string m_systematics_list;
+    std::string m_input_dir;
     std::string m_style_lib;
     std::string m_output_format;
     std::string m_ylabel;
