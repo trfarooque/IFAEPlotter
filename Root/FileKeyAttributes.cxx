@@ -110,12 +110,12 @@ FileKeyAttributesMap FileKeyAttributes::ParseFileList(Plotter_Options* opt, cons
 	fkey->SetSampleScales( vscales );
       }
       else{ fkey->SetSingleSampleScales( new std::vector<double> ); }
+
       if(b_multi){
 	std::string parseString = keybase;
 	std::string sparse = "";
 	std::string::size_type pos = 0;
 	bool b_multiname = false;
-
 	SampleAttributesConstVector* v_samp = new SampleAttributesConstVector; v_samp->clear();
 	fkey->SetSampleList(v_samp);
 	do{
@@ -142,6 +142,7 @@ FileKeyAttributesMap FileKeyAttributes::ParseFileList(Plotter_Options* opt, cons
 	}
 
 	fkey->SetSingleSample(attr_map.at(keybase));
+
       }//if not multi
 
       filekey_map[keybase] = fkey;

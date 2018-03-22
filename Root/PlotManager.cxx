@@ -253,7 +253,9 @@ void PlotManager::FillHistManager(){
     int var_rebin = varit->second->Rebin();
     const std::string& var_rebinedges = varit->second->RebinEdges();
     double* var_rebinedges_ptr = 0;
-    if( (var_rebin > 0) && (var_rebinedges != "") ){ 
+    //if( (var_rebin > 0) && (var_rebinedges != "") ){ 
+    if( var_rebinedges != "" ){ 
+      var_rebin = AnalysisUtils::CountSubstring(var_rebinedges, ",");
       var_rebinedges_ptr = new double[var_rebin+1]();
       ParseRebinEdges(var_rebin, var_rebinedges, var_rebinedges_ptr);
     }
@@ -312,6 +314,15 @@ void PlotManager::FillHistManager(){
 	if(var_rebinedges_ptr != NULL){ hsum = VariableRebinning(keysum, hsum, var_rebin, var_rebinedges_ptr); }
 	else{ hsum->Rebin(var_rebin); }
       }
+
+      double xmin =0.; double xmax = 0.;
+      if(varit->second->HasXMin()){ xmin = varit->second->XMin(); }
+      else{ xmin = hsum->GetXaxis()->GetBinLowEdge(1); }
+
+      if(varit->second->HasXMax()){ xmax = varit->second->XMax(); }
+      else{ xmax = hsum->GetXaxis()->GetBinUpEdge(hsum->GetNbinsX()); }
+      hsum -> GetXaxis() -> SetRangeUser(xmin, xmax);
+
 
       //ALERTRISHA - Use new GetHistByBinWidth 
       if(var_do_width){
@@ -374,6 +385,15 @@ void PlotManager::FillHistManager(){
 	  else{ hsample->Rebin(var_rebin); }
 	}
 
+	double xmin =0.; double xmax = 0.;
+	if(varit->second->HasXMin()){ xmin = varit->second->XMin(); }
+	else{ xmin = hsample->GetXaxis()->GetBinLowEdge(1); }
+
+	if(varit->second->HasXMax()){ xmax = varit->second->XMax(); }
+	else{ xmax = hsample->GetXaxis()->GetBinUpEdge(hsample->GetNbinsX()); }
+	hsample -> GetXaxis() -> SetRangeUser(xmin, xmax);
+
+
 	//SET BIN LABELS
 	//Normalise by bin width
 	if(var_do_width){
@@ -430,7 +450,6 @@ void PlotManager::FillHistManager(){
       bool doScaling = ( b_var_isShape || (ds_drawScale == "SHAPE") || (!b_var_isShape && (ds_scaleToRef !="")) );
       if( b_var_isShape && !var_draw_stack && samit->second->NoShape() ){doScaling = false;} 
       if(doScaling){
-	std::cout<<"doScaling = "<<doScaling<<std::endl;
 	double intgl = hsample->Integral();
 	double sc = 1.; 
 	if(intgl > 0.){
@@ -1006,8 +1025,9 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	
 	std::string key_seq = Form("%s_%i", var_name.c_str(), fnum);
 	if(!b_multiname){
-	  if(dim == 1){ h1key_seq = m_hstMngr->ReadTH1D(var_name, infile, key_seq); }
-	  else if(dim == 2){ h2key_seq = m_hstMngr->ReadTH2D(var_name, infile, key_seq); }
+
+	  if(dim == 1){ h1key_seq = m_hstMngr->ReadTH1D(AnalysisUtils::ReplaceString(var_name,"*",""), infile, key_seq); }
+	  else if(dim == 2){ h2key_seq = m_hstMngr->ReadTH2D(AnalysisUtils::ReplaceString(var_name,"*",""), infile, key_seq); }
 	  if(var_makesum){
 	    std::string keysum = makeSum ? var_name + "_" + m_attr_map["SUM"]->Suffix() : var_name + "_sum";
 	    if(dim == 1){
@@ -1041,7 +1061,9 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	    if(dim == 1){
 
 	      if(b_multiname){ 
-		h1key_seq_samp = m_hstMngr->ReadTH1D( samp->InPrefix() + AnalysisUtils::ReplaceString(var_name,"*",samp->InPattern()) + samp->InSuffix()
+		h1key_seq_samp = m_hstMngr->ReadTH1D( samp->InPrefix() 
+						      + AnalysisUtils::ReplaceString(var_name,"*",samp->InPattern()) 
+						      + samp->InSuffix()
 						      , infile, key_seq_samp); 
 	      }
 	      else{ h1key_seq_samp = m_hstMngr->CloneTH1D(key_seq_samp, h1key_seq); }
@@ -1058,7 +1080,9 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	    }
 	    else if(dim == 2){
 	      if(b_multiname){ 
-		h2key_seq_samp = m_hstMngr->ReadTH2D( samp->InPrefix() + AnalysisUtils::ReplaceString(var_name,"*",samp->InPattern()) + samp->InSuffix()
+		h2key_seq_samp = m_hstMngr->ReadTH2D( samp->InPrefix() 
+						      + AnalysisUtils::ReplaceString(var_name,"*",samp->InPattern()) 
+						      + samp->InSuffix()
 						      , infile, key_seq_samp); 
 	      }
 	      else{ h2key_seq_samp = m_hstMngr->CloneTH2D(key_seq_samp, h2key_seq); }
@@ -1083,7 +1107,6 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 
 	}//if multi
 	else{
-
 	  const SampleAttributes* samp = (fn_it->second)->SingleSample();
 	  bool b_samp_scale = (samp->DrawScale() != "NONE");
 	  double sc = (fn_it->second)->SingleSampleScales()->at(fnum_int);

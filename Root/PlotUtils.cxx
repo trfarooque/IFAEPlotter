@@ -515,6 +515,17 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	    else{ _hist_print = hist_a; }
 
 	    ds_print_text = MakeMomentText(_hist_print, ds_print_value, ds_print_format);
+
+	    /******************** ALERTRISHA *******************************/
+	    /*
+	    TH1D* _hist_ref_print = NULL;
+	    if(var_do_width){ _hist_ref_print = GetHistTimesBinWidth(m_hstMngr->GetTH1D(hbasename)); }
+	    else{ _hist_ref_print = m_hstMngr->GetTH1D(hbasename); }
+	    ds_print_text = MakeResidualMomentText(_hist_print, _hist_ref_print, ds_print_value, ds_print_format); 
+
+	    */
+	    /******************** ALERTRISHA *******************************/
+
 	    if(var_do_width){ delete _hist_print; }
 	    leg_text->AddEntry(hist_a, ds_print_text.c_str(), "");
 	  }
@@ -570,6 +581,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     if(var_hasLegendYMax){ var_legend_ymax = va_it->second->LegendYMax(); }
     else if(opt_hasLegendYMax){ var_legend_ymax = m_opt->LegendYMax(); }
     else{ var_legend_ymax = 0.9;}
+
     /*
     if(var_hasLegendXMin){ var_legend_xmin = va_it->second->LegendXMin(); }
     else if(opt_hasLegendXMin){ var_legend_xmin = m_opt->LegendXMin(); }
@@ -852,6 +864,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       else if(var_draw_res == "FRACRES"){ r_min = -1.;}
       else if(var_draw_res == "RATIO"){ r_min = 0.5;}
       else if(var_draw_res == "INVRATIO"){ r_min = 0.5;}
+      else if(var_draw_res == "RATIOUNC"){ r_min = 0.5;}
 
       if(var_hasResMax){r_max = va_it->second->ResMax();}
       else if(opt_hasResMax){r_max = m_opt->ResMax();}
@@ -859,6 +872,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       else if(var_draw_res == "FRACRES"){ r_max = 1.;}
       else if(var_draw_res == "RATIO"){ r_max = 1.5;}
       else if(var_draw_res == "INVRATIO"){ r_max = 1.5;}
+      else if(var_draw_res == "RATIOUNC"){ r_max = 1.5;}
 
       if(var_draw_res_stack){
 	hs_res_a->Draw();
@@ -1203,7 +1217,7 @@ TH1D* PlotUtils::makeResidual(const std::string& resname, TH1D* hist, TH1D* href
   bool b_selfdivide = (hist == href);
 
   if(opt == "NONE"){return NULL;}
-  if( ! ( (opt == "RATIO") || (opt == "INVRATIO") || (opt == "DIFF") || (opt == "RESIDUAL") ) ){
+  if( ! ( (opt == "RATIO") || (opt == "INVRATIO") || (opt == "DIFF") || (opt == "RESIDUAL") || (opt == "RATIOUNC") ) ){
     std::cout << " Error : Unknown option "<<opt<<" for residual calculation "<<std::endl;
     return NULL;
   }
@@ -1252,6 +1266,13 @@ TH1D* PlotUtils::makeResidual(const std::string& resname, TH1D* hist, TH1D* href
 	else if(b_scale_err){ res_be = (ref_c > 0.) ? cont_e/ref_c : 0.; }
 
       }
+      else if(opt == "RATIOUNC"){
+	cont_fe = (cont_c > 0.) ? cont_e/cont_c : 0.;
+	ref_fe = (ref_c > 0.) ? ref_e/ref_c : 0.;
+	res_bc = (ref_fe>0.) ? cont_fe/ref_fe : 0.;
+	res_be = 0.;
+      }
+
       else if( opt == "RATIO"){
 	if(b_scale_err){ res_be = (ref_c > 0.) ? cont_e/ref_c : 0.; }
       }
@@ -1260,7 +1281,7 @@ TH1D* PlotUtils::makeResidual(const std::string& resname, TH1D* hist, TH1D* href
       }
 
       if( b_selfdivide ){
-	if( (opt=="RATIO")|| (opt=="INVRATIO") || opt == ("RESIDUAL") ) { hist_res->SetBinContent(b, 1.); }
+	if( (opt=="RATIO")|| (opt=="INVRATIO") || opt == ("RESIDUAL") || (opt=="RATIOUNC") ) { hist_res->SetBinContent(b, 1.); }
 	else if(opt == "DIFF"){ hist_res->SetBinContent(b, 0.); }
       }
       else if(!(b_rootfn)){ hist_res->SetBinContent(b, res_bc); }  
@@ -1454,7 +1475,7 @@ std::string PlotUtils::MakeResidualMomentText(TH1D* hist, TH1D* href, const std:
   else if(moment == "YIELDANDERROR"){
     double err = 0.; double err_ref = 0.;
     double intgl = hist->IntegralAndError(0.,-1.,err);
-    double intgl_ref = hist->IntegralAndError(0.,-1.,err_ref);
+    double intgl_ref = href->IntegralAndError(0.,-1.,err_ref);
 
     double intgl_ratio = (intgl_ref != 0.) ? intgl/intgl_ref : 0.;
 

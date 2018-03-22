@@ -14,6 +14,7 @@ int main(int argc, char** argv){
   std::string output_filename    = "";
   std::string input_name        = "";
   std::string output_name       = "";
+  bool write_others              = ""; //write histograms without input pattern match only if this is true  
   //std::string replace_mode       = "";
 
   int optind = 1;
@@ -21,18 +22,23 @@ int main(int argc, char** argv){
   std::string _switch = ""; 
 
   while ((optind < argc) && (argv[optind][0]=='-')) {
-    ss << argv[optind]; _switch = ss.str();  
+    _switch = std::string(argv[optind]);
     optind++;  ss << argv[optind];
+
+
+    //ss << argv[optind]; _switch = ss.str();  
+    //optind++;  ss << argv[optind];
     if       (_switch == "--input_filename")   { ss >> input_filename; }
     else if  (_switch == "--output_filename")  { ss >> output_filename; }
     else if  (_switch == "--input_name")      { ss >> input_name; }
     else if  (_switch == "--output_name")     { ss >> output_name; }
+    else if  (_switch == "--write_others")     { ss >> write_others; }
     //else if  (_switch == "--replace_mode")     { ss >> replace_mode; }
     else std::cout<<"Unknown switch "<<_switch<<std::endl;
-
+    
     optind++; ss.clear(); _switch.clear();
   }
-
+  
   TFile* infile   = TFile::Open(input_filename.c_str(), "READ");
   TFile* outfile  = TFile::Open(output_filename.c_str(), "UPDATE");
 
@@ -50,6 +56,9 @@ int main(int argc, char** argv){
     className.clear();
 
     oldname = (std::string)(key->GetName());
+    if(!write_others && (oldname.find(input_name)==std::string::npos)){ 
+      className.clear(); oldname.clear(); continue;
+    }
     newname  = AnalysisUtils::ReplaceString(oldname, input_name, output_name);
     TH1D* outhist = (TH1D*)(((key->ReadObj()))->Clone(newname.c_str()));
     outhist->SetDirectory(0);
