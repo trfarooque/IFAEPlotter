@@ -1212,17 +1212,25 @@ double PlotUtils::GetSeparation( TH1D S1, TH1D B1 ) {
   }
   
   //std::cout<<"separation "<<separation <<std::endl;
-  return separation;
+  return separation*100.;
 }
 
 
 std::string PlotUtils::SeparationString( TH1D Sig, TH1D Ref, std::string sample_name ) {
   //std::cout<<"In SeparationString"<<std::endl;
   double separation = PlotUtils::GetSeparation( Sig, Ref );
+  //Here round the double before converstion into a string
+  /*
+  double  intpart;
+  double fractpart = modf (separation, &intpart);
+  fractpart  = roundf(fractpart * 10.0)/10.0; // Round to 5 decimal places
+  double separation_rounded = intpart + fractpart;
+  */
+
   //just if one wants to use a standalone legend..
   //std::string separation_string=sample_name+": "+std::to_string(separation);
   std::string separation_string;
   if(separation==0.)separation_string="";
-  else separation_string= "S: "+std::to_string(separation).substr(0,5);
+  else separation_string= "S: "+std::to_string(separation).substr(0,4)+"%";
   return separation_string;
 }
