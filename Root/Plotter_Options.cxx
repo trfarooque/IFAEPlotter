@@ -45,6 +45,7 @@ Plotter_Options::Plotter_Options():
   m_doEff(false),
   m_doSystematics(false),
   m_show_yields(false),
+  m_show_separation(false),
   m_all_from_file(false),
 
   m_resmin(0.),
@@ -130,6 +131,7 @@ OptionsBase(q)
   m_doEff                = q.m_doEff;
   m_doSystematics        = q.m_doSystematics;
   m_show_yields          = q.m_show_yields;
+  m_show_separation      = q.m_show_separation;
   m_all_from_file        = q.m_all_from_file;
 
   m_resmin               = q.m_resmin;
@@ -304,6 +306,10 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
       //m_show_yields = (atoi(temp_val.c_str()) > 0);
       AnalysisUtils::BoolValue(temp_val, m_show_yields);
     } 
+    else if( temp_arg.find("--SHOWSEPARATION") != std::string::npos ){
+      //m_show_yields = (atoi(temp_val.c_str()) > 0);
+      AnalysisUtils::BoolValue(temp_val, m_show_separation);
+    } 
     else if( temp_arg.find("--ALLFROMFILE") != std::string::npos ){
       AnalysisUtils::BoolValue(temp_val, m_all_from_file);
     } 
@@ -470,6 +476,7 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_doEff                  = " << m_doEff                << std::endl;
     std::cout << " m_doSystematics          = " << m_doSystematics        << std::endl;
     std::cout << " m_show_yields            = " << m_show_yields          << std::endl;
+    std::cout << " m_show_separation        = " << m_show_separation      << std::endl;
     std::cout << " m_all_from_file          = " << m_all_from_file        << std::endl;
 
     std::cout << " m_resmin                 = " << m_resmin               << std::endl;

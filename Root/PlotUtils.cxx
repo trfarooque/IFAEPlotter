@@ -1134,3 +1134,45 @@ int PlotUtils::ResizeLegend(TLegend& leg, double xpt, double ypt, const std::str
 
   return 0;
 }
+
+double PlotUtils::GetSeparation( TH1D S1, TH1D B1 ) {
+
+  std::shared_ptr<TH1D> S( new TH1D(S1) );
+  std::shared_ptr<TH1D> B( new TH1D(B1) );
+
+  Double_t separation = 0;
+  if ((S->GetNbinsX() != B->GetNbinsX()) || (S->GetNbinsX() <= 0)) {
+    cout << "<GetSeparation> signal and background"
+         << " histograms have different number of bins: "
+         << S->GetNbinsX() << " : " << B->GetNbinsX() << endl;
+  }
+  if (S->GetXaxis()->GetXmin() != B->GetXaxis()->GetXmin() ||
+      S->GetXaxis()->GetXmax() != B->GetXaxis()->GetXmax() ||
+      S->GetXaxis()->GetXmax() <= S->GetXaxis()->GetXmin()) {
+    cout << S->GetXaxis()->GetXmin() << " " << B->GetXaxis()->GetXmin()
+         << " " << S->GetXaxis()->GetXmax() << " " << B->GetXaxis()->GetXmax()
+         << " " << S->GetXaxis()->GetXmax() << " " << S->GetXaxis()->GetXmin() << endl;
+    cout << "<GetSeparation> signal and background"
+         << " histograms have different or invalid dimensions:" << endl;
+  }
+  Int_t    nstep  = S->GetNbinsX();
+  Double_t intBin = (S->GetXaxis()->GetXmax() - S->GetXaxis()->GetXmin())/nstep;
+  Double_t nS     = S->GetSumOfWeights()*intBin;
+  Double_t nB     = B->GetSumOfWeights()*intBin;
+  if (nS > 0 && nB > 0) {
+    for (Int_t bin=0; bin <= nstep + 1; bin++) {
+      Double_t s = S->GetBinContent( bin )/Double_t(nS);
+      Double_t b = B->GetBinContent( bin )/Double_t(nB);
+ if (s + b > 0) separation += 0.5*(s - b)*(s - b)/(s + b);
+    }
+    separation *= intBin;
+  }
+  else {
+    cout << "<GetSeparation> histograms with zero entries: "
+         << nS << " : " << nB << " cannot compute separation"
+         << endl;
+    separation = 0;
+  }
+  
+  return separation;
+}
