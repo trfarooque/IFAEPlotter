@@ -57,8 +57,10 @@ class PlotManager{
   //const double* ParseRebinEdges( int nbin, const std::string& bindef);
   //----------------------- HISTMANAGER ---------------------------
   void ParseRebinEdges( int nbin, const std::string& bindef, double* xbins_new_ptr);
+
   TH1D* VariableRebinning(const std::string& histname, int nbin, const double* binedges);
   TH1D* VariableRebinning(const std::string& histname, TH1D* hist, int nbin, const double* binedges);
+  TH1D* MakeCumulative(const std::string& histname, TH1D* horig, const std::string& option);
 
 };
 

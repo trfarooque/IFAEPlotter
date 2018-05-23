@@ -1,4 +1,4 @@
-//////////// THIS SIDE UP ///////////////////////////////////////////////////////
+/////////// THIS SIDE UP ///////////////////////////////////////////////////////
 #include "IFAEPlotter/PlotUtils.h"
 #include "IFAEPlotter/StyleDictionary.h"
 #include "IFAEPlotter/Plotter_Options.h"
@@ -16,6 +16,7 @@
 #include "TLatex.h"
 #include "TLine.h"
 #include <algorithm>
+#include <fstream>
 
 PlotUtils::PlotUtils(Plotter_Options* opt, HistManager* hstMngr, SampleAttributesMap& attrbt_map, VariableAttributesMap& var_map, StyleDictionary* style_dict ) : 
   m_opt(opt),
@@ -78,9 +79,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists start"<<std::endl; 
 
   bool doGraphs = ((projopt == "MEAN") || (projopt == "RMS") || (projopt == "FRACRMS") || (projopt == "EFF") );
-  const std::string& glob_ttl = m_opt->Title();
-  // int nsample = m_attrbt_map.size();
-  //int ndist = m_var_map.size();
+  const std::string& glob_ttl        = m_opt->Title();
 
   bool opt_hasResMin = (m_opt->OptStr().find("--RESMIN") != std::string::npos); 
   bool opt_hasResMax = (m_opt->OptStr().find("--RESMAX") != std::string::npos);
@@ -113,11 +112,13 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   bool opt_hasTopMargin      = (m_opt->OptStr().find("--TOPMARGIN") != std::string::npos);
   bool opt_hasLeftMargin     = (m_opt->OptStr().find("--LEFTMARGIN") != std::string::npos);
   bool opt_hasRightMargin    = (m_opt->OptStr().find("--RIGHTMARGIN") != std::string::npos);
-  
-  bool var_draw_stack = 0;
+
+  bool var_draw_stack = false;
+  bool var_draw_res_stack = false;
   bool var_do_width = false;
   bool var_isLogY = false;
   bool var_isLogX = false;
+  bool var_isLogRes = false;
   bool var_isShape = false;
 
   bool var_hasResMin = false;
@@ -129,6 +130,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   bool var_hasXMax   = false;
   bool var_modXRange = false;
 
+  bool var_hasResRefLine = false;
   //bool var_hasLegendXMin = false;
   bool var_hasLegendXMax = false;
   //bool var_hasLegendYMin = false;
@@ -193,16 +195,19 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   double var_left_margin = 0.;
   double var_right_margin = 0.;
 
-  std::string var_yield_opt = "";
-
   bool var_isCount = false;
+
+  std::string var_binlabels_str = "";
+  std::map<int, std::string> *var_binlabels_map = NULL;
+
   bool ds_draw_stack = false;
   int ds_res_opt = -1;
   std::string ds_res_erropt = "";
-
+  std::string ds_print_text = "";
   //One preliminary loop to find the baseline sample
   std::string s_base_name = ""; 
   std::string s_base_suffix = "";
+
   for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
     if(at_it->second->ResOpt() == 1){
       if(s_base_name != ""){ std::cout<<"Error: More than one baseline specified for residual calculation"<<std::endl; }
@@ -240,11 +245,13 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     var_isCount        = va_it->second->IsCount();
     var_isShape        = !doGraphs && (va_it->second->DoScale() == "SHAPE"); 
     var_do_width       = !doGraphs && va_it->second->DoWidth();
-    var_yield_opt      = (var_do_width) ? "width" : "";
     var_draw_stack     = !doGraphs && va_it->second->DrawStack();
+    var_draw_res_stack     = !doGraphs && va_it->second->DrawResStack();
     var_isLogY         = !doGraphs && va_it->second->IsLogY();
     var_isLogX         = !doGraphs && va_it->second->IsLogX();
+    var_isLogRes       = !doGraphs && va_it->second->IsLogRes();
 
+    var_hasResRefLine  = va_it->second->HasResRefLine();
     var_hasResMin      = va_it->second->HasResMin();
     var_hasResMax      = va_it->second->HasResMax();
     var_hasYMin        = va_it->second->HasYMin();
@@ -287,6 +294,11 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     var_xaxis_ndiv   = va_it->second->XAxisNdiv();
     var_yaxis_ndiv   = va_it->second->YAxisNdiv();
     var_resaxis_ndiv = va_it->second->ResAxisNdiv();
+
+    var_binlabels_str = va_it->second->BinLabelsStr();
+    var_binlabels_map = va_it->second->BinLabelsMap();
+ 
+    //==================================================
 
     var_xmin = 0.; 
     var_xmax = 0.; 
@@ -344,7 +356,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     bool drawRes = ( (var_draw_res != "") && (var_draw_res != "NONE") );
     if(drawRes && (s_base_name == "") ){std::cout<<"No reference sample specified for residual calculation"<<std::endl;}
 
-    std::string canv_name = "canv_" + var_name;
+    std::string canv_name = "canv_" + AnalysisUtils::ReplaceString(var_name,"*","");
     TCanvas* canv_a = new TCanvas(canv_name.c_str(), "", 800, 800);
     SetStyleCanvas( *canv_a, drawRes, var_bottom_margin, var_top_margin, var_left_margin, var_right_margin );
  
@@ -356,7 +368,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     std::string hs_res_name = "hs_res_" + var_name;
     //std::string hs_res_ref_name = "hs_res_ref_" + var_name;
 
-    THStack* hs_res_a = drawRes ? new THStack(hs_res_name.c_str(), "") : NULL;
+    THStack* hs_res_a       = drawRes ? new THStack(hs_res_name.c_str(), "")       : NULL;
     //THStack* hs_res_ref_a = drawRes ? new THStack(hs_res_ref_name.c_str(), "") : NULL;
     std::string hbasename = var_name + "_" + s_base_suffix;
     //TH1D* h_base = drawRes ? m_hstMngr->GetTH1D(hbasename) : NULL;
@@ -366,9 +378,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     //---------------------------------------------------------
     TLegend* leg_a = new TLegend();
-    TLegend* leg_yield = (m_opt->ShowYields() && (!var_isShape || var_draw_stack) ) ? new TLegend() : NULL;
-    TLegend* leg_separation=0;
-    if(m_opt->ShowSeparation()) leg_separation = new TLegend();
+    bool print_text = (m_opt->ShowYields() && (!var_isShape || var_draw_stack) ) || (m_opt->PrintValue() != "") ;
+    TLegend* leg_text = print_text ? new TLegend() : NULL;
 
     double leg_textsize=0.;
     if(va_it->second->HasLegendTextSize()){ leg_textsize = va_it->second->LegendTextSize(); }
@@ -379,9 +390,9 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     SetStyleLegend(*leg_a, leg_textsize);
     leg_a->Clear();
-    if(leg_yield){
-      SetStyleLegend(*leg_yield, leg_textsize, 42, 0.04);
-      leg_yield->Clear();
+    if(leg_text){
+      SetStyleLegend(*leg_text, leg_textsize, 42, 0.04);
+      leg_text->Clear();
     }
     if( m_opt->ShowSeparation() ){
       SetStyleLegend(*leg_separation, leg_textsize, 42, 0.04);
@@ -442,6 +453,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     //Start the sample loop
     bool firstsample = true;
+
     for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
       if( var_isShape ){
 	if( !var_draw_stack && ( (at_it->first == "SUM")  || at_it->second->NoShape() ) ){continue;}
@@ -450,6 +462,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       //if( (m_samples_noshape != NULL) && var_isShape && (std::find(m_samples_noshape->begin(), m_samples_noshape->end(), at_it->first) != m_samples_noshape->end()) ){continue;}
       if(at_it->first == "BLINDER" && !var_drawBlinder){continue;}
 
+
       const std::string& ds_name = at_it->second->Name();
       const std::string& ds_suffix = at_it->second->Suffix();
       const std::string& ds_leglabel = at_it->second->LegLabel();
@@ -457,7 +470,9 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       const std::string& ds_drawopt = at_it->second->DrawOpt();
       const std::string& ds_resdrawopt = at_it->second->ResDrawOpt();
       const std::string& ds_legopt =  at_it->second->LegOpt();
-      const std::string& ds_yield_format = (at_it->second->YieldFormat() != "") ? at_it->second->YieldFormat() : m_opt->YieldFormat();
+      const std::string& ds_print_format = (at_it->second->PrintFormat() != "") ? at_it->second->PrintFormat() : m_opt->PrintFormat();
+      const std::string& ds_print_value = m_opt->ShowYields() ? "YIELD" : 
+	( (at_it->second->PrintValue() != "") ? at_it->second->PrintValue() : m_opt->PrintValue() );
 
       ds_res_erropt = "";
       if( var_draw_res_err  == "REFBAND" ){ ds_res_erropt = "SCALE"; } //scale both REF and INC sample error by the factor used for the division
@@ -467,6 +482,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       ds_draw_stack = !doGraphs && at_it->second->DrawStack();
       ds_res_opt = at_it->second->ResOpt();
       bool ds_isBlind = (ds_name == m_opt->BlindSample());
+
+      bool ds_leg_empty = (leg_text==NULL) || (var_blind_yield && ds_isBlind) || (ds_print_format == "NONE") 
+	|| (ds_print_value == "NONE") || (ds_isShape && ds_print_value == "YIELD");
+
       std::string hist_name = var_name + "_" + ds_suffix;
       SetStyleHist(hist_name, ds_stylekey);
       TH1D* hist_a = m_hstMngr->GetTH1D(hist_name);
@@ -501,13 +520,33 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	  legopt.clear();
 	}
 
-	if(!doGraphs && leg_yield){ 
-	  if( !(ds_isShape || (var_blind_yield && ds_isBlind) || (ds_yield_format == "NONE")) ){
-	    leg_yield->AddEntry(hist_a, Form(ds_yield_format.c_str(),hist_a->Integral(var_yield_opt.c_str())), "");
+	ds_print_text = "";
+	if(!doGraphs && leg_text){ 
+	  if(ds_leg_empty){ leg_text->AddEntry(hist_a, " ", ""); }
+	  else{
+	    TH1D* _hist_print = NULL;
+	    if(var_do_width){ _hist_print = GetHistTimesBinWidth(hist_a); }
+	    else{ _hist_print = hist_a; }
+
+	    ds_print_text = MakeMomentText(_hist_print, ds_print_value, ds_print_format);
+
+	    /******************** ALERTRISHA *******************************/
+	    /*
+	    TH1D* _hist_ref_print = NULL;
+	    if(var_do_width){ _hist_ref_print = GetHistTimesBinWidth(m_hstMngr->GetTH1D(hbasename)); }
+	    else{ _hist_ref_print = m_hstMngr->GetTH1D(hbasename); }
+	    ds_print_text = MakeResidualMomentText(_hist_print, _hist_ref_print, ds_print_value, ds_print_format); 
+
+	    */
+	    /******************** ALERTRISHA *******************************/
+
+	    if(var_do_width){ delete _hist_print; }
+	    leg_text->AddEntry(hist_a, ds_print_text.c_str(), "");
 	  }
-	  else{ leg_yield->AddEntry(hist_a, " ", ""); }
-	}
-	
+	}//If drawing a legend for text
+
+	//==================================
+
       }//if leglabel was not provided, then clearly the sample is not meant to be added to the legend
 
       if(at_it->first != "BLINDER"){
@@ -530,11 +569,11 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	    //else{ resdrawopt = "E0"; hist_res_a->SetFillStyle(0); }
 	    //}
 	  else{ resdrawopt = ds_drawopt; }
-	  hs_res_a->Add(hist_res_a, resdrawopt.c_str());
 
+	  hs_res_a->Add(hist_res_a, resdrawopt.c_str());
 	  resname_a.clear(); resdrawopt.clear();
 	}//if residual histogram needed 
-
+	
       }//if not a BLINDER
 
       //special legend for separation 
@@ -565,15 +604,16 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     if(var_hasLegendYMax){ var_legend_ymax = va_it->second->LegendYMax(); }
     else if(opt_hasLegendYMax){ var_legend_ymax = m_opt->LegendYMax(); }
     else{ var_legend_ymax = 0.9;}
+
     /*
     if(var_hasLegendXMin){ var_legend_xmin = va_it->second->LegendXMin(); }
     else if(opt_hasLegendXMin){ var_legend_xmin = m_opt->LegendXMin(); }
     if(var_hasLegendYMin){ var_legend_ymin = va_it->second->LegendYMin(); }
     else if(opt_hasLegendYMin){ var_legend_ymin = m_opt->LegendYMin(); }
     */
-    if(leg_yield){
-      ResizeLegend(*leg_yield, var_legend_xmax, var_legend_ymax);
-      ResizeLegend(*leg_a, leg_yield->GetX1NDC(), leg_yield->GetY2NDC() );
+    if(leg_text){
+      ResizeLegend(*leg_text, var_legend_xmax, var_legend_ymax);
+      ResizeLegend(*leg_a, leg_text->GetX1NDC(), leg_text->GetY2NDC() );
     }
     if(m_opt->ShowSeparation()){
       ResizeLegend(*leg_separation, var_legend_xmax, var_legend_ymax);
@@ -652,9 +692,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       var_ymax = max(var_ymax, var_ymax_legrange);
 
     }//if ymax coordinate not provided
-    if(drawRes && !var_isLogY && var_ymin <= 1.e-5){var_ymin = 1.1e-5;}
-    else if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
-
+    if(!var_hasYMin){
+      if(drawRes && !var_isLogY && var_ymin <= 1.e-5){var_ymin = 1.1e-5;}
+      else if(var_isLogY && var_ymin <= 1.e-10){ var_ymin = 1.e-10; }
+    }
     //==================================================== Resizing done ======================================================================
 
     if(var_hasXTitleSize){ var_xtitle_size = va_it->second->XTitleSize(); }
@@ -732,6 +773,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
       if(var_modXRange){ hs_stack_a->GetXaxis()->SetRangeUser(var_xmin, var_xmax); }
       //To protect empty histograms
+      hs_stack_a->SetMinimum(var_ymin);
       if(var_ymax > var_ymin){
 	hs_stack_a->SetMinimum(var_ymin);
 	hs_stack_a->SetMaximum(var_ymax);
@@ -742,10 +784,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       if(var_has_xaxis_ndiv){ hs_stack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xaxis_ndiv, false); }
       else if(var_isCount)  { hs_stack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false); }
       if(var_has_yaxis_ndiv){ hs_stack_a->GetHistogram()->GetYaxis()->SetNdivisions(var_yaxis_ndiv, false); }
-
-
-      //if(var_has_resaxis_ndiv){ hs_stack_a->GetHistogram()->GetYaxis()->SetNdivisions(var_resaxis_ndiv, false); }
-
 
       if(var_isCount){ hs_stack_a->GetHistogram()->GetXaxis()->CenterLabels(); }
 
@@ -762,6 +800,14 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	hs_stack_a->GetHistogram()->GetXaxis()->SetTitleSize(var_xtitle_size);
 	hs_stack_a->GetHistogram()->GetXaxis()->SetLabelOffset(var_xlabel_offset);
 	hs_stack_a->GetHistogram()->GetXaxis()->SetLabelSize(var_xlabel_size);
+
+	//if have bin labels, set them here
+	if( !var_binlabels_str.empty() ){
+	  for( std::pair<int, std::string> label : *var_binlabels_map ){
+	    hs_stack_a->GetHistogram()->GetXaxis()->SetBinLabel(label.first, label.second.c_str());
+	  }
+	}
+
       }
 
     }//if var_draw_stack
@@ -770,6 +816,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       if(var_modXRange){ hs_nostack_a->GetXaxis()->SetRangeUser(var_xmin, var_xmax); }
 
       //To protect empty histograms
+      hs_nostack_a->SetMinimum(var_ymin);
       if(var_ymax > var_ymin){
 	hs_nostack_a->SetMinimum(var_ymin);
 	hs_nostack_a->SetMaximum(var_ymax);
@@ -797,6 +844,13 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	hs_nostack_a->GetHistogram()->GetXaxis()->SetLabelOffset(var_xlabel_offset);
 	hs_nostack_a->GetHistogram()->GetXaxis()->SetLabelSize(var_xlabel_size);
 
+	//if have bin labels, set them here
+	if( !var_binlabels_str.empty() ){
+	  for( std::pair<int, std::string> label : *var_binlabels_map ){
+	    hs_nostack_a->GetHistogram()->GetXaxis()->SetBinLabel(label.first, label.second.c_str());
+	  }
+	}
+
       }
 
     }//if !var_draw_stack
@@ -816,7 +870,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     curpad->RedrawAxis();
 
     leg_a->Draw();
-    if(leg_yield){ leg_yield->Draw(); }
+    if(leg_text){ leg_text->Draw(); }
 
     //special legend for separation 
     if( m_opt->ShowSeparation() ){
@@ -830,6 +884,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(drawRes){
       curpad = (TPad*)(canv_a->cd(2));
+      if(var_isLogRes){curpad->SetLogy();}
       if(var_isLogX){curpad->SetLogx();}
 
       //double r_min = 0.9*hs_res_a->GetHistogram()->GetMinimum();
@@ -842,6 +897,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       else if(var_draw_res == "FRACRES"){ r_min = -1.;}
       else if(var_draw_res == "RATIO"){ r_min = 0.5;}
       else if(var_draw_res == "INVRATIO"){ r_min = 0.5;}
+      else if(var_draw_res == "RATIOUNC"){ r_min = 0.5;}
 
       if(var_hasResMax){r_max = va_it->second->ResMax();}
       else if(opt_hasResMax){r_max = m_opt->ResMax();}
@@ -849,11 +905,17 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       else if(var_draw_res == "FRACRES"){ r_max = 1.;}
       else if(var_draw_res == "RATIO"){ r_max = 1.5;}
       else if(var_draw_res == "INVRATIO"){ r_max = 1.5;}
+      else if(var_draw_res == "RATIOUNC"){ r_max = 1.5;}
 
-      hs_res_a->Draw("nostack");
+      if(var_draw_res_stack){
+	hs_res_a->Draw();
+      }
+      else{
+	hs_res_a->Draw("nostack");
+      }
       if(var_modXRange){ hs_res_a->GetXaxis()->SetRangeUser(var_xmin, var_xmax); }
 
-      double ry = ( (var_draw_res == "RESIDUAL") || (var_draw_res == "DIFF") ) ? 0. : 1.;
+      double ry = (var_hasResRefLine) ? va_it->second->ResRefLine() : ( ( (var_draw_res == "RESIDUAL") || (var_draw_res == "DIFF") ) ? 0. : 1. );
       TLine* lnref = new TLine(var_xmin, ry, var_xmax, ry); // a reference line
       lnref->SetLineStyle(2); //dashed line
 
@@ -885,6 +947,13 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       
       hs_res_a->GetHistogram()->GetYaxis()->CenterTitle();
 
+      //if have bin labels, set them here
+      if( !var_binlabels_str.empty() ){
+	for( std::pair<int, std::string> label : *var_binlabels_map ){
+	  hs_res_a->GetHistogram()->GetXaxis()->SetBinLabel(label.first, label.second.c_str());
+	}
+      }
+
       curpad->Update();
       curpad->Modified();
 
@@ -894,43 +963,43 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     //Write to output file/ print to a png
     std::string var_outdir = va_it->second->OutputFolder();
-
+    if (m_opt->MsgLevel() == Debug::DEBUG){ std::cout<< " Printing "<<canv_name << std::endl; }
     if(m_opt->OutputFormat().find("PNG") != std::string::npos){ 
 
       if(var_outdir != ""){
 	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
-	gSystem->mkdir(Form("%sIFP_PNG/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+	gSystem->mkdir(Form("IFP_PNG/%s/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
       }
 
-      canv_a->SaveAs(Form("%sIFP_PNG/%s%s.png" ,m_output_dir.c_str(), var_outdir.c_str() ,canv_name.c_str())); 
+      canv_a->SaveAs(Form("IFP_PNG/%s/%s%s.png" ,m_output_dir.c_str(), var_outdir.c_str() ,canv_name.c_str())); 
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".png"<<std::endl;
     }
     if(m_opt->OutputFormat().find("EPS") != std::string::npos){ 
 
       if(var_outdir != ""){
 	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
-	gSystem->mkdir(Form("%sIFP_EPS/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+	gSystem->mkdir(Form("IFP_EPS/%s/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
       }
 
-      canv_a->SaveAs(Form("%sIFP_EPS/%s%s.eps" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));  
+      canv_a->SaveAs(Form("IFP_EPS/%s/%s%s.eps" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));  
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".eps"<<std::endl;
    }
     if(m_opt->OutputFormat().find("PDF") != std::string::npos){
       if(var_outdir != ""){
 	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
-	gSystem->mkdir(Form("%sIFP_PDF/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+	gSystem->mkdir(Form("IFP_PDF/%s/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
       }
 
-      canv_a->SaveAs(Form("%sIFP_PDF/%s%s.pdf" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));
+      canv_a->SaveAs(Form("IFP_PDF/%s/%s%s.pdf" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".pdf"<<std::endl;
     }
     if(m_opt->OutputFormat().find("CPP") != std::string::npos){
       if(var_outdir != ""){
 	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
-	gSystem->mkdir(Form("%sIFP_CPP/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+	gSystem->mkdir(Form("IFP_CPP/%s/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
       }
 
-      canv_a->SaveAs(Form("%sIFP_CPP/%s%s.C" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));
+      canv_a->SaveAs(Form("IFP_CPP/%s/%s%s.C" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists writing "<<canv_name<<".C"<<std::endl;
     }
     if(m_opt->OutputFormat().find("ROOT") != std::string::npos){ 
@@ -947,7 +1016,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     delete ttlbox;
     curpad = NULL;
     delete leg_a;
-    delete leg_yield;
+    delete leg_text;
     //Clear strings
     //var_name.clear();
     //var_label.clear();
@@ -965,6 +1034,200 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   return;
 
 }
+
+
+//========================================================= 
+void PlotUtils::MakeTableFromHists (const bool opt_bin){
+
+  //Draw stack now has no meaning or purpose, since the SUM histogram will have already been created
+  //Better to use the DoSum option for a sample to determine the order in which it should appear
+
+  //Summed histogram contributions
+  //SUM
+  //non-stacked contributions
+
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::MakeTableFromHists start"<<std::endl; 
+
+  bool var_draw_stack = 0;
+  bool var_do_width = false;
+  bool var_isShape = false;
+
+  std::string var_binlabels_str = "";
+  std::map<int, std::string> *var_binlabels_map = NULL;
+
+  bool ds_do_sum = false;
+  int ds_res_opt = -1;
+  std::string ds_res_erropt = "";
+  std::string ds_print_text = "";
+
+  std::vector<std::string> glob_moments_list = ParseMomentsTableHeader(m_opt->PrintValue());
+  std::string str_moments_header = "";
+  if(!m_opt->PrintValue().empty()){
+    for( std::string moment : glob_moments_list){
+      if(!str_moments_header.empty()){ str_moments_header += " & "; }
+      str_moments_header += moment;
+    }
+    str_moments_header += " \\\\";
+  }
+
+  std::vector<std::string> ds_moments_list; ds_moments_list.clear();
+
+  //One preliminary loop to find the baseline sample
+  std::string s_base_name = ""; 
+  std::string s_base_suffix = "";
+  std::string s_base_leglabel = "";
+
+  for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
+    if(at_it->second->ResOpt() == 1){
+      if(s_base_name != ""){ std::cout<<"Error: More than one baseline specified for residual calculation"<<std::endl; }
+      else{ 
+	s_base_name = at_it->first;
+	s_base_suffix = at_it->second->Suffix();
+	s_base_leglabel = at_it->second->LegLabel();
+      }
+    }
+  } 
+
+  std::vector<std::string> v_str_sum_a;   v_str_sum_a.clear();
+  std::vector<std::string> v_str_nosum_a; v_str_nosum_a.clear();
+  std::vector<std::string> v_str_res_a;   v_str_res_a.clear();
+  bool line_start = true;
+
+  std::string header = " Samples";
+  VariableAttributesMap* var_loop_map =  &m_var_map;
+  for(VariableAttributesMap::iterator va_it = var_loop_map->begin(); va_it != var_loop_map->end(); ++va_it){
+
+    const std::string& var_blinding = (va_it->second->Blinding() != "") ?  va_it->second->Blinding() : m_opt->Blinding();
+    bool var_blind_yield = (var_blinding.find("YIELD") != std::string::npos);
+
+    std::string var_name       = va_it->second->Name();
+ 
+    const std::string& var_label         = ( va_it->second->Label() != "" ) ? va_it->second->Label() : va_it->second->Name();
+    const std::string& var_draw_res      = va_it->second->DrawRes();
+    const std::string& var_draw_res_err  = va_it->second->DrawResErr();
+
+    var_isShape        = (va_it->second->DoScale() == "SHAPE"); 
+    var_do_width       = va_it->second->DoWidth();
+    var_draw_stack     = va_it->second->DrawStack();
+
+    var_binlabels_str = va_it->second->BinLabelsStr();
+    var_binlabels_map = va_it->second->BinLabelsMap();
+
+    v_str_sum_a.clear();
+    v_str_nosum_a.clear();
+    v_str_res_a.clear();
+    line_start = true;
+
+    //==================================================
+
+    std::string hname_sum = m_drawSum ? var_name + "_" + m_attrbt_map["SUM"]->Suffix() : "";
+    bool drawRes = ( (var_draw_res != "") && (var_draw_res != "NONE") );
+    if(drawRes && (s_base_name == "") ){std::cout<<"No reference sample specified for residual calculation"<<std::endl;}
+
+    std::string hbasename = var_name + "_" + s_base_suffix;
+    TH1D* hist_base = m_hstMngr->GetTH1D(hbasename);
+
+    //---------------------------------------------------------
+
+    for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
+      if( var_isShape ){
+	if( !var_draw_stack && ( (at_it->first == "SUM")  || at_it->second->NoShape() ) ){continue;}
+      }
+
+      if(at_it->first == "BLINDER"){continue;}
+
+      const std::string& ds_name = at_it->second->Name();
+      const std::string& ds_suffix = at_it->second->Suffix();
+      const std::string& ds_leglabel = at_it->second->LegLabel();
+      const std::string& ds_print_format = (at_it->second->PrintFormat() != "") ? at_it->second->PrintFormat() : m_opt->PrintFormat();
+      const std::string& ds_print_value =  at_it->second->PrintValue(); 
+      ds_moments_list.clear();
+      ds_moments_list = !(ds_print_value.empty()) ? ParseMomentsTableHeader(ds_print_value) : ParseMomentsTableHeader(m_opt->PrintValue());
+
+      ds_res_erropt = "";
+      //bool ds_isShape = (at_it->second->DrawScale() == "SHAPE"); 
+      ds_do_sum = at_it->second->DoSum();
+      ds_res_opt = at_it->second->ResOpt();
+      bool ds_isBlind = (ds_name == m_opt->BlindSample());
+
+      std::string hist_name = var_name + "_" + ds_suffix;
+      TH1D* hist_a = m_hstMngr->GetTH1D(hist_name);
+
+      ds_print_text = "";
+      if( opt_bin ){ ds_print_text += MakeHistTableRow(hist_a, ds_print_format, true, var_binlabels_map); }
+      else{  
+	if(var_blind_yield && ds_isBlind){
+	  for(unsigned int i = 0; i < ds_moments_list.size(); i++){
+	    if(!ds_print_text.empty()){ ds_print_text += " &"; }
+	    ds_print_text += " "; 
+	  }
+	}
+	else{ ds_print_text += MakeMomentsTableRow(hist_a, ds_moments_list, ds_print_format, var_do_width); }
+      }
+      
+      ds_print_text = (line_start) ? ds_leglabel + "  &  " + ds_print_text : "  &  " + ds_print_text;
+      std::cout << " ds_print_text = " << ds_print_text << std::endl;
+      //============================================================================================
+      if(var_draw_stack && ds_do_sum){ v_str_sum_a.push_back(ds_print_text); }
+      else{ v_str_nosum_a.push_back(ds_print_text); }
+      
+      if(drawRes && ( (ds_res_opt == 0) || ((ds_res_opt == 1) && (var_draw_res_err == "REFBAND")) ) ){
+	std::string resname_a = var_name + "_" + ds_suffix + "_res_tab_" + s_base_suffix;
+	TH1D* hist_res_a = makeResidual(resname_a, hist_name, hbasename, var_draw_res, ds_res_erropt);
+	std::string res_print_text = ""; 
+	if( opt_bin ){  res_print_text = MakeHistTableRow(hist_res_a, ds_print_format, true, var_binlabels_map); }
+	else{ res_print_text = MakeResidualMomentsTableRow(hist_a, hist_base, ds_moments_list, ds_print_format, var_do_width);	}
+	res_print_text = (line_start) ? ds_leglabel+"/"+s_base_leglabel + "  &  " + res_print_text : "  &  " + res_print_text;
+
+	v_str_res_a.push_back(res_print_text);
+	//delete hist_res_a;
+	resname_a.clear(); res_print_text.clear();
+      }//if residual histogram needed 
+      
+      //Clear strings
+      hist_name.clear();
+    }//sample loop
+    line_start = false;
+
+    //=================================== PRINT THE TABLE =========================================================
+    std::string s_IFP_DIR = (opt_bin) ? "IFP_TABLES_BINS" : "IFP_TABLES_MOMENTS";
+    std::string var_outdir = va_it->second->OutputFolder();
+    if(var_outdir != ""){
+      if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
+      gSystem->mkdir(Form("%s/%s/%s" , s_IFP_DIR.c_str(),m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+    }
+    std::ofstream var_tab_file; 
+    var_tab_file.open(Form("%s/%s/%s%s.txt" , s_IFP_DIR.c_str(),m_output_dir.c_str(), var_outdir.c_str() ,var_name.c_str())); 
+    var_tab_file << "============== " << var_label << "============== " << std::endl;
+    if(v_str_sum_a.size() > 0){
+      for(std::string row : v_str_sum_a){ var_tab_file << row << " \\\\"<< std::endl; }
+      var_tab_file << "\\hline \\\\"<<std::endl;
+    }
+    if(v_str_nosum_a.size() > 0){
+      for(std::string row : v_str_nosum_a){ var_tab_file << row << " \\\\" << std::endl; }
+    }
+    if(v_str_res_a.size() > 0){
+      var_tab_file << "\\hline\\hline \\\\"<<std::endl;
+      for(std::string row : v_str_res_a){ var_tab_file << row << " \\\\" << std::endl; }
+    }
+
+    v_str_sum_a.clear();
+    v_str_sum_a.clear();
+    v_str_sum_a.clear();
+      
+    var_outdir.clear();
+
+
+    hname_sum.clear();
+    hbasename.clear();
+  }//variables loop
+
+  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists end"<<std::endl; 
+
+  return;
+
+}
+//================================================================================
 
 //TH1D* hist_res_a = makeResidual(resname_a, hist_name, hbasename, var_draw_res);
 //erropt by default empty
@@ -987,7 +1250,7 @@ TH1D* PlotUtils::makeResidual(const std::string& resname, TH1D* hist, TH1D* href
   bool b_selfdivide = (hist == href);
 
   if(opt == "NONE"){return NULL;}
-  if( ! ( (opt == "RATIO") || (opt == "INVRATIO") || (opt == "DIFF") || (opt == "RESIDUAL") ) ){
+  if( ! ( (opt == "RATIO") || (opt == "INVRATIO") || (opt == "DIFF") || (opt == "RESIDUAL") || (opt == "RATIOUNC") ) ){
     std::cout << " Error : Unknown option "<<opt<<" for residual calculation "<<std::endl;
     return NULL;
   }
@@ -1036,6 +1299,13 @@ TH1D* PlotUtils::makeResidual(const std::string& resname, TH1D* hist, TH1D* href
 	else if(b_scale_err){ res_be = (ref_c > 0.) ? cont_e/ref_c : 0.; }
 
       }
+      else if(opt == "RATIOUNC"){
+	cont_fe = (cont_c > 0.) ? cont_e/cont_c : 0.;
+	ref_fe = (ref_c > 0.) ? ref_e/ref_c : 0.;
+	res_bc = (ref_fe>0.) ? cont_fe/ref_fe : 0.;
+	res_be = 0.;
+      }
+
       else if( opt == "RATIO"){
 	if(b_scale_err){ res_be = (ref_c > 0.) ? cont_e/ref_c : 0.; }
       }
@@ -1044,7 +1314,7 @@ TH1D* PlotUtils::makeResidual(const std::string& resname, TH1D* hist, TH1D* href
       }
 
       if( b_selfdivide ){
-	if( (opt=="RATIO")|| (opt=="INVRATIO") || opt == ("RESIDUAL") ) { hist_res->SetBinContent(b, 1.); }
+	if( (opt=="RATIO")|| (opt=="INVRATIO") || opt == ("RESIDUAL") || (opt=="RATIOUNC") ) { hist_res->SetBinContent(b, 1.); }
 	else if(opt == "DIFF"){ hist_res->SetBinContent(b, 0.); }
       }
       else if(!(b_rootfn)){ hist_res->SetBinContent(b, res_bc); }  
@@ -1177,67 +1447,205 @@ int PlotUtils::ResizeLegend(TLegend& leg, double xpt, double ypt, const std::str
   return 0;
 }
 
-double PlotUtils::GetSeparation( TH1D S1, TH1D B1 ) {
 
-  //std::cout<<"In GetSeparation"<<std::endl;
+std::vector<std::string> PlotUtils::ParseMomentsTableHeader(const std::string& header_line, const std::string& delim ){
 
-  std::shared_ptr<TH1D> S( new TH1D(S1) );
-  std::shared_ptr<TH1D> B( new TH1D(B1) );
+  std::vector<std::string> moment_list; moment_list.clear();
 
-  Double_t separation = 0;
-  if ((S->GetNbinsX() != B->GetNbinsX()) || (S->GetNbinsX() <= 0)) {
-    cout << "<GetSeparation> signal and background"
-         << " histograms have different number of bins: "
-         << S->GetNbinsX() << " : " << B->GetNbinsX() << endl;
+  //Header gives the sequence of configuration variables
+  std::string moment; moment.clear();
+  std::string lineString = header_line;
+  std::string::size_type pos = 0;
+  do{ 
+    pos = AnalysisUtils::ParseString(lineString, moment, delim);
+    AnalysisUtils::TrimString(moment);
+    moment_list.push_back(moment);
+  }while(pos != std::string::npos);
+
+  return moment_list;
+
+}
+
+std::string PlotUtils::MakeMomentText(TH1D* hist, const std::string& moment, const std::string& print_format){
+
+  std::string moment_text = "";
+  if(moment == "YIELD"){
+    moment_text = Form(print_format.c_str(), hist->Integral());
   }
-  if (S->GetXaxis()->GetXmin() != B->GetXaxis()->GetXmin() ||
-      S->GetXaxis()->GetXmax() != B->GetXaxis()->GetXmax() ||
-      S->GetXaxis()->GetXmax() <= S->GetXaxis()->GetXmin()) {
-    cout << S->GetXaxis()->GetXmin() << " " << B->GetXaxis()->GetXmin()
-         << " " << S->GetXaxis()->GetXmax() << " " << B->GetXaxis()->GetXmax()
-         << " " << S->GetXaxis()->GetXmax() << " " << S->GetXaxis()->GetXmin() << endl;
-    cout << "<GetSeparation> signal and background"
-         << " histograms have different or invalid dimensions:" << endl;
+  else if(moment == "ENTRIES"){
+    moment_text = Form(print_format.c_str(), hist->GetEntries());
   }
-  Int_t    nstep  = S->GetNbinsX();
-  Double_t intBin = (S->GetXaxis()->GetXmax() - S->GetXaxis()->GetXmin())/nstep;
-  Double_t nS     = S->GetSumOfWeights()*intBin;
-  Double_t nB     = B->GetSumOfWeights()*intBin;
-  if (nS > 0 && nB > 0) {
-    for (Int_t bin=0; bin <= nstep + 1; bin++) {
-      Double_t s = S->GetBinContent( bin )/Double_t(nS);
-      Double_t b = B->GetBinContent( bin )/Double_t(nB);
- if (s + b > 0) separation += 0.5*(s - b)*(s - b)/(s + b);
-    }
-    separation *= intBin;
+  else if(moment == "MEAN"){
+    moment_text = Form(print_format.c_str(), hist->GetMean());
   }
-  else {
-    cout << "<GetSeparation> histograms with zero entries: "
-         << nS << " : " << nB << " cannot compute separation"
-         << endl;
-    separation = 0;
+  else if(moment == "RMS"){
+    moment_text = Form(print_format.c_str(), hist->GetRMS());
   }
-  
-  //std::cout<<"separation "<<separation <<std::endl;
-  return separation*100.;
+
+  else if(moment == "YIELDANDERROR"){
+    double err = 0.;
+    double intgl = hist->IntegralAndError(0.,-1.,err);
+    moment_text = Form(print_format.c_str(), intgl, err);
+  }
+  else if(moment == "MEANANDERROR"){
+    moment_text = Form(print_format.c_str(), hist->GetMean(), hist->GetMeanError());
+  }
+
+  return moment_text;
 }
 
 
-std::string PlotUtils::SeparationString( TH1D Sig, TH1D Ref, std::string sample_name ) {
-  //std::cout<<"In SeparationString"<<std::endl;
-  double separation = PlotUtils::GetSeparation( Sig, Ref );
-  //Here round the double before converstion into a string
-  /*
-  double  intpart;
-  double fractpart = modf (separation, &intpart);
-  fractpart  = roundf(fractpart * 10.0)/10.0; // Round to 5 decimal places
-  double separation_rounded = intpart + fractpart;
-  */
+std::string PlotUtils::MakeResidualMomentText(TH1D* hist, TH1D* href, const std::string& moment, const std::string& print_format){
 
-  //just if one wants to use a standalone legend..
-  //std::string separation_string=sample_name+": "+std::to_string(separation);
-  std::string separation_string;
-  if(separation==0.)separation_string="";
-  else separation_string= "S: "+std::to_string(separation).substr(0,4)+"%";
-  return separation_string;
+  std::string moment_text = "";
+
+  if(moment == "YIELD"){
+    moment_text = (href->Integral() != 0.) ? Form(print_format.c_str(), hist->Integral()/href->Integral()) : Form(print_format.c_str(), 0.);
+  }
+  else if(moment == "ENTRIES"){
+    moment_text = (href->GetEntries() != 0.) ? Form(print_format.c_str(), hist->GetEntries()/href->GetEntries()) : Form(print_format.c_str(), 0.);
+  }
+  else if(moment == "MEAN"){
+    moment_text = (href->GetMean() != 0.) ? Form(print_format.c_str(), hist->GetMean()/href->GetMean()) : Form(print_format.c_str(), 0.);
+  }
+  else if(moment == "RMS"){
+    moment_text = (href->GetRMS() != 0.) ? Form(print_format.c_str(), hist->GetRMS()/href->GetRMS()) : Form(print_format.c_str(), 0.);
+  }
+
+  else if(moment == "YIELDANDERROR"){
+    double err = 0.; double err_ref = 0.;
+    double intgl = hist->IntegralAndError(0.,-1.,err);
+    double intgl_ref = href->IntegralAndError(0.,-1.,err_ref);
+
+    double intgl_ratio = (intgl_ref != 0.) ? intgl/intgl_ref : 0.;
+
+    double ferr = (intgl != 0 ) ? err/intgl : 0.;
+    double ferr_ref = (intgl_ref != 0 ) ? err_ref/intgl_ref : 0.;
+
+    double err_ratio = intgl_ratio*sqrt(ferr*ferr + ferr_ref*ferr_ref);
+
+    moment_text = Form(print_format.c_str(), intgl_ratio, err_ratio);
+  }
+  else if(moment == "MEANANDERROR"){
+    double mean = hist->GetMean();
+    double err = hist->GetMeanError();
+
+    double mean_ref = href->GetMean();
+    double err_ref = href->GetMeanError();
+
+    double mean_ratio = (mean_ref != 0.) ? mean/mean_ref : 0.;
+
+    double ferr = (mean != 0 ) ? err/mean : 0.;
+    double ferr_ref = (mean_ref != 0 ) ? err_ref/mean_ref : 0.;
+
+    double err_ratio = mean_ratio*sqrt(ferr*ferr + ferr_ref*ferr_ref);
+
+    moment_text = Form(print_format.c_str(), mean_ratio, err_ratio);
+  }
+
+  return moment_text;
+}
+
+ 
+
+std::string PlotUtils::MakeMomentsTableRow(TH1D* hist, const std::vector<std::string>& moment_list, const std::string& print_format, const bool use_width){
+
+  TH1D* _hist = NULL;
+  if(use_width){ _hist = GetHistTimesBinWidth(hist); }
+  else{ _hist = hist; }
+
+  std::string row_string="";
+  for( std::string moment : moment_list){
+    if(!row_string.empty()){ row_string += " & "; } 
+    row_string += MakeMomentText(_hist, moment, print_format); 
+  }
+  //row_string += "\\\\";
+  if(use_width){ delete _hist; }
+
+  return row_string;
+
+}
+
+ std::string PlotUtils::MakeResidualMomentsTableRow(TH1D* hist, TH1D* href, const std::vector<std::string>& moment_list, const std::string& print_format, const bool /*use_width*/){
+
+  std::string row_string="";
+  for( std::string moment : moment_list){
+    if(!row_string.empty()){ row_string += " & "; } 
+    row_string += MakeResidualMomentText(hist, href, moment, print_format); 
+  }
+  //row_string += "\\\\";
+
+  return row_string;
+
+}
+
+
+//Given bin labels, use them
+//If not given, use the labels already set in the bins
+std::string PlotUtils::MakeHistTableRow(TH1D* hist, const std::string& print_format, const bool print_error, const std::map<int, std::string> *bin_labels){
+
+  std::string row_string="";
+  for(int ibin = 1; ibin < hist->GetNbinsX(); ibin++){
+    if( bin_labels  && (bin_labels->size() > 0) && (bin_labels->find(ibin)==bin_labels->end()) ){ continue; }
+
+    if(!row_string.empty()){ row_string += " & "; }
+    if(print_error){
+      row_string += Form(print_format.c_str(), hist->GetBinContent(ibin), hist->GetBinError(ibin));
+    }
+    else{
+      row_string += Form(print_format.c_str(), hist->GetBinContent(ibin));
+    }
+  }
+  row_string += "\\\\";
+
+  return row_string;
+
+}
+
+/*
+TH1D* PlotUtils::ShiftHistBins(TH1D* hist, double var_binshift){
+
+  int nbin = hist->GetNbinsX();
+  double oldmin = hist->GetBinLowEdge(1);
+  double oldmax = hist->GetBinLowEdge(nbin) + hist->GetBinWidth(nbin);
+  TH1D* hist_shifted = new TH1D(hist->GetName(), hist->GetTitle(), nbin, oldmin + var_binshift, oldmax+var_binshift);
+  for(int i = 1; i <= nbin; i++){
+    hist_shifted->SetBinContent( i, hist->GetBinContent(i) );
+    hist_shifted->SetBinError( i, hist->GetBinError(i) );
+  }
+  hist_shifted->SetEntries( hist->GetEntries() );
+  m_hstMngr->ReplaceTH1D(keysum, hist_shifted);
+  hist = hist_shifted;
+
+}//shift bin edges
+*/
+
+TH1D* PlotUtils::GetHistByBinWidth(TH1D* hist){
+
+  TH1D* _hist = NULL;
+  std::string _histname = hist->GetName();
+  _histname += "_by_width";
+  _hist = (TH1D*)(hist->Clone(_histname.c_str()));
+  for(int i = 1; i<= hist->GetNbinsX(); i++){
+    _hist->SetBinContent(i, hist->GetBinContent(i)/hist->GetBinWidth(i));
+    _hist->SetBinError(i, hist->GetBinError(i)/hist->GetBinWidth(i));
+  }
+  _hist->SetEntries(hist->GetEntries());
+
+  return _hist;
+}
+
+TH1D* PlotUtils::GetHistTimesBinWidth(TH1D* hist){
+
+  TH1D* _hist = NULL;
+  std::string _histname = hist->GetName();
+  _histname += "_times_weighted";
+  _hist = (TH1D*)(hist->Clone(_histname.c_str()));
+  for(int i = 1; i<= hist->GetNbinsX(); i++){
+    _hist->SetBinContent(i, hist->GetBinContent(i)*hist->GetBinWidth(i));
+    _hist->SetBinError(i, hist->GetBinError(i)*hist->GetBinWidth(i));
+  }
+  _hist->SetEntries(hist->GetEntries());
+
+  return _hist;
 }

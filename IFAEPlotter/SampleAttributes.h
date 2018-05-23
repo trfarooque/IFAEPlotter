@@ -14,9 +14,10 @@ class SampleAttributes{
 		   , const std::string& drawopt="hist", const std::string& legopt = ""
 		   , const std::string& drawscale="NORM", const std::string& scale_to_ref="", bool draw_stack=false, bool do_sum=false
 		   , int res_opt=-1, const std::string& resdrawopt="" 
-		   , const std::string& blinding="NONE", const std::string& yield_format=""
+		   , const std::string& blinding="NONE", const std::string& print_format=""
 		   , bool write=false, const std::string& outfile_name = ""
-		   , const std::string& in_suffix = "", const std::string& in_prefix = "", bool no_shape=false);
+		   , const std::string& in_pattern = "", const std::string& in_suffix = "", const std::string& in_prefix = ""
+		   , bool no_shape=false, const std::string& print_value="");
   SampleAttributes(SampleAttributes& q);
   ~SampleAttributes();
   static std::map<std::string, SampleAttributes*> ParseSampleConfig( Plotter_Options* opt );
@@ -32,10 +33,12 @@ class SampleAttributes{
   std::string m_scale_to_ref;
   std::string m_legopt; 
   std::string m_blinding;
-  std::string m_yield_format;
+  std::string m_print_format;
   std::string m_outfile_name;
+  std::string m_in_pattern;
   std::string m_in_suffix;
   std::string m_in_prefix;
+  std::string m_print_value;
 
   bool m_draw_stack;
   bool m_do_sum;
@@ -54,14 +57,17 @@ class SampleAttributes{
   void SetLegLabel(const std::string& leglabel){ m_leglabel = leglabel; }
   void SetLegOpt(const std::string& legopt){ m_legopt = legopt; }
   void SetBlinding(const std::string& blinding){ m_blinding = blinding; }
-  void SetYieldFormat(const std::string& yield_format){ m_yield_format = yield_format; }
+  void SetPrintFormat(const std::string& print_format){ m_print_format = print_format; }
   void SetDrawStack(bool draw_stack){ m_draw_stack = draw_stack; }
   void SetDoSum(bool do_sum){ m_do_sum = do_sum; }
   void SetResOpt(int res_opt){ m_res_opt = res_opt; }
   void SetWrite(bool write){ m_write = write; }
   void SetOutFileName(const std::string& outfile_name){ m_outfile_name = outfile_name; }
   void SetInSuffix(const std::string& in_suffix){ m_in_suffix = in_suffix; }
+  void SetInPattern(const std::string& in_pattern){ m_in_pattern = in_pattern; }
   void SetInPrefix(const std::string& in_prefix){ m_in_prefix = in_prefix; }
+  void SetPrintValue(const std::string& print_value){ m_print_value = print_value; }
+
   void SetNoShape(bool no_shape){ m_no_shape = no_shape; }
 
   const std::string& Name() const{ return m_name; }
@@ -74,10 +80,13 @@ class SampleAttributes{
   const std::string& DrawScale() const{ return m_drawscale; }
   const std::string& ScaleToRef() const{ return m_scale_to_ref; }
   const std::string& Blinding() const{ return m_blinding; }
-  const std::string& YieldFormat() const{ return m_yield_format; }
+  const std::string& PrintFormat() const{ return m_print_format; }
   const std::string& OutFileName() const{ return m_outfile_name; }
+  const std::string& InPattern() const{ return m_in_pattern; }
   const std::string& InSuffix() const{ return m_in_suffix; }
   const std::string& InPrefix() const{ return m_in_prefix; }
+  const std::string& PrintValue() const{ return m_print_value; }
+ 
   bool DrawStack() const{ return m_draw_stack; }
   bool DoSum() const{ return m_do_sum; }
   int ResOpt() const{ return m_res_opt; }

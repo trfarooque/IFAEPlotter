@@ -10,8 +10,9 @@ class VariableAttributes{
  public:
   VariableAttributes();
   VariableAttributes(const std::string& name, const std::string& label, const std::string& do_scale
-		     , bool do_width=false, bool draw_stack=false, const std::string& draw_res="", const std::string& draw_res_err=""
-		     , bool isLogY=false, bool isLogX=false
+		     , bool do_width=false, bool draw_stack=false, const std::string& do_cumulative=""
+		     , const std::string& draw_res="", const std::string& draw_res_err="", bool draw_res_stack=false
+		     , bool isLogY=false, bool isLogX=false, bool isLogRes=false
 		     , const std::string& ylabel="", const std::string& reslabel=""
 		     , bool has_resmin=false, bool has_resmax=false, double resmin=0.5, double resmax=1.5
 		     , bool has_ymin=false, bool has_ymax=false, bool has_yscale=false
@@ -46,6 +47,8 @@ class VariableAttributes{
 		     , bool has_yaxis_ndiv=false, int yaxis_ndiv=0
 		     , bool has_resaxis_ndiv=false, int resaxis_ndiv=0
 
+		     , bool has_res_refline=false, double res_refline=0.
+
 		     , bool has_bottom_margin=false, bool has_top_margin=false
 		     , bool has_left_margin=false, bool has_right_margin=false
 		     , double bottom_margin=0., double top_margin=0.
@@ -53,10 +56,11 @@ class VariableAttributes{
 
 		     , bool is_count=false 
 		     , const std::string& resdrawopt="", const std::string& extralabel=""
-		     , int rebin=0, const std::string& rebinedges="", double binshift=0., const std::string& output_folder="", const std::string& blinding="");
+		     , int rebin=0, const std::string& rebinedges="", double binshift=0., const std::string& bin_labels_str=""
+		     , const std::string& output_folder="", const std::string& blinding="");
   VariableAttributes(VariableAttributes& q);
 
-  ~VariableAttributes(){ }
+  ~VariableAttributes();
 
   static std::map<std::string, VariableAttributes*> ParseVariableConfig( Plotter_Options* opt );
 
@@ -66,18 +70,26 @@ class VariableAttributes{
   void SetResLabel(const std::string& reslabel){ m_reslabel = reslabel; }
   void SetIsLogY(bool isLogY){ m_is_logY = isLogY; }
   void SetIsLogX(bool isLogX){ m_is_logX = isLogX; }
+  void SetIsLogRes(bool isLogRes){ m_is_logRes = isLogRes; }
   void SetRebin(int rebin){ m_rebin = rebin; }
   void SetRebinEdges(const std::string& rebinedges){ m_rebinedges = rebinedges; }
   void SetHasBinShift(bool has_binshift){ m_has_binshift = has_binshift; }
   void SetBinShift(double binshift){ m_binshift = binshift; }
+  void SetBinLabelsStr(const std::string& bin_labels_str){ m_bin_labels_str = bin_labels_str; }
 
   void SetDoScale(const std::string& do_scale){ m_do_scale = do_scale; }
+  void SetDoCumulative(const std::string& do_cumulative){ m_do_cumulative = do_cumulative; }
   void SetDrawStack(bool draw_stack){ m_draw_stack = draw_stack; }
   void SetDrawRes(const std::string& draw_res){ m_draw_res = draw_res; }
   void SetDrawResErr(const std::string& draw_res_err){ m_draw_res_err = draw_res_err; }
+  void SetDrawResStack(bool draw_res_stack){ m_draw_res_stack = draw_res_stack; }
   void SetDoWidth(bool do_width){ m_do_width = do_width; }
   void SetResDrawOpt(const std::string& resdrawopt){ m_resdrawopt = resdrawopt; }
   void SetBlinding(const std::string& blinding){ m_blinding = blinding; }
+
+  void SetResRefLine(double res_refline){ m_res_refline = res_refline; }
+  void SetHasResRefLine(bool has_res_refline){ m_has_res_refline = has_res_refline; }
+
   void SetResMin(double resmin){ m_resmin = resmin; }
   void SetResMax(double resmax){ m_resmax = resmax; }
   void SetHasResMin(bool has_resmin){ m_has_resmin = has_resmin; }
@@ -165,21 +177,30 @@ class VariableAttributes{
   void SetNProjBin(int nprojbin){ m_nprojbin = nprojbin; }
   void SetExtraLabel(const std::string& extralabel){ m_extralabel = extralabel; }
   void SetOutputFolder(const std::string& output_folder){ m_output_folder = output_folder; }
+  void SetBinLabelsMap(std::map<int, std::string>* bin_labels_map){ m_bin_labels_map = bin_labels_map; }
 
   const std::string& Name() const { return m_name; }
   const std::string& Label() const { return m_label; }
   const std::string& YLabel() const { return m_ylabel; }
   const std::string& ResLabel() const { return m_reslabel; }
   const std::string& DoScale() const { return m_do_scale; }
+  const std::string& DoCumulative() const { return m_do_cumulative; }
   bool DrawStack() const { return m_draw_stack; }
   const std::string& DrawRes() const { return m_draw_res; }
   const std::string& DrawResErr() const { return m_draw_res_err; }
+  bool DrawResStack() const { return m_draw_res_stack; }
   bool IsLogY() const { return m_is_logY; }
   bool IsLogX() const { return m_is_logX; }
+  bool IsLogRes() const { return m_is_logRes; }
   int Rebin() const { return m_rebin; }
   const std::string& RebinEdges() const { return m_rebinedges; }
-  bool HasBinShift() const {return m_has_binshift; }
-  double BinShift() const {return m_binshift; }
+  bool HasBinShift() const { return m_has_binshift; }
+  double BinShift() const { return m_binshift; }
+  const std::string& BinLabelsStr() const{ return m_bin_labels_str; } 
+
+  double ResRefLine() const { return m_res_refline; }
+  bool HasResRefLine() const { return m_has_res_refline; }
+
   bool DoWidth() const { return m_do_width; }
   double ResMin() const { return m_resmin; }
   double ResMax() const { return m_resmax; }
@@ -273,6 +294,8 @@ class VariableAttributes{
   const std::string& ExtraLabel() const { return m_extralabel; }
   const std::string& OutputFolder() const { return m_output_folder; }
 
+  std::map<int, std::string>* BinLabelsMap() const{ return m_bin_labels_map; }
+
  private:  
 
   std::string m_name;
@@ -281,15 +304,23 @@ class VariableAttributes{
   std::string m_reslabel;
   int m_draw_stack;
   std::string m_do_scale;
+  std::string m_do_cumulative;
   std::string m_draw_res;
   std::string m_draw_res_err;
+  bool m_draw_res_stack;
   bool m_is_logY;
   bool m_is_logX;
+  bool m_is_logRes;
   int m_rebin;
   std::string m_rebinedges;
   bool m_has_binshift;
   double m_binshift;
+  std::string m_bin_labels_str;
   bool m_do_width;
+
+  double m_res_refline;
+  bool m_has_res_refline;
+
   double m_resmin;
   double m_resmax; 
   bool m_has_resmin;
@@ -380,6 +411,11 @@ class VariableAttributes{
   std::string m_blinding;
   std::string m_extralabel;
   std::string m_output_folder;
+
+  std::map<int, std::string>* m_bin_labels_map;
+
+  void ParseBinLabels();
+
 };
 
 typedef std::map<std::string, VariableAttributes*> VariableAttributesMap;

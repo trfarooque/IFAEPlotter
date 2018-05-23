@@ -19,6 +19,7 @@ public:
     inline const std::string& ConfigVariable() const { return m_config_variable; }
     inline const std::string& FileList() const { return m_file_list; }
     inline const std::string& SystematicsList() const { return m_systematics_list; }
+    inline const std::string& InputDir() const { return m_input_dir; }
     inline const std::string& StyleLib() const { return m_style_lib; }
     inline const std::string& OutputFormat() const { return m_output_format; }
     inline const std::string& YLabel() const { return m_ylabel; }
@@ -36,7 +37,7 @@ public:
     inline const std::string& Blinding() const { return m_blinding; }
     inline const std::string& BlindSample() const { return m_blind_sample; }
     inline const std::string& BlindCriterion() const { return m_blind_criterion; }
-    inline const std::string& YieldFormat() const { return m_yield_format; } 
+    inline const std::string& PrintFormat() const { return m_print_format; } 
     inline const std::string& DistributionsFile()  const { return m_dist_file; }
 
     inline bool NewConfigFormat() const { return m_new_config_format; }
@@ -52,13 +53,15 @@ public:
     inline double YScale() const { return m_yscale; }
     inline double XMin() const { return m_xmin; }
     inline double XMax() const { return m_xmax; }
-    inline bool ShowYields() const { return m_show_yields; }
-    inline bool ShowSeparation() const { return m_show_separation; }
+    inline bool ShowYields() const { return m_show_yields; }//backward compatibility
+    inline const std::string PrintValue() const { return m_print_value; }
     inline bool WriteHistos() const { return m_write_histos; }
     inline bool Do1DPlots() const { return m_do1DPlots; }
     inline bool DoProjections() const { return m_doProjections; }
     inline bool DoEff() const { return m_doEff; }
     inline bool DoSystematics() const { return m_doSystematics; }
+    inline bool MakeBinsTable() const { return m_make_bins_table; }
+    inline bool MakeMomentsTable() const { return m_make_moments_table; }
     inline double TitleXMin() const { return m_titlexmin; }
     inline double TitleYMin() const { return m_titleymin; }
     inline double TitleXMax() const { return m_titlexmax; }
@@ -103,6 +106,7 @@ private:
     std::string m_config_variable;
     std::string m_file_list;
     std::string m_systematics_list;
+    std::string m_input_dir;
     std::string m_style_lib;
     std::string m_output_format;
     std::string m_ylabel;
@@ -120,8 +124,9 @@ private:
     std::string m_blinding;
     std::string m_blind_sample;
     std::string m_blind_criterion;
-    std::string m_yield_format;
+    std::string m_print_format;
     std::string m_dist_file;
+    std::string m_print_value;
 
     bool m_new_config_format;
     bool m_new_sample_format;
@@ -134,6 +139,8 @@ private:
     bool m_doProjections;
     bool m_doEff;
     bool m_doSystematics;
+    bool m_make_bins_table;
+    bool m_make_moments_table;
     bool m_show_yields;
     bool m_show_separation;
     bool m_all_from_file;

@@ -14,6 +14,7 @@ Plotter_Options::Plotter_Options():
   m_file_list(""),
   m_systematics_list(""),
   m_style_lib("IFAEPlotter/share/test_style_config.txt"),
+  m_input_dir(""),
   m_output_format("png"),
   m_ylabel("Events"),
   m_reslabel("Data/MC"),
@@ -30,8 +31,9 @@ Plotter_Options::Plotter_Options():
   m_blinding(""),
   m_blind_sample(""),
   m_blind_criterion("SBYB"),
-  m_yield_format("%4g"),
+  m_print_format("%4g"),
   m_dist_file(""),
+  m_print_value("YIELD"),
 
   m_new_config_format(false),
   m_new_sample_format(false),
@@ -44,6 +46,8 @@ Plotter_Options::Plotter_Options():
   m_doProjections(false),
   m_doEff(false),
   m_doSystematics(false),
+  m_make_bins_table(false),
+  m_make_moments_table(false),
   m_show_yields(false),
   m_show_separation(false),
   m_all_from_file(false),
@@ -101,6 +105,7 @@ OptionsBase(q)
   m_file_list            = q.m_file_list;
   m_systematics_list     = q.m_systematics_list;
   m_style_lib            = q.m_style_lib;
+  m_input_dir            = q.m_input_dir;
   m_output_format        = q.m_output_format;
   m_ylabel               = q.m_ylabel;
   m_reslabel             = q.m_reslabel;
@@ -117,8 +122,10 @@ OptionsBase(q)
   m_blinding             = q.m_blinding;
   m_blind_sample         = q.m_blind_sample;
   m_blind_criterion      = q.m_blind_criterion;
-  m_yield_format         = q.m_yield_format;
+  m_print_format         = q.m_print_format;
   m_dist_file            = q.m_dist_file;
+  m_print_value          = q.m_print_value;
+ 
   m_new_config_format      = q.m_new_config_format;
   m_new_sample_format      = q.m_new_sample_format;
   m_new_variable_format    = q.m_new_variable_format;
@@ -130,6 +137,8 @@ OptionsBase(q)
   m_doProjections        = q.m_doProjections;
   m_doEff                = q.m_doEff;
   m_doSystematics        = q.m_doSystematics;
+  m_make_bins_table      = q.m_make_bins_table;
+  m_make_moments_table   = q.m_make_moments_table;
   m_show_yields          = q.m_show_yields;
   m_show_separation      = q.m_show_separation;
   m_all_from_file        = q.m_all_from_file;
@@ -206,6 +215,9 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     else if( temp_arg.find("--STYLELIB") != std::string::npos ){
       m_style_lib = temp_val;
     } 
+    else if( temp_arg.find("--INPUTDIR") != std::string::npos ){
+      m_input_dir = temp_val;
+    } 
     else if( temp_arg.find("--OUTFORMAT") != std::string::npos ){
       std::transform(temp_val.begin(), temp_val.end(), temp_val.begin(), toupper);
       m_output_format = temp_val;
@@ -253,66 +265,68 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
       m_blind_criterion = temp_val;
     } 
     else if( temp_arg.find("--YIELDFORMAT") != std::string::npos ){
-      m_yield_format = temp_val;
+      m_print_format = temp_val;
+    } 
+    else if( temp_arg.find("--PRINTFORMAT") != std::string::npos ){
+      m_print_format = temp_val;
     } 
     else if( temp_arg.find("--DISTRIBUTIONFILE") != std::string::npos ){
       m_dist_file = temp_val;
     }
+    else if( temp_arg.find("--PRINTVALUE") != std::string::npos ){
+      m_print_value = temp_val;
+    }
+
     else if( temp_arg.find("--NEWCONFIG") != std::string::npos ){
-      //m_new_config_format = atoi(temp_val.c_str()) > 0);
-      AnalysisUtils::BoolValue(temp_val, m_new_config_format);
+      m_new_config_format = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
     else if( temp_arg.find("--NEWSAMPLECONFIG") != std::string::npos ){
-      //m_new_sample_format = (atoi(temp_val.c_str()) > 0);
-      AnalysisUtils::BoolValue(temp_val, m_new_sample_format);
+      m_new_sample_format = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
     else if( temp_arg.find("--NEWVARIABLECONFIG") != std::string::npos ){
-      //m_new_variable_format = (atoi(temp_val.c_str()) > 0);
-      AnalysisUtils::BoolValue(temp_val, m_new_variable_format);
+      m_new_variable_format = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
     else if( temp_arg.find("--NEWSTYLECONFIG") != std::string::npos ){
-      //m_new_style_format = (atoi(temp_val.c_str()) > 0);
-      AnalysisUtils::BoolValue(temp_val, m_new_style_format);
+      m_new_style_format = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
     else if( temp_arg.find("--NEWSYSTEMATICSCONFIG") != std::string::npos ){
-      //m_new_style_format = (atoi(temp_val.c_str()) > 0);
-      AnalysisUtils::BoolValue(temp_val, m_new_systematics_format);
+      m_new_systematics_format = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
     else if( temp_arg.find("--NEWFILELIST") != std::string::npos ){
-      //m_new_filelist_format = (atoi(temp_val.c_str()) > 0);
-      AnalysisUtils::BoolValue(temp_val, m_new_filelist_format);
+      m_new_filelist_format = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
     else if( temp_arg.find("--WRITEHISTOS") != std::string::npos ){
-      //m_do1DPlots = (atoi(temp_val.c_str()) > 0);
-      AnalysisUtils::BoolValue(temp_val, m_write_histos);
+      m_write_histos = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
     else if( temp_arg.find("--DO1DPLOTS") != std::string::npos ){
-      //m_do1DPlots = (atoi(temp_val.c_str()) > 0);
-      AnalysisUtils::BoolValue(temp_val, m_do1DPlots);
+      m_do1DPlots = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
     else if( temp_arg.find("--DOPROJ") != std::string::npos ){
-      //m_doProjections = (atoi(temp_val.c_str()) > 0);
-      AnalysisUtils::BoolValue(temp_val, m_doProjections);
+      m_doProjections = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
     else if( temp_arg.find("--DOEFF") != std::string::npos ){
-      //m_doEff = (atoi(temp_val.c_str()) > 0);
-      AnalysisUtils::BoolValue(temp_val, m_doEff);
+      m_doEff = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
     else if( temp_arg.find("--DOSYSTEMATICS") != std::string::npos ){
-      //m_doEff = (atoi(temp_val.c_str()) > 0);
-      AnalysisUtils::BoolValue(temp_val, m_doSystematics);
+      m_doSystematics = AnalysisUtils::BoolValue(temp_val, temp_arg);
+    } 
+    else if( temp_arg.find("--MAKEBINSTABLE") != std::string::npos ){
+      m_make_bins_table = AnalysisUtils::BoolValue(temp_val, temp_arg);
+    } 
+    else if( temp_arg.find("--MAKEMOMENTSTABLE") != std::string::npos ){
+      m_make_moments_table = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
     else if( temp_arg.find("--SHOWYIELDS") != std::string::npos ){
-      //m_show_yields = (atoi(temp_val.c_str()) > 0);
-      AnalysisUtils::BoolValue(temp_val, m_show_yields);
+      m_show_yields = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
     else if( temp_arg.find("--SHOWSEPARATION") != std::string::npos ){
       //m_show_yields = (atoi(temp_val.c_str()) > 0);
       AnalysisUtils::BoolValue(temp_val, m_show_separation);
     } 
     else if( temp_arg.find("--ALLFROMFILE") != std::string::npos ){
-      AnalysisUtils::BoolValue(temp_val, m_all_from_file);
+      m_all_from_file = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
+
     else if( temp_arg.find("--RESMIN") != std::string::npos ){
       m_resmin = atof(temp_val.c_str());
     } 
@@ -445,6 +459,7 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_file_list              = " << m_file_list            << std::endl;
     std::cout << " m_systematics_list       = " << m_systematics_list     << std::endl;
     std::cout << " m_style_lib              = " << m_style_lib            << std::endl;
+    std::cout << " m_input_dir              = " << m_input_dir            << std::endl;
     std::cout << " m_output_format          = " << m_output_format        << std::endl;
     std::cout << " m_ylabel                 = " << m_ylabel               << std::endl;
     std::cout << " m_reslabel               = " << m_reslabel             << std::endl;
@@ -461,8 +476,9 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_blinding               = " << m_blinding             << std::endl;
     std::cout << " m_blind_sample           = " << m_blind_sample         << std::endl;
     std::cout << " m_blind_criterion        = " << m_blind_criterion      << std::endl;
-    std::cout << " m_yield_format           = " << m_yield_format         << std::endl;
+    std::cout << " m_print_format           = " << m_print_format         << std::endl;
     std::cout << " m_dist_file              = " << m_dist_file            << std::endl;
+    std::cout << " m_print_value            = " << m_print_value          << std::endl;
 
     std::cout << " m_new_config_format      = " << m_new_config_format    << std::endl;
     std::cout << " m_new_sample_format      = " << m_new_sample_format    << std::endl;
@@ -475,6 +491,8 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_doProjections          = " << m_doProjections        << std::endl;
     std::cout << " m_doEff                  = " << m_doEff                << std::endl;
     std::cout << " m_doSystematics          = " << m_doSystematics        << std::endl;
+    std::cout << " m_make_bins_table        = " << m_make_bins_table      << std::endl;
+    std::cout << " m_make_moments_table     = " << m_make_moments_table   << std::endl;
     std::cout << " m_show_yields            = " << m_show_yields          << std::endl;
     std::cout << " m_show_separation        = " << m_show_separation      << std::endl;
     std::cout << " m_all_from_file          = " << m_all_from_file        << std::endl;
