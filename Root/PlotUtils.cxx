@@ -367,6 +367,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     //---------------------------------------------------------
     TLegend* leg_a = new TLegend();
     TLegend* leg_yield = (m_opt->ShowYields() && (!var_isShape || var_draw_stack) ) ? new TLegend() : NULL;
+    TLegend* leg_separation=0;
+    if(m_opt->ShowSeparation()) leg_separation = new TLegend();
 
     double leg_textsize=0.;
     if(va_it->second->HasLegendTextSize()){ leg_textsize = va_it->second->LegendTextSize(); }
@@ -381,6 +383,11 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       SetStyleLegend(*leg_yield, leg_textsize, 42, 0.04);
       leg_yield->Clear();
     }
+    if( m_opt->ShowSeparation() ){
+      SetStyleLegend(*leg_separation, leg_textsize, 42, 0.04);
+      leg_separation->Clear();
+    }
+
     //---------------------------------------------------------------
     TPaveText* ttlbox = NULL;
     if( (glob_ttl != "") || (var_extralabel != "") ){
@@ -425,6 +432,15 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     }
     //---------------------------------------------------------------------------------------------------
 
+    //Protection against simultaneous use of two options which are not supposed to be use toghether 
+    /* to be placed..
+    if( m_opt->ShowYields() && m_opt->ShowSeparation() ){
+      std::cout<<"Error : Not allowed combination of options m_opt->ShowYields() && m_opt->ShowSeparation() "<<std::endl;
+      //exit(0);
+    }
+    */
+
+    //Start the sample loop
     bool firstsample = true;
     for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
       if( var_isShape ){
@@ -468,7 +484,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       if(var_modXRange){
 	hist_a->SetAxisRange(var_xmin, var_xmax);
       }
-
+      
       if(ds_leglabel != ""){
 	if(ds_legopt != ""){
 	  leg_a->AddEntry(hist_a, ds_leglabel.c_str(), ds_legopt.c_str());
@@ -491,7 +507,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	  }
 	  else{ leg_yield->AddEntry(hist_a, " ", ""); }
 	}
-
+	
       }//if leglabel was not provided, then clearly the sample is not meant to be added to the legend
 
       if(at_it->first != "BLINDER"){
@@ -506,6 +522,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	  std::string resname_a = var_name + "_" + ds_suffix + "_res_" + s_base_suffix;
 	  TH1D* hist_res_a = makeResidual(resname_a, hist_name, hbasename, var_draw_res, ds_res_erropt);
 	  string resdrawopt = ""; 
+
 	  if(ds_resdrawopt != ""){ resdrawopt = ds_resdrawopt; }
 	  else if( (ds_res_opt != 1) && (var_resdrawopt != "") ){ resdrawopt = var_resdrawopt; }
 	  else if( (ds_res_opt == 1) && (var_draw_res_err == "REFBAND") ){ resdrawopt = "e2"; }
@@ -520,6 +537,14 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
       }//if not a BLINDER
 
+      //special legend for separation 
+      if( m_opt->ShowSeparation() ){
+	TH1D *hist_reference=m_hstMngr->GetTH1D(hbasename);
+	std::string separation_string=SeparationString(*hist_a,*hist_reference,ds_leglabel.c_str());
+	//std::cout<< separation_string <<std::endl;
+	leg_separation->AddEntry((TObject*)(0),separation_string.c_str(),"");
+      }      
+	  
       //Clear strings
       hist_name.clear(); firstsample = false;
     }//sample loop
@@ -549,6 +574,10 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     if(leg_yield){
       ResizeLegend(*leg_yield, var_legend_xmax, var_legend_ymax);
       ResizeLegend(*leg_a, leg_yield->GetX1NDC(), leg_yield->GetY2NDC() );
+    }
+    if(m_opt->ShowSeparation()){
+      ResizeLegend(*leg_separation, var_legend_xmax, var_legend_ymax);
+      ResizeLegend(*leg_a, leg_separation->GetX1NDC(), leg_yield->GetY2NDC() );
     }
     else{ ResizeLegend(*leg_a, var_legend_xmax, var_legend_ymax );}
 
@@ -638,7 +667,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(var_hasXLabelSize){ var_xlabel_size = va_it->second->XLabelSize(); }
     else if(opt_hasXLabelSize){ var_xlabel_size = m_opt->XLabelSize(); }
-    else{ var_xlabel_size = drawRes? 0.09 : 0.04; }
+    else{ var_xlabel_size = drawRes? 0.09*0.8 : 0.04*0.8; }
 
     if(var_hasXLabelOffset){ var_xlabel_offset = va_it->second->XLabelOffset(); }
     else if(opt_hasXLabelOffset){ var_xlabel_offset = m_opt->XLabelOffset(); }
@@ -667,7 +696,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(var_hasYLabelSize){ var_ylabel_size = va_it->second->YLabelSize(); }
     else if(opt_hasYLabelSize){ var_ylabel_size = m_opt->YLabelSize(); }
-    else{ var_ylabel_size = drawRes ? 0.05 : 0.04; }
+    else{ var_ylabel_size = drawRes ? 0.05*0.8 : 0.04*0.8; }
 
     if(var_hasYLabelOffset){ var_ylabel_offset = va_it->second->YLabelOffset(); }
     else if(opt_hasYLabelOffset){ var_ylabel_offset = m_opt->YLabelOffset(); }
@@ -788,6 +817,12 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     leg_a->Draw();
     if(leg_yield){ leg_yield->Draw(); }
+
+    //special legend for separation 
+    if( m_opt->ShowSeparation() ){
+      leg_separation->Draw("same");
+    }      
+
 
     curpad->Update();
     curpad->Modified();
@@ -1107,11 +1142,18 @@ int PlotUtils::ResizeLegend(TLegend& leg, double xpt, double ypt, const std::str
     nrow++;
   }
   delete canv_test;
-
+  
   float X1 = 0., X2 = 0., Y1 = 0., Y2 = 0.;
-  float delX = maxlsize;//*(1.+margin);
-  //float delX = maxlsize*(1.+margin+0.1);//*textsize;
-  float delY = nrows * textsize;
+  //temporary hack niko
+  //float delX = maxlsize;//*(1.+margin);
+  //temporary hack niko
+  float margin =0.7;
+  //temporary hack niko
+  float delX = maxlsize*(1.+margin+0.1);//*textsize;
+  //temporary hack niko
+  //float delY = nrows * textsize;
+  //temporary hack niko
+  float delY = nrows * textsize + 0.012*nrow;
 
   if(justify == "r"){
     X2 = (xpt > 0.) ? xpt : 0.89; 
@@ -1133,4 +1175,69 @@ int PlotUtils::ResizeLegend(TLegend& leg, double xpt, double ypt, const std::str
   leg.SetY2NDC(Y2);
 
   return 0;
+}
+
+double PlotUtils::GetSeparation( TH1D S1, TH1D B1 ) {
+
+  //std::cout<<"In GetSeparation"<<std::endl;
+
+  std::shared_ptr<TH1D> S( new TH1D(S1) );
+  std::shared_ptr<TH1D> B( new TH1D(B1) );
+
+  Double_t separation = 0;
+  if ((S->GetNbinsX() != B->GetNbinsX()) || (S->GetNbinsX() <= 0)) {
+    cout << "<GetSeparation> signal and background"
+         << " histograms have different number of bins: "
+         << S->GetNbinsX() << " : " << B->GetNbinsX() << endl;
+  }
+  if (S->GetXaxis()->GetXmin() != B->GetXaxis()->GetXmin() ||
+      S->GetXaxis()->GetXmax() != B->GetXaxis()->GetXmax() ||
+      S->GetXaxis()->GetXmax() <= S->GetXaxis()->GetXmin()) {
+    cout << S->GetXaxis()->GetXmin() << " " << B->GetXaxis()->GetXmin()
+         << " " << S->GetXaxis()->GetXmax() << " " << B->GetXaxis()->GetXmax()
+         << " " << S->GetXaxis()->GetXmax() << " " << S->GetXaxis()->GetXmin() << endl;
+    cout << "<GetSeparation> signal and background"
+         << " histograms have different or invalid dimensions:" << endl;
+  }
+  Int_t    nstep  = S->GetNbinsX();
+  Double_t intBin = (S->GetXaxis()->GetXmax() - S->GetXaxis()->GetXmin())/nstep;
+  Double_t nS     = S->GetSumOfWeights()*intBin;
+  Double_t nB     = B->GetSumOfWeights()*intBin;
+  if (nS > 0 && nB > 0) {
+    for (Int_t bin=0; bin <= nstep + 1; bin++) {
+      Double_t s = S->GetBinContent( bin )/Double_t(nS);
+      Double_t b = B->GetBinContent( bin )/Double_t(nB);
+ if (s + b > 0) separation += 0.5*(s - b)*(s - b)/(s + b);
+    }
+    separation *= intBin;
+  }
+  else {
+    cout << "<GetSeparation> histograms with zero entries: "
+         << nS << " : " << nB << " cannot compute separation"
+         << endl;
+    separation = 0;
+  }
+  
+  //std::cout<<"separation "<<separation <<std::endl;
+  return separation*100.;
+}
+
+
+std::string PlotUtils::SeparationString( TH1D Sig, TH1D Ref, std::string sample_name ) {
+  //std::cout<<"In SeparationString"<<std::endl;
+  double separation = PlotUtils::GetSeparation( Sig, Ref );
+  //Here round the double before converstion into a string
+  /*
+  double  intpart;
+  double fractpart = modf (separation, &intpart);
+  fractpart  = roundf(fractpart * 10.0)/10.0; // Round to 5 decimal places
+  double separation_rounded = intpart + fractpart;
+  */
+
+  //just if one wants to use a standalone legend..
+  //std::string separation_string=sample_name+": "+std::to_string(separation);
+  std::string separation_string;
+  if(separation==0.)separation_string="";
+  else separation_string= "S: "+std::to_string(separation).substr(0,4)+"%";
+  return separation_string;
 }

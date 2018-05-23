@@ -53,6 +53,7 @@ public:
     inline double XMin() const { return m_xmin; }
     inline double XMax() const { return m_xmax; }
     inline bool ShowYields() const { return m_show_yields; }
+    inline bool ShowSeparation() const { return m_show_separation; }
     inline bool WriteHistos() const { return m_write_histos; }
     inline bool Do1DPlots() const { return m_do1DPlots; }
     inline bool DoProjections() const { return m_doProjections; }
@@ -134,6 +135,7 @@ private:
     bool m_doEff;
     bool m_doSystematics;
     bool m_show_yields;
+    bool m_show_separation;
     bool m_all_from_file;
 
     double m_resmin;
