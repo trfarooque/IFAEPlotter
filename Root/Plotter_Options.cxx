@@ -49,6 +49,7 @@ Plotter_Options::Plotter_Options():
   m_make_bins_table(false),
   m_make_moments_table(false),
   m_show_yields(false),
+  m_show_separation(false),
   m_all_from_file(false),
 
   m_resmin(0.),
@@ -139,6 +140,7 @@ OptionsBase(q)
   m_make_bins_table      = q.m_make_bins_table;
   m_make_moments_table   = q.m_make_moments_table;
   m_show_yields          = q.m_show_yields;
+  m_show_separation      = q.m_show_separation;
   m_all_from_file        = q.m_all_from_file;
 
   m_resmin               = q.m_resmin;
@@ -317,6 +319,10 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     else if( temp_arg.find("--SHOWYIELDS") != std::string::npos ){
       m_show_yields = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
+    else if( temp_arg.find("--SHOWSEPARATION") != std::string::npos ){
+      //m_show_yields = (atoi(temp_val.c_str()) > 0);
+      AnalysisUtils::BoolValue(temp_val, m_show_separation);
+    } 
     else if( temp_arg.find("--ALLFROMFILE") != std::string::npos ){
       m_all_from_file = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
@@ -488,6 +494,7 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_make_bins_table        = " << m_make_bins_table      << std::endl;
     std::cout << " m_make_moments_table     = " << m_make_moments_table   << std::endl;
     std::cout << " m_show_yields            = " << m_show_yields          << std::endl;
+    std::cout << " m_show_separation        = " << m_show_separation      << std::endl;
     std::cout << " m_all_from_file          = " << m_all_from_file        << std::endl;
 
     std::cout << " m_resmin                 = " << m_resmin               << std::endl;

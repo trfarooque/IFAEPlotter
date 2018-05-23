@@ -142,6 +142,7 @@ private:
     bool m_make_bins_table;
     bool m_make_moments_table;
     bool m_show_yields;
+    bool m_show_separation;
     bool m_all_from_file;
 
     double m_resmin;
