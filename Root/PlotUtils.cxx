@@ -667,7 +667,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(var_hasXLabelSize){ var_xlabel_size = va_it->second->XLabelSize(); }
     else if(opt_hasXLabelSize){ var_xlabel_size = m_opt->XLabelSize(); }
-    else{ var_xlabel_size = drawRes? 0.09 : 0.04; }
+    else{ var_xlabel_size = drawRes? 0.09*0.8 : 0.04*0.8; }
 
     if(var_hasXLabelOffset){ var_xlabel_offset = va_it->second->XLabelOffset(); }
     else if(opt_hasXLabelOffset){ var_xlabel_offset = m_opt->XLabelOffset(); }
@@ -696,7 +696,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(var_hasYLabelSize){ var_ylabel_size = va_it->second->YLabelSize(); }
     else if(opt_hasYLabelSize){ var_ylabel_size = m_opt->YLabelSize(); }
-    else{ var_ylabel_size = drawRes ? 0.05 : 0.04; }
+    else{ var_ylabel_size = drawRes ? 0.05*0.8 : 0.04*0.8; }
 
     if(var_hasYLabelOffset){ var_ylabel_offset = va_it->second->YLabelOffset(); }
     else if(opt_hasYLabelOffset){ var_ylabel_offset = m_opt->YLabelOffset(); }
@@ -1142,11 +1142,18 @@ int PlotUtils::ResizeLegend(TLegend& leg, double xpt, double ypt, const std::str
     nrow++;
   }
   delete canv_test;
-
+  
   float X1 = 0., X2 = 0., Y1 = 0., Y2 = 0.;
-  float delX = maxlsize;//*(1.+margin);
-  //float delX = maxlsize*(1.+margin+0.1);//*textsize;
-  float delY = nrows * textsize;
+  //temporary hack niko
+  //float delX = maxlsize;//*(1.+margin);
+  //temporary hack niko
+  float margin =0.7;
+  //temporary hack niko
+  float delX = maxlsize*(1.+margin+0.1);//*textsize;
+  //temporary hack niko
+  //float delY = nrows * textsize;
+  //temporary hack niko
+  float delY = nrows * textsize + 0.012*nrow;
 
   if(justify == "r"){
     X2 = (xpt > 0.) ? xpt : 0.89; 
