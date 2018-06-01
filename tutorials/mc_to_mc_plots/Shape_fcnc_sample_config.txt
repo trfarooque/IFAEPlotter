@@ -1,0 +1,35 @@
+BEGIN
+
+NEW			    
+NAME : 10_SM		    
+%LEGLABEL : Total background 
+LEGLABEL : t#bar{t}#rightarrowWbWb   
+STYLEKEY : 0		    
+DRAWOPT : hist		    
+LEGOPT : l		    
+DRAWSCALE : SHAPE	    
+DRAWSTACK : TRUE	    
+RESOPT : REF               
+    
+
+NEW
+NAME : 18_uH 
+LEGLABEL : t#bar{t}#rightarrowWbHu    
+STYLEKEY : 2
+DRAWOPT : hist
+LEGOPT : l
+DRAWSCALE : SHAPE
+DRAWSTACK : FALSE
+RESOPT : SKIP
+
+NEW
+NAME : 19_cH
+LEGLABEL : t#bar{t}#rightarrowWbHc   
+STYLEKEY : 1
+DRAWOPT : hist
+LEGOPT : l
+DRAWSCALE : SHAPE
+DRAWSTACK : FALSE
+RESOPT : SKIP
+
+END

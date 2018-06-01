@@ -1,0 +1,3804 @@
+BEGIN
+
+
+NEW
+NAME : c1lep4jin2bin_bjets_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_bjets_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_bjets_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_bjets_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_bjets_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_bjets_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_bjets_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_bjets_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_bjets_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_bjets_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_bjets_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_bjets_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_bjets_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_bjets_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_bjets_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_bjets_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_bjets_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_bjets_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_bjets_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_bjets_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_bjets_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_bjets_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_bjets_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_bjets_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_bjets_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dPhi_jetmet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dPhi_jetmet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dPhi_jetmet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dPhi_jetmet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dPhi_jetmet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dPhi_jetmet5
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dPhi_jetmet5
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dPhi_jetmet5
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dPhi_jetmet5
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dPhi_jetmet5
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dPhi_jetmet6
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dPhi_jetmet6
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dPhi_jetmet6
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dPhi_jetmet6
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dPhi_jetmet6
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dPhi_jetmet7
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dPhi_jetmet7
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dPhi_jetmet7
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dPhi_jetmet7
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dPhi_jetmet7
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dPhi_lepbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dPhi_lepbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dPhi_lepbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dPhi_lepbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dPhi_lepbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dPhi_lepjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dPhi_lepjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dPhi_lepjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dPhi_lepjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dPhi_lepjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dPhi_lepmet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dPhi_lepmet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dPhi_lepmet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dPhi_lepmet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dPhi_lepmet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dR_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dR_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dR_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dR_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dR_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dR_ebjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dR_ebjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dR_ebjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dR_ebjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dR_ebjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dR_ejet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dR_ejet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dR_ejet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dR_ejet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dR_ejet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dR_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dR_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dR_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dR_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dR_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dR_mubjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dR_mubjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dR_mubjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dR_mubjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dR_mubjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dR_mujet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dR_mujet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dR_mujet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dR_mujet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dR_mujet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_el_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_el_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_el_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_el_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_el_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_els_d0sig
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_els_d0sig
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_els_d0sig
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_els_d0sig
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_els_d0sig
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_els_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_els_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_els_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_els_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_els_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_els_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_els_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_els_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_els_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_els_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_els_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_els_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_els_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_els_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_els_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_els_pt_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_els_pt_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_els_pt_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_els_pt_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_els_pt_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_els_ptvarcone20
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_els_ptvarcone20
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_els_ptvarcone20
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_els_ptvarcone20
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_els_ptvarcone20
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_els_topoetcone20
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_els_topoetcone20
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_els_topoetcone20
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_els_topoetcone20
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_els_topoetcone20
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_els_z0
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_els_z0
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_els_z0
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_els_z0
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_els_z0
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_hthad
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_hthad
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_hthad
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_hthad
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_hthad
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_hthad_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_hthad_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_hthad_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_hthad_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_hthad_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet0_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet0_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet0_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet0_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet0_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet0_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet0_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet0_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet0_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet0_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet0_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet0_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet0_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet0_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet0_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet0_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet0_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet0_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet0_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet0_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet0_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet0_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet0_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet0_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet0_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet0_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet0_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet0_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet0_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet0_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet1_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet1_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet1_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet1_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet1_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet1_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet1_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet1_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet1_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet1_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet1_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet1_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet1_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet1_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet1_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet1_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet1_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet1_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet1_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet1_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet1_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet1_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet1_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet1_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet1_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet1_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet1_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet1_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet1_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet1_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet2_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet2_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet2_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet2_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet2_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet2_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet2_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet2_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet2_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet2_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet2_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet2_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet2_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet2_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet2_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet2_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet2_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet2_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet2_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet2_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet2_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet2_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet2_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet2_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet2_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet2_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet2_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet2_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet2_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet2_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet3_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet3_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet3_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet3_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet3_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet3_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet3_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet3_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet3_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet3_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet3_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet3_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet3_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet3_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet3_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet3_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet3_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet3_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet3_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet3_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet3_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet3_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet3_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet3_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet3_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet3_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet3_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet3_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet3_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet3_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet4_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet4_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet4_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet4_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet4_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet4_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet4_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet4_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet4_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet4_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet4_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet4_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet4_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet4_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet4_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet4_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet4_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet4_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet4_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet4_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet4_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet4_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet4_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet4_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet4_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet4_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet4_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet4_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet4_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet4_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet5_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet5_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet5_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet5_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet5_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet5_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet5_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet5_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet5_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet5_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet5_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet5_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet5_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet5_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet5_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet5_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet5_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet5_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet5_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet5_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet5_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet5_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet5_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet5_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet5_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jet5_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jet5_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jet5_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jet5_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jet5_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jets_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jets_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jets_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jets_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jets_btagw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jets_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jets_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jets_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jets_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jets_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jets_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jets_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jets_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jets_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jets_jvt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jets_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jets_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jets_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jets_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jets_m
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jets_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jets_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jets_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jets_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jets_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jets_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jets_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jets_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jets_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jets_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jets_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jets_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jets_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jets_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jets_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_mbb_mindR
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_mbb_mindR
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_mbb_mindR
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_mbb_mindR
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_mbb_mindR
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_meff
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_meff
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_meff
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_meff
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_meff
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_meff_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_meff_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_meff_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_meff_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_meff_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_met
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_met
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_met
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_met
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_met
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_met_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_met_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_met_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_met_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_met_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_met_sig
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_met_sig
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_met_sig
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_met_sig
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_met_sig
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_met_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_met_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_met_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_met_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_met_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_mtbmin
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_mtbmin
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_mtbmin
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_mtbmin
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_mtbmin
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_mtbmin_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_mtbmin_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_mtbmin_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_mtbmin_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_mtbmin_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_mtw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_mtw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_mtw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_mtw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_mtw
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_mtw_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_mtw_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_mtw_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_mtw_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_mtw_zoom
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_centrality
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_centrality
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_centrality
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_centrality
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_centrality
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_jets40_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_jets40_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_jets40_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_jets40_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_jets40_n
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dPhi_lepmet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dPhi_lepmet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dPhi_lepmet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dPhi_lepmet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dPhi_lepmet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dRaverage_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dRaverage_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dRaverage_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dRaverage_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dRaverage_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dRaverage_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dRaverage_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dRaverage_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dRaverage_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dRaverage_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dR_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dR_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dR_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dR_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dR_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dR_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dR_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dR_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dR_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dR_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dPhi_lepjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dPhi_lepjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dPhi_lepjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dPhi_lepjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dPhi_lepjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_dPhi_lepbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_dPhi_lepbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_dPhi_lepbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_dPhi_lepbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_dPhi_lepbjet
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_leps_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_leps_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_leps_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_leps_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_leps_pt
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_leps_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_leps_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_leps_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_leps_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_leps_eta
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin2bin_leps_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bin_leps_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep5jin2bex_leps_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{5j-in. 2b-in., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin0bex_leps_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 0b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+NEW
+NAME : c1lep4jin1bex_leps_phi
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{4j-in. 1b-ex., L = 36.5 fb^{-1}}
+REBIN : 1
+
+END
