@@ -1,0 +1,8 @@
+BEGIN
+KEY : FILE : SCALE
+10_DT : /nfs/at3/scratch2/orlando/fcnc/output/VLQAnalysisOutputs_new_dis_feb_run_1/uHbW.root : 1.
+11_TRF : /nfs/at3/scratch2/orlando/fcnc/output/VLQAnalysisOutputs_new_dis_feb_trf_run_1/uHbW.root : 1.
+END
+
+
+

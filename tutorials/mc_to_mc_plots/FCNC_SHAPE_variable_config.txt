@@ -1,0 +1,75 @@
+BEGIN
+
+NEW
+NAME : c1lep4jex2bex_FcncDiscriminant
+DRAWSTACK : FALSE
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[0.9]{#bf{#it{ATLAS}} Simulation Internal}}{#splitline{#scale[0.9]{#sqrt{s}=13 TeV}}{#splitline{#scale[0.9]{t#rightarrowH(b#bar{b})q search}}{#scale[0.9]{4j, 2b}}}}
+REBIN : 2
+LABEL : LH discriminant
+
+NEW
+NAME : c1lep4jex3bex_FcncDiscriminant
+DRAWSTACK : FALSE
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[0.9]{#bf{#it{ATLAS}} Simulation Internal}}{#splitline{#scale[0.9]{#sqrt{s}=13 TeV}}{#splitline{#scale[0.9]{t#rightarrowH(b#bar{b})q search}}{#scale[0.9]{4j, 3b}}}}
+REBIN : 2
+LABEL : LH discriminant
+
+NEW
+NAME : c1lep4jex4bin_FcncDiscriminant
+DRAWSTACK : FALSE
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[0.9]{#bf{#it{ATLAS}} Simulation Internal}}{#splitline{#scale[0.9]{#sqrt{s}=13 TeV}}{#splitline{#scale[0.9]{t#rightarrowH(b#bar{b})q search}}{#scale[0.9]{4j, 4b}}}}
+REBIN : 10
+LABEL : LH discriminant
+
+NEW
+NAME : c1lep5jex2bex_FcncDiscriminant
+DRAWSTACK : FALSE
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[0.9]{#bf{#it{ATLAS}} Simulation Internal}}{#splitline{#scale[0.9]{#sqrt{s}=13 TeV}}{#splitline{#scale[0.9]{t#rightarrowH(b#bar{b})q search}}{#scale[0.9]{5j, 2b}}}}
+REBIN : 2
+LABEL : LH discriminant
+
+NEW
+NAME : c1lep5jex3bex_FcncDiscriminant
+DRAWSTACK : FALSE
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[0.9]{#bf{#it{ATLAS}} Simulation Internal}}{#splitline{#scale[0.9]{#sqrt{s}=13 TeV}}{#splitline{#scale[0.9]{t#rightarrowH(b#bar{b})q search}}{#scale[0.9]{5j, 3b}}}}
+REBIN : 2
+LABEL : LH discriminant
+
+NEW
+NAME : c1lep5jex4bin_FcncDiscriminant
+DRAWSTACK : FALSE
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[0.9]{#bf{#it{ATLAS}} Simulation Internal}}{#splitline{#scale[0.9]{#sqrt{s}=13 TeV}}{#splitline{#scale[0.9]{t#rightarrowH(b#bar{b})q search}}{#scale[0.9]{5j, #geq4b}}}}
+REBIN : 10
+LABEL : LH discriminant
+
+NEW
+NAME : c1lep6jin2bex_FcncDiscriminant
+DRAWSTACK : FALSE
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[0.9]{#bf{#it{ATLAS}} Simulation Internal}}{#splitline{#scale[0.9]{#sqrt{s}=13 TeV}}{#splitline{#scale[0.9]{t#rightarrowH(b#bar{b})q search}}{#scale[0.9]{#geq6j, 2b}}}}
+REBIN : 2
+LABEL : LH discriminant
+
+NEW
+NAME : c1lep6jin3bex_FcncDiscriminant
+DRAWSTACK : FALSE
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[0.9]{#bf{#it{ATLAS}} Simulation Internal}}{#splitline{#scale[0.9]{#sqrt{s}=13 TeV}}{#splitline{#scale[0.9]{t#rightarrowH(b#bar{b})q search}}{#scale[0.9]{#geq6j, 3b}}}}
+REBIN : 2
+LABEL : LH discriminant
+
+NEW
+NAME : c1lep6jin4bin_FcncDiscriminant
+DRAWSTACK : FALSE
+DOSCALE : NORM
+EXTRALABEL : #splitline{#scale[0.9]{#bf{#it{ATLAS}} Simulation Internal}}{#splitline{#scale[0.9]{#sqrt{s}=13 TeV}}{#splitline{#scale[0.9]{t#rightarrowH(b#bar{b})q search}}{#scale[0.9]{#geq6j, #geq4b}}}}
+REBIN : 10
+LABEL : LH discriminant
+
+END

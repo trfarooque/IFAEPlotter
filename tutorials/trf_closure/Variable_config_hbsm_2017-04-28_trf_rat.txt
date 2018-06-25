@@ -1,0 +1,84 @@
+BEGIN
+
+NEW
+NAME : c1lep4jex2bex_FcncDiscriminant
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{}{4j-ex. 2b-ex.}
+REBIN : 1 
+REBINVAR : 0.4,1.0
+
+
+NEW
+NAME : c1lep4jex3bex_FcncDiscriminant
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{}{4j-ex. 3b-ex.}
+REBIN : 2
+
+NEW
+NAME : c1lep4jex4bin_FcncDiscriminant
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{}{4j-ex. 4b-in.}
+REBIN : 2 
+REBINVAR : 0.0,0.5,1.0
+
+NEW
+NAME : c1lep5jex2bex_FcncDiscriminant
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{}{5j-ex. 2b-ex.}
+REBIN : 1
+REBINVAR : 0.4,1.0
+
+NEW
+NAME : c1lep5jex3bex_FcncDiscriminant
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{}{5j-ex. 3b-ex.}
+REBIN : 2
+
+NEW
+NAME : c1lep5jex4bin_FcncDiscriminant
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{}{5j-ex. 4b-in.}
+REBIN : 2 
+REBINVAR : 0.0,0.5,1.0
+
+
+NEW
+NAME : c1lep6jin2bex_FcncDiscriminant
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{}{6j-in. 2b-ex.}
+REBIN : 1 
+REBINVAR : 0.4,1.0
+
+NEW
+NAME : c1lep6jin3bex_FcncDiscriminant
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{}{6j-in. 3b-ex.}
+REBIN : 2
+
+NEW
+NAME : c1lep6jin4bin_FcncDiscriminant
+DRAWSTACK : TRUE
+DRAWRES : RATIO
+DOSCALE : NORM
+EXTRALABEL : #splitline{}{6j-in. 4b-in.}
+REBIN : 2 
+REBINVAR : 0.0,0.5,1.0
+
+
+END

@@ -34,6 +34,32 @@ It currently supports the following features:
 
 ***Only the first option is currently documented***
 
+Example of tutorials 
+--------------
+
+Three tutorials are given under 
+
+    https://gitlab.cern.ch/htx/IFAEPlotter/tree/tutorials_1/tutorials
+
+***data_mc_plots***: perform a set of data MC plots based on input files available either from EOS or at3. After setting up the package run as 
+    
+    source  makePlots_DataMC_june2017_vfcnc.sh
+
+***mc_to_mc_plots***: perform a set of MC plots comparing shapes of discriminating variables between signal and background; based on input files available either from EOS or at3. After setting up the package run as 
+    
+    source  makePlots_new_MCMC.sh
+
+***trf_closure***: perform a set of MC plots showing TRF closure checks for several samples; based on input files available either from EOS or at3. After setting up the package run as 
+    
+    source  makePlots_shape_trf.sh
+
+Those tutorials include example of how to rebin a plot, check for example 
+    
+    tutorials/trf_closure/Variable_config_hbsm_2017-04-28_trf_rat.txt   
+
+and compare with description of options REBIN and REBINVAR below. Example of output plots were discussed here https://indico.cern.ch/event/732674/contributions/3021400/attachments/1660374/2660159/fcnc_low_mass_hplus_intro.pdf slide 6
+
+
 Configuration files
 ----------------------
 IFAEPlotter will take in the following configuration files as input:

@@ -1,0 +1,17 @@
+BEGIN
+KEY : FILE : SCALE
+0_Data : /nfs/pic.es/user/o/orlando/VLQAnalysisRun2/VLQAnalysisOutputs_FitInputs_HBSM-00-03-09-07_2017-06-29_v0_dt_merged/Data_data.DAOD_TOPQ1.root : 1.
+1_ttbarlight : /nfs/pic.es/user/o/orlando/VLQAnalysisRun2/VLQAnalysisOutputs_FitInputs_HBSM-00-03-09-07_2017-06-29_v0_dt_merged/ttbar_ncnc.root : 1.  
+4_Wjets : /nfs/pic.es/user/o/orlando/VLQAnalysisRun2/VLQAnalysisOutputs_FitInputs_HBSM-00-03-09-07_2017-06-29_v0_dt_merged/Wjets22beauty.root : 1.
+4_Wjets : /nfs/pic.es/user/o/orlando/VLQAnalysisRun2/VLQAnalysisOutputs_FitInputs_HBSM-00-03-09-07_2017-06-29_v0_dt_merged/Wjets22charm.root : 1.
+4_Wjets : /nfs/pic.es/user/o/orlando/VLQAnalysisRun2/VLQAnalysisOutputs_FitInputs_HBSM-00-03-09-07_2017-06-29_v0_dt_merged/Wjets22light.root : 1.
+5_Zjets : /nfs/pic.es/user/o/orlando/VLQAnalysisRun2/VLQAnalysisOutputs_FitInputs_HBSM-00-03-09-07_2017-06-29_v0_dt_merged/Zjets22beauty.root : 1.
+5_Zjets : /nfs/pic.es/user/o/orlando/VLQAnalysisRun2/VLQAnalysisOutputs_FitInputs_HBSM-00-03-09-07_2017-06-29_v0_dt_merged/Zjets22charm.root : 1.
+5_Zjets : /nfs/pic.es/user/o/orlando/VLQAnalysisRun2/VLQAnalysisOutputs_FitInputs_HBSM-00-03-09-07_2017-06-29_v0_dt_merged/Zjets22light.root : 1.
+6_Singletop : /nfs/pic.es/user/o/orlando/VLQAnalysisRun2/VLQAnalysisOutputs_FitInputs_HBSM-00-03-09-07_2017-06-29_v0_dt_merged/Singletop.root : 1.  
+7_topEW : /nfs/pic.es/user/o/orlando/VLQAnalysisRun2/VLQAnalysisOutputs_FitInputs_HBSM-00-03-09-07_2017-06-29_v0_dt_merged/topEW.root : 1.
+8_Dibosons : /nfs/pic.es/user/o/orlando/VLQAnalysisRun2/VLQAnalysisOutputs_FitInputs_HBSM-00-03-09-07_2017-06-29_v0_dt_merged/Dibosons.root : 1.  
+9_ttH : /nfs/pic.es/user/o/orlando/VLQAnalysisRun2/VLQAnalysisOutputs_FitInputs_HBSM-00-03-09-07_2017-06-29_v0_dt_merged/ttH.root : 1.
+55_QCD : /nfs/pic.es/user/o/orlando/VLQAnalysisRun2/VLQAnalysisOutputs_FitInputs_HBSM-00-03-09-07_2017-06-29_v0_dt_merged/QCDMU_QCD.DAOD_TOPQ1.root : 1.
+55_QCD : /nfs/pic.es/user/o/orlando/VLQAnalysisRun2/VLQAnalysisOutputs_FitInputs_HBSM-00-03-09-07_2017-06-29_v0_dt_merged/QCDE_QCD.DAOD_TOPQ1.root : 1.
+END
