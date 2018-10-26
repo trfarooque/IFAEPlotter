@@ -251,20 +251,15 @@ void PlotManager::WriteHistogramsToFile(){
 	  hsample_nominal->Write();
 	  hsample_nominal->SetDirectory(0);
 	  delete hsample_nominal;
-
-
-
 	}
 
 	else{
-
 	  if(m_opt->DoEff()){
-	    var_name = AnalysisUtils::ReplaceString(var_name,"*","") + "_EFF";
+	    var_name = AnalysisUtils::ReplaceString(var_name,"@EFF@","") + "_EFF";
+	    var_name = AnalysisUtils::ReplaceString(var_name,"/","_");
 	  }
-	  std::string key = var_name + "_" + ds_suffix;
-
-	  var_name = AnalysisUtils::ReplaceString(var_name,"/","_");
-	  TH1D* hsample = (TH1D*)(m_hstMngr->GetTH1D( key )->Clone(var_name.c_str()));
+	  std::cout << " var_name = " << var_name << std::endl;
+	  TH1D* hsample = (TH1D*)(m_hstMngr->GetTH1D( var_name + "_" + ds_suffix )->Clone(var_name.c_str()));
 	  hsample->Write();
 	  hsample->SetDirectory(0);
 	  delete hsample;
@@ -585,10 +580,10 @@ void PlotManager::makeEfficiencyHistograms(){
 	  var_name_den += "_" + m_opt->DenSuffix();
 	}
 	if(m_opt->NumPattern() != ""){
-	  var_name_num = AnalysisUtils::ReplaceString(var_name_num, "*", m_opt->NumPattern());
+	  var_name_num = AnalysisUtils::ReplaceString(var_name_num, "@EFF@", m_opt->NumPattern());
 	}
 	if(m_opt->DenPattern() != ""){
-	  var_name_den = AnalysisUtils::ReplaceString(var_name_den, "*", m_opt->DenPattern());
+	  var_name_den = AnalysisUtils::ReplaceString(var_name_den, "@EFF@", m_opt->DenPattern());
 	}
 
 
@@ -653,13 +648,14 @@ void PlotManager::makeEfficiencyHistograms(){
       var_name_den += "_" + m_opt->DenSuffix();
     }
     if(m_opt->NumPattern() != ""){ 
-      var_name_num = AnalysisUtils::ReplaceString(var_name_num, "*", m_opt->NumPattern());
+      var_name_num = AnalysisUtils::ReplaceString(var_name_num, "@EFF@", m_opt->NumPattern());
     }
     if(m_opt->DenPattern() != ""){ 
-      var_name_den = AnalysisUtils::ReplaceString(var_name_den, "*", m_opt->DenPattern());
+      var_name_den = AnalysisUtils::ReplaceString(var_name_den, "@EFF@", m_opt->DenPattern());
     }
 
-    var_name_eff = AnalysisUtils::ReplaceString(var_name,"*","") + "_EFF";
+    var_name_eff = AnalysisUtils::ReplaceString(var_name,"@EFF@","") + "_EFF";
+    var_name_eff = AnalysisUtils::ReplaceString(var_name_eff,"/","_");
 
     for(SampleAttributesMap::iterator samit = m_attr_map.begin(); samit != m_attr_map.end(); ++samit){
       const std::string& ds_suffix = samit->second->Suffix();
@@ -670,7 +666,6 @@ void PlotManager::makeEfficiencyHistograms(){
       TH1D* hsample_den = m_hstMngr->GetTH1D( key_den ); 
       TH1D* hsample_eff = m_hstMngr->CloneTH1D(key_eff, key_num, true);
       hsample_eff->Divide(hsample_num, hsample_den, 1, 1, "b");
-
       key_num.clear(); key_den.clear(); key_eff.clear();
     }//sample loop
 

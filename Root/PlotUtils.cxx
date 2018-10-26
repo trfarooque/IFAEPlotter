@@ -236,7 +236,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     else if(projopt == "RMS"){var_name += "_RMS";}
     else if(projopt == "FRACRMS"){var_name += "_FRACRMS";}
     else if(projopt == "EFF"){ 
-      var_name = AnalysisUtils::ReplaceString(var_name,"*","");
+      var_name = AnalysisUtils::ReplaceString(var_name,"@EFF@","");
+      var_name = AnalysisUtils::ReplaceString(var_name,"/","_");
       var_name += "_EFF";
     }
  
