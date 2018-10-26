@@ -51,8 +51,8 @@ class PlotManager{
 
   //----------------- SYST CALCULATION CLASS
   int PrintSystematics();
-  void QuadraticHistSum(const std::string& h_orig_name, const std::string& h_add_name);
-  void QuadraticHistSum(TH1D* h_orig, TH1D* h_add);
+  void QuadraticHistSum(const std::string& h_add_name, const std::string& h_orig_name_up, const std::string& h_orig_name_down="");
+  void QuadraticHistSum(TH1D* h_add, TH1D* h_orig_up, TH1D* h_orig_down=0);
 
   //const double* ParseRebinEdges( int nbin, const std::string& bindef);
   //----------------------- HISTMANAGER ---------------------------

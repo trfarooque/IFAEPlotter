@@ -3,6 +3,7 @@
 #include "IFAEPlotter/StyleDictionary.h"
 #include "IFAEPlotter/Plotter_Options.h"
 #include "IFAETopFramework/HistManager.h"
+#include "IFAETopFramework/AnalysisUtils.h"
 
 #include "TSystem.h"
 #include "THStack.h"
@@ -219,8 +220,9 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   } 
 
   std::string legopt = "";
-  std::vector<TH1D*> v_hstack_a;
-  v_hstack_a.clear();
+  std::vector<TH1D*> v_hstack_a = {};
+  std::vector<TH1D*> v_hstack_res_a = {};
+
   VariableAttributesMap* var_loop_map = (projopt == "HIST") ? &m_var_map_proj : &m_var_map;
   for(VariableAttributesMap::iterator va_it = var_loop_map->begin(); va_it != var_loop_map->end(); ++va_it){
 
@@ -228,11 +230,15 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     bool var_drawBlinder = m_drawBlinder && (var_blinding.find("BIN") != std::string::npos);
     bool var_blind_yield = (var_blinding.find("YIELD") != std::string::npos);
     v_hstack_a.clear();
+    v_hstack_res_a.clear();
     std::string var_name       = va_it->second->Name();
     if(projopt == "MEAN"){var_name += "_MEAN";}
     else if(projopt == "RMS"){var_name += "_RMS";}
     else if(projopt == "FRACRMS"){var_name += "_FRACRMS";}
-    else if(projopt == "EFF"){var_name += "_EFF";}
+    else if(projopt == "EFF"){ 
+      var_name = AnalysisUtils::ReplaceString(var_name,"*","");
+      var_name += "_EFF";
+    }
  
     const std::string& var_label         = va_it->second->Label();
     const std::string& var_draw_res      = va_it->second->DrawRes();
@@ -246,7 +252,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     var_isShape        = !doGraphs && (va_it->second->DoScale() == "SHAPE"); 
     var_do_width       = !doGraphs && va_it->second->DoWidth();
     var_draw_stack     = !doGraphs && va_it->second->DrawStack();
-    var_draw_res_stack     = !doGraphs && va_it->second->DrawResStack();
+    var_draw_res_stack = !doGraphs && va_it->second->DrawResStack();
     var_isLogY         = !doGraphs && va_it->second->IsLogY();
     var_isLogX         = !doGraphs && va_it->second->IsLogX();
     var_isLogRes       = !doGraphs && va_it->second->IsLogRes();
@@ -365,10 +371,12 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     //Make a TCanvas and set its attributes
     std::string hs_stack_name = "hs_stack_" + var_name;
     std::string hs_nostack_name = "hs_nostack_" + var_name;
-    std::string hs_res_name = "hs_res_" + var_name;
+    std::string hs_res_stack_name = "hs_res_stack_" + var_name;
+    std::string hs_res_nostack_name = "hs_res_nostack_" + var_name;
     //std::string hs_res_ref_name = "hs_res_ref_" + var_name;
 
-    THStack* hs_res_a       = drawRes ? new THStack(hs_res_name.c_str(), "")       : NULL;
+    THStack* hs_res_nostack_a     = drawRes ? new THStack(hs_res_nostack_name.c_str(), "")       : NULL;
+    THStack* hs_res_stack_a       = drawRes && var_draw_stack ? new THStack(hs_res_stack_name.c_str(), "")       : NULL;
     //THStack* hs_res_ref_a = drawRes ? new THStack(hs_res_ref_name.c_str(), "") : NULL;
     std::string hbasename = var_name + "_" + s_base_suffix;
     //TH1D* h_base = drawRes ? m_hstMngr->GetTH1D(hbasename) : NULL;
@@ -555,7 +563,12 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	    //}
 	  else{ resdrawopt = ds_drawopt; }
 
-	  hs_res_a->Add(hist_res_a, resdrawopt.c_str());
+	  if(var_draw_res_stack && ds_draw_stack){ 
+	    v_hstack_res_a.push_back(hist_res_a);
+	  }
+	  else{
+	    hs_res_nostack_a->Add(hist_res_a, resdrawopt.c_str());
+	  }
 	  resname_a.clear(); resdrawopt.clear();
 	}//if residual histogram needed 
 	
@@ -570,6 +583,14 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
       for(int ro = v_hstack_a.size()-1; ro >= 0; ro--){
 	hs_stack_a->Add(v_hstack_a.at(ro), "hist");
+      }
+
+    }
+
+    if(hs_res_stack_a && v_hstack_res_a.size() > 0){
+
+      for(int ro = v_hstack_res_a.size()-1; ro >= 0; ro--){
+	hs_res_stack_a->Add(v_hstack_res_a.at(ro), "hist");
       }
 
     }
@@ -874,58 +895,100 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       else if(var_draw_res == "INVRATIO"){ r_max = 1.5;}
       else if(var_draw_res == "RATIOUNC"){ r_max = 1.5;}
 
-      if(var_draw_res_stack){
-	hs_res_a->Draw();
-      }
-      else{
-	hs_res_a->Draw("nostack");
-      }
-      if(var_modXRange){ hs_res_a->GetXaxis()->SetRangeUser(var_xmin, var_xmax); }
 
       double ry = (var_hasResRefLine) ? va_it->second->ResRefLine() : ( ( (var_draw_res == "RESIDUAL") || (var_draw_res == "DIFF") ) ? 0. : 1. );
       TLine* lnref = new TLine(var_xmin, ry, var_xmax, ry); // a reference line
       lnref->SetLineStyle(2); //dashed line
 
-      if(var_label != ""){ hs_res_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
-      else{ hs_res_a->GetHistogram()->GetXaxis()->SetTitle( ((TH1D*)(hs_res_a->GetStack()->First()))->GetXaxis()->GetTitle() ) ; }
-
-
-      if(var_reslabel != ""){ hs_res_a->GetHistogram()->GetYaxis()->SetTitle(var_reslabel.c_str()); }
-      hs_res_a->SetMinimum(r_min);
-      hs_res_a->SetMaximum(r_max);
-      lnref->DrawClone("same");
-
-      if(var_has_xaxis_ndiv){ hs_res_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xaxis_ndiv, false); }
-      else if(var_isCount)  { hs_res_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false); }
-      if(var_has_resaxis_ndiv){ hs_res_a->GetHistogram()->GetYaxis()->SetNdivisions(var_resaxis_ndiv, false); }
-
-      if(var_isCount){ hs_res_a->GetHistogram()->GetXaxis()->CenterLabels(); }
-
-      hs_res_a->GetHistogram()->GetXaxis()->SetTitleOffset(var_xtitle_offset);
-      hs_res_a->GetHistogram()->GetYaxis()->SetTitleOffset(var_restitle_offset);
-      
-      hs_res_a->GetHistogram()->GetXaxis()->SetTitleSize(var_xtitle_size);
-      hs_res_a->GetHistogram()->GetYaxis()->SetTitleSize(var_restitle_size);
- 
-      hs_res_a->GetHistogram()->GetXaxis()->SetLabelOffset(var_xlabel_offset);
-      hs_res_a->GetHistogram()->GetXaxis()->SetLabelSize(var_xlabel_size);
-      hs_res_a->GetHistogram()->GetYaxis()->SetLabelOffset(var_reslabel_offset);
-      hs_res_a->GetHistogram()->GetYaxis()->SetLabelSize(var_reslabel_size);
-      
-      hs_res_a->GetHistogram()->GetYaxis()->CenterTitle();
-
-      //if have bin labels, set them here
-      if( !var_binlabels_str.empty() ){
-	for( std::pair<int, std::string> label : *var_binlabels_map ){
-	  hs_res_a->GetHistogram()->GetXaxis()->SetBinLabel(label.first, label.second.c_str());
+      if(var_draw_res_stack && (hs_res_stack_a->GetNhists() > 0)){
+	hs_res_stack_a->Draw();
+	if(hs_res_nostack_a->GetNhists() > 0){
+	  hs_res_nostack_a->Draw("samenostack");
 	}
+	if(var_modXRange){ hs_res_stack_a->GetXaxis()->SetRangeUser(var_xmin, var_xmax); }
+
+	if(var_label != ""){ hs_res_stack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
+	else{ hs_res_stack_a->GetHistogram()->GetXaxis()->SetTitle( ((TH1D*)(hs_res_stack_a->GetStack()->First()))->GetXaxis()->GetTitle() ) ; }
+
+	if(var_reslabel != ""){ hs_res_stack_a->GetHistogram()->GetYaxis()->SetTitle(var_reslabel.c_str()); }
+	hs_res_stack_a->SetMinimum(r_min);
+	hs_res_stack_a->SetMaximum(r_max);
+	lnref->DrawClone("same");
+
+	if(var_has_xaxis_ndiv){ hs_res_stack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xaxis_ndiv, false); }
+	else if(var_isCount)  { hs_res_stack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false); }
+	if(var_has_resaxis_ndiv){ hs_res_stack_a->GetHistogram()->GetYaxis()->SetNdivisions(var_resaxis_ndiv, false); }
+
+	if(var_isCount){ hs_res_stack_a->GetHistogram()->GetXaxis()->CenterLabels(); }
+
+	hs_res_stack_a->GetHistogram()->GetXaxis()->SetTitleOffset(var_xtitle_offset);
+	hs_res_stack_a->GetHistogram()->GetYaxis()->SetTitleOffset(var_restitle_offset);
+      
+	hs_res_stack_a->GetHistogram()->GetXaxis()->SetTitleSize(var_xtitle_size);
+	hs_res_stack_a->GetHistogram()->GetYaxis()->SetTitleSize(var_restitle_size);
+ 
+	hs_res_stack_a->GetHistogram()->GetXaxis()->SetLabelOffset(var_xlabel_offset);
+	hs_res_stack_a->GetHistogram()->GetXaxis()->SetLabelSize(var_xlabel_size);
+	hs_res_stack_a->GetHistogram()->GetYaxis()->SetLabelOffset(var_reslabel_offset);
+	hs_res_stack_a->GetHistogram()->GetYaxis()->SetLabelSize(var_reslabel_size);
+      
+	hs_res_stack_a->GetHistogram()->GetYaxis()->CenterTitle();
+
+	//if have bin labels, set them here
+	if( !var_binlabels_str.empty() ){
+	  for( std::pair<int, std::string> label : *var_binlabels_map ){
+	    hs_res_stack_a->GetHistogram()->GetXaxis()->SetBinLabel(label.first, label.second.c_str());
+	  }
+	}
+
       }
+      else{
+	hs_res_nostack_a->Draw("nostack");
+	if(var_modXRange){ hs_res_nostack_a->GetXaxis()->SetRangeUser(var_xmin, var_xmax); }
+
+	if(var_label != ""){ hs_res_nostack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
+	else{ hs_res_nostack_a->GetHistogram()->GetXaxis()->SetTitle( ((TH1D*)(hs_res_nostack_a->GetStack()->First()))->GetXaxis()->GetTitle() ) ; }
+
+	if(var_reslabel != ""){ hs_res_nostack_a->GetHistogram()->GetYaxis()->SetTitle(var_reslabel.c_str()); }
+	hs_res_nostack_a->SetMinimum(r_min);
+	hs_res_nostack_a->SetMaximum(r_max);
+	lnref->DrawClone("same");
+
+	if(var_has_xaxis_ndiv){ hs_res_nostack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xaxis_ndiv, false); }
+	else if(var_isCount)  { hs_res_nostack_a->GetHistogram()->GetXaxis()->SetNdivisions(var_xmax - var_xmin, false); }
+	if(var_has_resaxis_ndiv){ hs_res_nostack_a->GetHistogram()->GetYaxis()->SetNdivisions(var_resaxis_ndiv, false); }
+
+	if(var_isCount){ hs_res_nostack_a->GetHistogram()->GetXaxis()->CenterLabels(); }
+
+	hs_res_nostack_a->GetHistogram()->GetXaxis()->SetTitleOffset(var_xtitle_offset);
+	hs_res_nostack_a->GetHistogram()->GetYaxis()->SetTitleOffset(var_restitle_offset);
+      
+	hs_res_nostack_a->GetHistogram()->GetXaxis()->SetTitleSize(var_xtitle_size);
+	hs_res_nostack_a->GetHistogram()->GetYaxis()->SetTitleSize(var_restitle_size);
+ 
+	hs_res_nostack_a->GetHistogram()->GetXaxis()->SetLabelOffset(var_xlabel_offset);
+	hs_res_nostack_a->GetHistogram()->GetXaxis()->SetLabelSize(var_xlabel_size);
+	hs_res_nostack_a->GetHistogram()->GetYaxis()->SetLabelOffset(var_reslabel_offset);
+	hs_res_nostack_a->GetHistogram()->GetYaxis()->SetLabelSize(var_reslabel_size);
+      
+	hs_res_nostack_a->GetHistogram()->GetYaxis()->CenterTitle();
+
+	//if have bin labels, set them here
+	if( !var_binlabels_str.empty() ){
+	  for( std::pair<int, std::string> label : *var_binlabels_map ){
+	    hs_res_nostack_a->GetHistogram()->GetXaxis()->SetBinLabel(label.first, label.second.c_str());
+	  }
+	}
+      }//if not drawing stack of residuals
+
 
       curpad->Update();
       curpad->Modified();
 
       delete lnref;
     }
+
+
     //============================================= Bottom panel done ===========================================
 
     //Write to output file/ print to a png
@@ -979,7 +1042,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     delete canv_a;
     delete hs_stack_a;
     delete hs_nostack_a;
-    delete hs_res_a;
+    delete hs_res_stack_a;
+    delete hs_res_nostack_a;
     delete ttlbox;
     curpad = NULL;
     delete leg_a;
@@ -991,7 +1055,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     canv_name.clear();
     hs_stack_name.clear();
     hs_nostack_name.clear();
-    hs_res_name.clear();
+    hs_res_stack_name.clear();
+    hs_res_nostack_name.clear();
     hname_sum.clear();
     hbasename.clear();
   }//variables loop

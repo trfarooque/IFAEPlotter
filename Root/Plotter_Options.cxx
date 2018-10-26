@@ -15,6 +15,7 @@ Plotter_Options::Plotter_Options():
   m_systematics_list(""),
   m_style_lib("IFAEPlotter/share/test_style_config.txt"),
   m_input_dir(""),
+  m_nominal_dir(""),
   m_output_format("png"),
   m_ylabel("Events"),
   m_reslabel("Data/MC"),
@@ -25,6 +26,8 @@ Plotter_Options::Plotter_Options():
   m_den_suffix(""),
   m_num_prefix(""),
   m_den_prefix(""),
+  m_num_pattern(""),
+  m_den_pattern(""),
   m_projopt("MEAN"),
   m_legopt(""),
   m_title(""),
@@ -105,6 +108,7 @@ OptionsBase(q)
   m_systematics_list     = q.m_systematics_list;
   m_style_lib            = q.m_style_lib;
   m_input_dir            = q.m_input_dir;
+  m_nominal_dir          = q.m_nominal_dir;
   m_output_format        = q.m_output_format;
   m_ylabel               = q.m_ylabel;
   m_reslabel             = q.m_reslabel;
@@ -115,6 +119,8 @@ OptionsBase(q)
   m_den_suffix           = q.m_den_suffix;
   m_num_prefix           = q.m_num_prefix;
   m_den_prefix           = q.m_den_prefix;
+  m_num_pattern           = q.m_num_pattern;
+  m_den_pattern           = q.m_den_pattern;
   m_projopt              = q.m_projopt;
   m_legopt               = q.m_legopt;
   m_title                = q.m_title;
@@ -216,6 +222,9 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     else if( temp_arg.find("--INPUTDIR") != std::string::npos ){
       m_input_dir = temp_val;
     } 
+    else if( temp_arg.find("--NOMINALDIR") != std::string::npos ){
+      m_nominal_dir = temp_val;
+    } 
     else if( temp_arg.find("--OUTFORMAT") != std::string::npos ){
       std::transform(temp_val.begin(), temp_val.end(), temp_val.begin(), toupper);
       m_output_format = temp_val;
@@ -246,6 +255,12 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     } 
     else if( temp_arg.find("--DENPREFIX") != std::string::npos ){
       m_den_prefix = temp_val;
+    } 
+    else if( temp_arg.find("--NUMPATTERN") != std::string::npos ){
+      m_num_pattern = temp_val;
+    } 
+    else if( temp_arg.find("--DENPATTERN") != std::string::npos ){
+      m_den_pattern = temp_val;
     } 
     else if( temp_arg.find("--PROJOPT") != std::string::npos ){
       m_projopt = temp_val;
@@ -454,6 +469,7 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_systematics_list       = " << m_systematics_list     << std::endl;
     std::cout << " m_style_lib              = " << m_style_lib            << std::endl;
     std::cout << " m_input_dir              = " << m_input_dir            << std::endl;
+    std::cout << " m_nominal_dir            = " << m_nominal_dir          << std::endl;
     std::cout << " m_output_format          = " << m_output_format        << std::endl;
     std::cout << " m_ylabel                 = " << m_ylabel               << std::endl;
     std::cout << " m_reslabel               = " << m_reslabel             << std::endl;
@@ -464,6 +480,8 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_den_suffix             = " << m_den_suffix           << std::endl;
     std::cout << " m_num_prefix             = " << m_num_prefix           << std::endl;
     std::cout << " m_den_prefix             = " << m_den_prefix           << std::endl;
+    std::cout << " m_num_pattern             = " << m_num_pattern         << std::endl;
+    std::cout << " m_den_pattern             = " << m_den_pattern         << std::endl;
     std::cout << " m_projopt                = " << m_projopt              << std::endl;
     std::cout << " m_legopt                 = " << m_legopt               << std::endl;
     std::cout << " m_title                  = " << m_title                << std::endl;

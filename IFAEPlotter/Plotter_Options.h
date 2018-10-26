@@ -20,6 +20,7 @@ public:
     inline const std::string& FileList() const { return m_file_list; }
     inline const std::string& SystematicsList() const { return m_systematics_list; }
     inline const std::string& InputDir() const { return m_input_dir; }
+    inline const std::string& NominalDir() const { return m_nominal_dir; }
     inline const std::string& StyleLib() const { return m_style_lib; }
     inline const std::string& OutputFormat() const { return m_output_format; }
     inline const std::string& YLabel() const { return m_ylabel; }
@@ -31,6 +32,8 @@ public:
     inline const std::string& DenSuffix() const { return m_den_suffix; }
     inline const std::string& NumPrefix() const { return m_num_prefix; }
     inline const std::string& DenPrefix() const { return m_den_prefix; }
+    inline const std::string& NumPattern() const { return m_num_pattern; }
+    inline const std::string& DenPattern() const { return m_den_pattern; }
     inline const std::string& ProjOpt() const { return m_projopt; }
     inline const std::string& Title() const { return m_title; }
     inline const std::string& LegOpt() const { return m_legopt; }
@@ -107,6 +110,7 @@ private:
     std::string m_file_list;
     std::string m_systematics_list;
     std::string m_input_dir;
+    std::string m_nominal_dir;
     std::string m_style_lib;
     std::string m_output_format;
     std::string m_ylabel;
@@ -118,6 +122,8 @@ private:
     std::string m_den_suffix;
     std::string m_num_prefix;
     std::string m_den_prefix;
+    std::string m_num_pattern;
+    std::string m_den_pattern;
     std::string m_projopt;
     std::string m_legopt;
     std::string m_title;
