@@ -5,14 +5,15 @@
 
 
 SystematicsAttributes::SystematicsAttributes(const std::string& name, const std::string& name_up, const std::string& name_down
-					     , bool one_sided, bool newfile, const std::string& symmetrisation, const std::string& suffix) : 
+					     , bool one_sided, bool newfile, bool newdir, const std::string& symmetrisation, const std::string& suffix) : 
   m_name(name),
   m_name_up(name_up),
   m_name_down(name_down),
   m_symmetrisation(symmetrisation),
   m_suffix(suffix),
   m_one_sided(one_sided),
-  m_newfile(newfile)
+  m_newfile(newfile),
+  m_newdir(newdir)
 {}
 
 SystematicsAttributes::SystematicsAttributes() : SystematicsAttributes(""){}
@@ -26,6 +27,7 @@ SystematicsAttributes::SystematicsAttributes(SystematicsAttributes& q){
   m_suffix           = q.m_suffix;
   m_one_sided        = q.m_one_sided;
   m_newfile          = q.m_newfile;
+  m_newdir           = q.m_newdir;
   
 }
 
@@ -54,10 +56,11 @@ SystematicsAttributesMap SystematicsAttributes::ParseSystematicsConfig( Plotter_
     SystematicsAttributes* sysObj = new SystematicsAttributes( name );
     if( keymap.find("ONESIDED") != keymap.end() ){ sysObj->SetOneSided(AnalysisUtils::BoolValue(keymap["ONESIDED"], "ONESIDED")); }
     if( keymap.find("NEWFILE") != keymap.end() ){ sysObj->SetNewFile(AnalysisUtils::BoolValue(keymap["NEWFILE"], "NEWFILE")); }
+    if( keymap.find("NEWDIR") != keymap.end() ){ sysObj->SetNewFile(AnalysisUtils::BoolValue(keymap["NEWDIR"], "NEWDIR")); }
     if( keymap.find("NAMEUP") != keymap.end() ){ sysObj->SetNameUp(keymap["NAMEUP"]); }
     if( keymap.find("NAMEDOWN") != keymap.end() ){ sysObj->SetNameDown(keymap["NAMEDOWN"]); }
     if( keymap.find("SUFFIX") != keymap.end() ){ sysObj->SetSuffix(keymap["SUFFIX"]); }
-    if( keymap.find("SYMMETRISATION") != keymap.end() ){ sysObj->SetSuffix(keymap["SYMMETRISATION"]); }
+    if( keymap.find("SYMMETRISATION") != keymap.end() ){ sysObj->SetSymmetrisation(keymap["SYMMETRISATION"]); }
 
     if(opt->MsgLevel() == Debug::DEBUG) std::cout<<" Adding systematic "<<name<<std::endl;
     sys_map[name] = sysObj;

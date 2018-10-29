@@ -12,7 +12,8 @@ class SystematicsAttributes{
  public:
   SystematicsAttributes();
   SystematicsAttributes(const std::string& name, const std::string& name_up="", const std::string & name_down=""
-			, bool one_sided=false, bool newfile=false, const std::string& symmetrisation="", const std::string& suffix="");
+			, bool one_sided=false, bool newfile=false, bool newdir=false, const std::string& symmetrisation=""
+			, const std::string& suffix="");
   ~SystematicsAttributes(){}
   SystematicsAttributes(SystematicsAttributes &q);
 
@@ -24,6 +25,7 @@ class SystematicsAttributes{
   std::string m_suffix;
   bool m_one_sided;
   bool m_newfile;
+  bool m_newdir;
 
  public:
   void SetName(const std::string& name){ m_name = name; }
@@ -33,6 +35,7 @@ class SystematicsAttributes{
   void SetSuffix(const std::string& suffix){ m_suffix = suffix; }
   void SetOneSided(bool one_sided){ m_one_sided = one_sided; }
   void SetNewFile(bool newfile){ m_newfile = newfile; }
+  void SetNewDir(bool newdir){ m_newdir = newdir; }
 
   const std::string& Name() const{ return m_name; }
   const std::string& NameUp() const{ return m_name_up; }
@@ -41,6 +44,7 @@ class SystematicsAttributes{
   const std::string& Suffix() const{ return m_suffix; }
   bool OneSided() const{ return m_one_sided; }
   bool NewFile() const{ return m_newfile; }
+  bool NewDir() const{ return m_newdir; }
   static std::map<std::string, SystematicsAttributes*> ParseSystematicsConfig( Plotter_Options* opt );
 
 };

@@ -1,0 +1,1111 @@
+
+BEGIN
+NEW
+NAME : c0lep6jin2bin_meff
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_hthad
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_mtbmin
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+XMAX : 500.
+
+NEW
+NAME : c0lep6jin2bin_mbb_mindR
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_met
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+XMAX : 700.
+
+NEW
+NAME : c0lep6jin2bin_met_phi
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_met_sig
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_jets_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_bjets_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+LABEL : Number of b-jets (77% WP)
+
+NEW
+NAME : c0lep6jin2bin_el_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_mu_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_lep_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCTTMass_jets_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCMTop_jets_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCMHiggs_jets_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCjets_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_jets_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_jets_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_jets_m
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_jets_btagw
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_jet0_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_jet0_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_jet0_m
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_jet0_btagw
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_bjets_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_bjets_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_bjets_btagw
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_bjet0_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_bjet0_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_bjet0_btagw
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCjets_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCjets_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCjets_m
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCjets_nconsts
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCjet0_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCjet0_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCjet0_m
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCjet0_nconsts
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_dR_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_dR_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_dPhi_jetmet
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_dPhi_lepmet
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCTTMass_jets_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCTTMass_jets_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCTTMass_jets_m
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCTTMass_jets_consts_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCMTop_jets_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCMTop_jets_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCMTop_jets_m
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCMHiggs_jets_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCMHiggs_jets_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c0lep6jin2bin_RCMHiggs_jets_m
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq6j,#geq2b,0l}
+OUTPUTFOLDER : c0lep6jin2bin
+
+NEW
+NAME : c1lep5jin2bin_meff
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_hthad
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_mtbmin
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+XMAX : 500.
+
+NEW
+NAME : c1lep5jin2bin_mbb_mindR
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_met
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+XMAX : 700.
+
+NEW
+NAME : c1lep5jin2bin_met_phi
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_met_sig
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_jets_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_bjets_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+LABEL : Number of b-jets (77% WP)
+
+NEW
+NAME : c1lep5jin2bin_el_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_mu_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_lep_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCTTMass_jets_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCMTop_jets_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCMHiggs_jets_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCjets_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_jets_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_jets_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_jets_m
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_jets_btagw
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_jet0_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_jet0_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_jet0_m
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_jet0_btagw
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_bjets_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_bjets_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_bjets_btagw
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_bjet0_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_bjet0_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_bjet0_btagw
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCjets_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCjets_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCjets_m
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCjets_nconsts
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCjet0_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCjet0_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCjet0_m
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCjet0_nconsts
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_dR_jetjet
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_dR_bjetbjet
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_dPhi_jetmet
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_dPhi_lepmet
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_ptw
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_mtw
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+XMAX : 500.
+
+NEW
+NAME : c1lep5jin2bin_dPhi_lepmet
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_lep0_pt_zoom
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_lep0_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_lep0_phi
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCTTMass_jets_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCTTMass_jets_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCTTMass_jets_m
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCTTMass_jets_consts_n
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCMTop_jets_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCMTop_jets_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCMTop_jets_m
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCMHiggs_jets_pt
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCMHiggs_jets_eta
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+NEW
+NAME : c1lep5jin2bin_RCMHiggs_jets_m
+DRAWSTACK : TRUE
+DRAWRES : RESIDUAL
+DOSCALE : NORM
+RESMIN : 0.2
+RESMAX : 1.8
+EXTRALABEL : #splitline{#splitline{#scale[1.2]{#bf{#it{ATLAS}} Internal}}{#sqrt{s}=13 TeV, 36.5 fb^{-1}}}{#geq5j,#geq2b,1l}
+OUTPUTFOLDER : c1lep5jin2bin
+
+
+END

@@ -51,14 +51,16 @@ class PlotManager{
 
   //----------------- SYST CALCULATION CLASS
   int PrintSystematics();
-  void QuadraticHistSum(const std::string& h_orig_name, const std::string& h_add_name);
-  void QuadraticHistSum(TH1D* h_orig, TH1D* h_add);
+  void QuadraticHistSum(const std::string& h_add_name, const std::string& h_orig_name_up, const std::string& h_orig_name_down="");
+  void QuadraticHistSum(TH1D* h_add, TH1D* h_orig_up, TH1D* h_orig_down=0);
 
   //const double* ParseRebinEdges( int nbin, const std::string& bindef);
   //----------------------- HISTMANAGER ---------------------------
   void ParseRebinEdges( int nbin, const std::string& bindef, double* xbins_new_ptr);
+
   TH1D* VariableRebinning(const std::string& histname, int nbin, const double* binedges);
   TH1D* VariableRebinning(const std::string& histname, TH1D* hist, int nbin, const double* binedges);
+  TH1D* MakeCumulative(const std::string& histname, TH1D* horig, const std::string& option);
 
 };
 

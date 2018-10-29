@@ -35,17 +35,25 @@ PlotManager::PlotManager(Plotter_Options* opt) : m_opt(opt){
     gSystem->mkdir(m_opt->OutputFolder().c_str(), "TRUE");
   }
   if(m_opt->OutputFormat().find("PNG") != std::string::npos){ 
-    gSystem->mkdir( Form("%sIFP_PNG",output_dir.c_str()), "TRUE");
+    gSystem->mkdir( Form("IFP_PNG/%s",output_dir.c_str()), "TRUE");
   }
   if(m_opt->OutputFormat().find("PDF") != std::string::npos){ 
-    gSystem->mkdir( Form("%sIFP_PDF",output_dir.c_str()), "TRUE");
+    gSystem->mkdir( Form("IFP_PDF/%s",output_dir.c_str()), "TRUE");
   }
   if(m_opt->OutputFormat().find("EPS") != std::string::npos){ 
-    gSystem->mkdir( Form("%sIFP_EPS",output_dir.c_str()), "TRUE");
+    gSystem->mkdir( Form("IFP_EPS/%s",output_dir.c_str()), "TRUE");
   }
   if(m_opt->OutputFormat().find("CPP") != std::string::npos){ 
-    gSystem->mkdir( Form("%sIFP_CPP",output_dir.c_str()), "TRUE");
+    gSystem->mkdir( Form("IFP_CPP/%s",output_dir.c_str()), "TRUE");
   }
+  if(m_opt->MakeMomentsTable()){ 
+    gSystem->mkdir(Form("IFP_TABLES_MOMENTS/%s" ,output_dir.c_str()), "TRUE");
+  }
+  if(m_opt->MakeBinsTable()){ 
+    gSystem->mkdir(Form("IFP_TABLES_BINS/%s" ,output_dir.c_str()), "TRUE");
+  }
+
+
   //-------------------------------------------------------------------------------------------------
 
 
@@ -133,6 +141,7 @@ void PlotManager::Execute(){
   if( m_opt->DoEff() ){ 
     makeEfficiencyHistograms(); 
     m_plotUtils->OverlayHists("EFF");
+    if( m_opt->WriteHistos() ){ WriteHistogramsToFile(); }
   }
   else if( m_opt->DoProjections() ){
     ProjectByBin(); 
@@ -141,15 +150,19 @@ void PlotManager::Execute(){
     if( m_opt->ProjOpt().find("RMS") != std::string::npos){ m_plotUtils->OverlayHists("RMS");}
     if( m_opt->ProjOpt().find("FRACRMS") != std::string::npos){ m_plotUtils->OverlayHists("FRACRMS");}
   }
-  else if( m_opt->WriteHistos() || m_opt->Do1DPlots() ){
+  else if( m_opt->Do1DPlots() || m_opt->MakeBinsTable() || m_opt->MakeMomentsTable() ){
+    //m_opt->WriteHistos() || 
     FillHistManager(); 
     if( m_opt->Do1DPlots() ){ m_plotUtils->OverlayHists("NONE"); }
+    if( m_opt->MakeBinsTable() ){ m_plotUtils->MakeTableFromHists(true); }
+    if( m_opt->MakeMomentsTable() ){ m_plotUtils->MakeTableFromHists(false); }
     if( m_opt->WriteHistos() ){ WriteHistogramsToFile(); }
   } 
   else if( m_opt->DoSystematics() ){
 
     ReadSystematicsFromFiles();
     PrintSystematics();
+    if( m_opt->WriteHistos() ){ WriteHistogramsToFile(); }
   }
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::Execute end"<<std::endl; 
@@ -176,7 +189,7 @@ int PlotManager::CopyVariableListFromFile(const std::string& dist_file){
   int sc = 0;
   VariableAttributes* varObj = (m_var_map.find("ALL") != m_var_map.end()) ? m_var_map["ALL"] : new VariableAttributes("ALL", "", "NONE");
 
-  TFile* fget = TFile::Open(dist_file.c_str(), "READ");
+  TFile* fget = TFile::Open( (m_opt->InputDir()+dist_file).c_str(), "READ");
   TIter next(fget->GetListOfKeys());
   TKey *key=NULL;
   std::string className = "";
@@ -210,12 +223,47 @@ void PlotManager::WriteHistogramsToFile(){
 
       ds_outfile->cd();
       for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
-	const std::string& var_name = varit->second->Name();
-	std::string key = var_name + "_" + ds_suffix;
-	TH1D* hsample = (TH1D*)(m_hstMngr->GetTH1D( key )->Clone(var_name.c_str()));
-	hsample->Write();
-	hsample->SetDirectory(0);
-	delete hsample;
+
+	std::string var_name = varit->second->Name();
+
+	if(m_opt->DoSystematics()){
+	  std::string var_nominal = var_name + ds_suffix;
+	  std::string var_up = var_name + ds_suffix + "_SYSUP";
+	  std::string var_down = var_name + ds_suffix + "_SYSDOWN";
+
+	  TH1D* hsample_up = (TH1D*)(m_hstMngr->GetTH1D( var_up )->Clone(var_up.c_str()));
+	  TH1D* hsample_down = (TH1D*)(m_hstMngr->GetTH1D( var_down )->Clone(var_down.c_str()));
+	  TH1D* hsample_nominal = (TH1D*)(m_hstMngr->GetTH1D( var_nominal )->Clone(var_nominal.c_str()));
+
+	  hsample_up->Divide(hsample_nominal);
+	  hsample_down->Divide(hsample_nominal);
+
+	  hsample_up->Write();
+	  hsample_up->SetDirectory(0);
+	  delete hsample_up;
+
+
+	  hsample_down->Write();
+	  hsample_down->SetDirectory(0);
+	  delete hsample_down;
+
+
+	  hsample_nominal->Write();
+	  hsample_nominal->SetDirectory(0);
+	  delete hsample_nominal;
+	}
+
+	else{
+	  if(m_opt->DoEff()){
+	    var_name = AnalysisUtils::ReplaceString(var_name,"@EFF@","") + "_EFF";
+	    var_name = AnalysisUtils::ReplaceString(var_name,"/","_");
+	  }
+	  std::cout << " var_name = " << var_name << std::endl;
+	  TH1D* hsample = (TH1D*)(m_hstMngr->GetTH1D( var_name + "_" + ds_suffix )->Clone(var_name.c_str()));
+	  hsample->Write();
+	  hsample->SetDirectory(0);
+	  delete hsample;
+	}
       }//Variable loop
       ds_outfile->Close();
       delete ds_outfile;
@@ -243,15 +291,19 @@ void PlotManager::FillHistManager(){
     int var_rebin = varit->second->Rebin();
     const std::string& var_rebinedges = varit->second->RebinEdges();
     double* var_rebinedges_ptr = 0;
-    if( (var_rebin > 0) && (var_rebinedges != "") ){ 
+    //if( (var_rebin > 0) && (var_rebinedges != "") ){ 
+    if( var_rebinedges != "" ){ 
+      var_rebin = AnalysisUtils::CountSubstring(var_rebinedges, ",");
       var_rebinedges_ptr = new double[var_rebin+1]();
       ParseRebinEdges(var_rebin, var_rebinedges, var_rebinedges_ptr);
     }
-    //---
+
+    //-------------
     bool   var_has_binshift = varit->second->HasBinShift();
     double var_binshift = varit->second->BinShift();
     //---
-    const std::string& var_doScale = varit->second->DoScale(); 
+    const std::string& var_doScale      = varit->second->DoScale(); 
+    const std::string& var_doCumulative = varit->second->DoCumulative(); 
     bool b_var_isShape = (var_doScale == "SHAPE");
     bool var_draw_stack = varit->second->DrawStack();
 
@@ -275,20 +327,57 @@ void PlotManager::FillHistManager(){
     }
 
     TH1D* hsum = NULL;
-    if(makeSum || (b_var_isShape && var_draw_stack)){
+    if(makeSum || (b_var_isShape && var_draw_stack) ){
       std::string keysum = makeSum ? var_name + "_" + m_attr_map["SUM"]->Suffix() : var_name + "_sum";
       hsum = m_hstMngr->GetTH1D(keysum);
-      keysum.clear();
-    }
 
-    if(hsum && var_do_width){
-      int nbin = hsum->GetNbinsX();
-      for(int nb = 0; nb <= nbin; nb++){
-	double bc = hsum->GetBinContent(nb)/hsum->GetXaxis()->GetBinWidth(nb);
-	double be = hsum->GetBinError(nb)/hsum->GetXaxis()->GetBinWidth(nb);
-	hsum->SetBinContent(nb, bc);
-	hsum->SetBinError(nb, be);
+      //SHIFT BIN EDGES IF NEEDED
+      //ALERTRISHA - Write HistTreater::ShiftBinEdges
+      if(var_has_binshift){
+	int nbin = hsum->GetNbinsX();
+	double oldmin = hsum->GetBinLowEdge(1);
+	double oldmax = hsum->GetBinLowEdge(nbin) + hsum->GetBinWidth(nbin);
+	TH1D* hsum_shifted = new TH1D(hsum->GetName(), hsum->GetTitle(), nbin, oldmin + var_binshift, oldmax+var_binshift);
+	for(int i = 1; i <= nbin; i++){
+	  hsum_shifted->SetBinContent( i, hsum->GetBinContent(i) );
+	  hsum_shifted->SetBinError( i, hsum->GetBinError(i) );
+	}
+	hsum_shifted->SetEntries( hsum->GetEntries() );
+	m_hstMngr->ReplaceTH1D(keysum, hsum_shifted);
+	hsum = hsum_shifted;
+      }//shift bin edges
+
+      //REBIN FIRST
+      if(var_rebin > 0){
+	if(var_rebinedges_ptr != NULL){ hsum = VariableRebinning(keysum, hsum, var_rebin, var_rebinedges_ptr); }
+	else{ hsum->Rebin(var_rebin); }
       }
+
+      double xmin =0.; double xmax = 0.;
+      if(varit->second->HasXMin()){ xmin = varit->second->XMin(); }
+      else{ xmin = hsum->GetXaxis()->GetBinLowEdge(1); }
+
+      if(varit->second->HasXMax()){ xmax = varit->second->XMax(); }
+      else{ xmax = hsum->GetXaxis()->GetBinUpEdge(hsum->GetNbinsX()); }
+      hsum -> GetXaxis() -> SetRangeUser(xmin, xmax);
+
+
+      //ALERTRISHA - Use new GetHistByBinWidth 
+      if(var_do_width){
+	int nbin = hsum->GetNbinsX();
+	int nentries = hsum->GetEntries();
+	for(int nb = 0; nb <= nbin; nb++){
+	  double bc = hsum->GetBinContent(nb)/hsum->GetXaxis()->GetBinWidth(nb);
+	  double be = hsum->GetBinError(nb)/hsum->GetXaxis()->GetBinWidth(nb);
+	  hsum->SetBinContent(nb, bc);
+	  hsum->SetBinError(nb, be);
+	}
+	hsum->SetEntries(nentries);
+      }
+
+
+      keysum.clear();
+
     }
 
     double intgl_sum = (hsum) ? hsum->Integral() : 1.;
@@ -305,40 +394,61 @@ void PlotManager::FillHistManager(){
 
       std::string key = var_name + "_" + ds_suffix;
       TH1D* hsample = m_hstMngr->GetTH1D( key ); 
-      //SHIFT BIN EDGES IF NEEDED
-      if(var_has_binshift){
-	int nbin = hsample->GetNbinsX();
-	double oldmin = hsample->GetBinLowEdge(1);
-	double oldmax = hsample->GetBinLowEdge(nbin) + hsample->GetBinWidth(nbin);
-	TH1D* hsample_shifted = new TH1D(hsample->GetName(), hsample->GetTitle(), nbin, oldmin + var_binshift, oldmax+var_binshift);
-	for(int i = 1; i <= nbin; i++){
-	  hsample_shifted->SetBinContent( i, hsample->GetBinContent(i) );
-	  hsample_shifted->SetBinError( i, hsample->GetBinError(i) );
+
+      //ALERTRISHA - GetHistByBinWidth
+      if(samit->first != "SUM"){ //bin shifting, rebinning, width normalisation for SUM has already been done 
+
+	//SHIFT BIN EDGES IF NEEDED
+	//ALERTRISHA - Write HistTreater::ShiftBinEdges
+	if(var_has_binshift){
+	  int nbin = hsample->GetNbinsX();
+	  double oldmin = hsample->GetBinLowEdge(1);
+	  double oldmax = hsample->GetBinLowEdge(nbin) + hsample->GetBinWidth(nbin);
+	  TH1D* hsample_shifted = new TH1D(hsample->GetName(), hsample->GetTitle(), nbin, oldmin + var_binshift, oldmax+var_binshift);
+	  hsample_shifted->GetXaxis()->SetTitle( hsample->GetXaxis()->GetTitle() ); 
+	  hsample_shifted->GetYaxis()->SetTitle( hsample->GetYaxis()->GetTitle() ); 
+
+	  for(int i = 1; i <= nbin; i++){
+	    hsample_shifted->SetBinContent( i, hsample->GetBinContent(i) );
+	    hsample_shifted->SetBinError( i, hsample->GetBinError(i) );
+	  }
+	  hsample_shifted->SetEntries( hsample->GetEntries() );
+	  m_hstMngr->ReplaceTH1D(key, hsample_shifted);
+	  hsample = hsample_shifted;
+	}//shift bin edges
+
+	//REBIN FIRST
+	if(var_rebin > 0){
+	  if(var_rebinedges_ptr != NULL){ hsample = VariableRebinning(key, hsample, var_rebin, var_rebinedges_ptr); }
+	  else{ hsample->Rebin(var_rebin); }
 	}
-	hsample_shifted->SetEntries( hsample->GetEntries() );
-	m_hstMngr->ReplaceTH1D(key, hsample_shifted);
-	hsample = hsample_shifted;
-      }//shift bin edges
+
+	double xmin =0.; double xmax = 0.;
+	if(varit->second->HasXMin()){ xmin = varit->second->XMin(); }
+	else{ xmin = hsample->GetXaxis()->GetBinLowEdge(1); }
+
+	if(varit->second->HasXMax()){ xmax = varit->second->XMax(); }
+	else{ xmax = hsample->GetXaxis()->GetBinUpEdge(hsample->GetNbinsX()); }
+	hsample -> GetXaxis() -> SetRangeUser(xmin, xmax);
 
 
-      //REBIN FIRST
-      if(var_rebin > 0){
-	if(var_rebinedges_ptr != NULL){ hsample = VariableRebinning(key, hsample, var_rebin, var_rebinedges_ptr); }
-	else{ hsample->Rebin(var_rebin); }
-      }
-
-      if(var_do_width && (samit->first != "SUM") ){ //bin width normalisation for SUM has already been done 
-	int nbin = hsample->GetNbinsX();
-	for(int nb = 0; nb <= nbin; nb++){
-	  double bc = hsample->GetBinContent(nb)/hsample->GetXaxis()->GetBinWidth(nb);
-	  double be = hsample->GetBinError(nb)/hsample->GetXaxis()->GetBinWidth(nb);
-	  hsample->SetBinContent(nb, bc);
-	  hsample->SetBinError(nb, be);
+	//SET BIN LABELS
+	//Normalise by bin width
+	if(var_do_width){
+	  int nbin = hsample->GetNbinsX();
+	  int nentries = hsample->GetEntries();
+	  for(int nb = 0; nb <= nbin; nb++){
+	    double bc = hsample->GetBinContent(nb)/hsample->GetXaxis()->GetBinWidth(nb);
+	    double be = hsample->GetBinError(nb)/hsample->GetXaxis()->GetBinWidth(nb);
+	    hsample->SetBinContent(nb, bc);
+	    hsample->SetBinError(nb, be);
+	  }
+	  hsample->SetEntries(nentries);
 	}
       }
-
       if( var_do_blinding && (h_blinder==NULL) ){ h_blinder = m_hstMngr->CloneTH1D(blinder_key, hsample, true); }
 
+      //ALERTRISHA : HistTreater::Blind
       if(var_do_blind_threshold  && (samp_blinding == "SIGNAL")){
 	if(var_do_blind_bin){
 	  for( int b = 1; b <= hsample->GetNbinsX(); b++ ){
@@ -375,8 +485,9 @@ void PlotManager::FillHistManager(){
       }//signal sample for blinding thresh
 
       //Scaling
-      if( b_var_isShape && !var_draw_stack && samit->second->NoShape() ){continue;} //-perhaps move upstream?
-      if(  b_var_isShape || (ds_drawScale == "SHAPE") || (!b_var_isShape && (ds_scaleToRef !="")) ){
+      bool doScaling = ( b_var_isShape || (ds_drawScale == "SHAPE") || (!b_var_isShape && (ds_scaleToRef !="")) );
+      if( b_var_isShape && !var_draw_stack && samit->second->NoShape() ){doScaling = false;} 
+      if(doScaling){
 	double intgl = hsample->Integral();
 	double sc = 1.; 
 	if(intgl > 0.){
@@ -394,6 +505,12 @@ void PlotManager::FillHistManager(){
 
 	hsample->Scale(sc);
       }//Sample properly scaled
+
+      //Convert to cumulative distribution if needed
+      if(!var_doCumulative.empty()){
+	hsample = MakeCumulative(key, hsample, var_doCumulative);
+	if(!hsample){ return; }
+     }
 
       key.clear();
     }//sample loop
@@ -438,7 +555,7 @@ void PlotManager::makeEfficiencyHistograms(){
     std::vector<std::string>::iterator v_it = (fn_it->second->FileList())->begin();
     int fnum_int = 0;
     for( ; v_it != (fn_it->second->FileList())->end(); ++v_it){
-      infile = TFile::Open( (*v_it).c_str(), "READ" );
+      infile = TFile::Open( (m_opt->InputDir()+*v_it).c_str(), "READ" );
       if(infile == NULL){ 
 	std::cout<<"ERROR: File "<<(*v_it)<<" can not be found"<<std::endl; 
 	continue;
@@ -462,6 +579,13 @@ void PlotManager::makeEfficiencyHistograms(){
 	if(m_opt->DenSuffix() != ""){ 
 	  var_name_den += "_" + m_opt->DenSuffix();
 	}
+	if(m_opt->NumPattern() != ""){
+	  var_name_num = AnalysisUtils::ReplaceString(var_name_num, "@EFF@", m_opt->NumPattern());
+	}
+	if(m_opt->DenPattern() != ""){
+	  var_name_den = AnalysisUtils::ReplaceString(var_name_den, "@EFF@", m_opt->DenPattern());
+	}
+
 
 	std::string key_seq_num = Form("%s_%i", var_name_num.c_str(), fnum);
 	m_hstMngr->ReadTH1D(var_name_num, infile, key_seq_num);
@@ -523,7 +647,15 @@ void PlotManager::makeEfficiencyHistograms(){
     if(m_opt->DenSuffix() != ""){ 
       var_name_den += "_" + m_opt->DenSuffix();
     }
-    var_name_eff = var_name + "_EFF";
+    if(m_opt->NumPattern() != ""){ 
+      var_name_num = AnalysisUtils::ReplaceString(var_name_num, "@EFF@", m_opt->NumPattern());
+    }
+    if(m_opt->DenPattern() != ""){ 
+      var_name_den = AnalysisUtils::ReplaceString(var_name_den, "@EFF@", m_opt->DenPattern());
+    }
+
+    var_name_eff = AnalysisUtils::ReplaceString(var_name,"@EFF@","") + "_EFF";
+    var_name_eff = AnalysisUtils::ReplaceString(var_name_eff,"/","_");
 
     for(SampleAttributesMap::iterator samit = m_attr_map.begin(); samit != m_attr_map.end(); ++samit){
       const std::string& ds_suffix = samit->second->Suffix();
@@ -534,7 +666,6 @@ void PlotManager::makeEfficiencyHistograms(){
       TH1D* hsample_den = m_hstMngr->GetTH1D( key_den ); 
       TH1D* hsample_eff = m_hstMngr->CloneTH1D(key_eff, key_num, true);
       hsample_eff->Divide(hsample_num, hsample_den, 1, 1, "b");
-
       key_num.clear(); key_den.clear(); key_eff.clear();
     }//sample loop
 
@@ -560,6 +691,8 @@ void PlotManager::makeEfficiencyHistograms(){
 
 //}
 
+
+//ALERTRISHA - Systematics class
 int PlotManager::PrintSystematics(){
   TH1D* h_nominal = NULL;
   TH1D* h_up = NULL;
@@ -581,21 +714,21 @@ int PlotManager::PrintSystematics(){
     
       SampleAttributes* sample = samp_pair.second;
       var_nominal = var_name + sample->Suffix();
-      var_up = var_name + sample->Suffix() + "_" + "_SYSUP";
-      var_down = var_name + sample->Suffix() + "_" + "_SYSDOWN";
+      var_up = var_name + sample->Suffix() + "_SYSUP";
+      var_down = var_name + sample->Suffix() + "_SYSDOWN";
 
       h_nominal = m_hstMngr->GetTH1D(var_nominal);
       h_up      = m_hstMngr->GetTH1D(var_up);
       h_down    = m_hstMngr->GetTH1D(var_down);
-
+      
       var_yield_nominal_stream << sample->Name();
       var_yield_stream << sample->Name();
       var_syst_stream << sample->Name();
-      //for(int b = 5; b <= h_nominal->GetNbinsX(); b++){
-      for(int b = 2; b <= 4; b++){
-	double bc_nominal = h_nominal->GetBinContent(b)*3209.;
-	double bc_up = h_up->GetBinContent(b)*3209.;
-	double bc_down = h_down->GetBinContent(b)*3209.;
+      for(int b = 1; b <= h_nominal->GetNbinsX(); b++){
+	//for(int b = 2; b <= 4; b++){
+	double bc_nominal = h_nominal->GetBinContent(b);
+	double bc_up = h_up->GetBinContent(b);
+	double bc_down = h_down->GetBinContent(b);
 
  	double frac_up = bc_up/bc_nominal;
  	double frac_down = bc_down/bc_nominal;
@@ -645,7 +778,7 @@ int PlotManager::ReadAllSystematics(FileKeyAttributes* fk_att){
 
   const std::string& nom_fname = fk_att->FileList()->at(0);
   const SampleAttributes* samp = fk_att->SingleSample();
-  TFile* infile_nom  = TFile::Open(nom_fname.c_str(), "READ");
+  TFile* infile_nom  = TFile::Open((m_opt->InputDir()+nom_fname).c_str(), "READ");
 
   //input names 
   std::string var_in_syst_up="";
@@ -662,46 +795,51 @@ int PlotManager::ReadAllSystematics(FileKeyAttributes* fk_att){
     VariableAttributes* variable = var_pair.second;
     const std::string& var_name = variable->Name();
     var_nominal = var_name + samp->Suffix();
-    TH1D* h_nominal = m_hstMngr->ReadTH1D(var_name, infile_nom, var_nominal);
+    TH1D* h_nominal = m_hstMngr->ReadTH1D(m_opt->NominalDir()+var_name, infile_nom, var_nominal);
 
-    var_up = var_name + samp->Suffix() + "_" + "_SYSUP";
+    var_up = var_name + samp->Suffix() + "_SYSUP";
     m_hstMngr->CloneTH1D(var_up, var_nominal, true);
     //TH1D* h_up = m_hstMngr->CloneTH1D(var_up, var_nominal, true);
 
-    var_down = var_name + samp->Suffix() + "_" + "_SYSDOWN";
+    var_down = var_name + samp->Suffix() + "_SYSDOWN";
     m_hstMngr->CloneTH1D(var_down, var_nominal, true);
     //TH1D* h_down = m_hstMngr->CloneTH1D(var_down, var_nominal, true);
 
+    //
+    // 1. All systematics that are in the same file as the nominal
+    //
     for(std::pair<std::string, SystematicsAttributes*> syst_pair : m_sys_map){
 
       SystematicsAttributes* syst = syst_pair.second;
       if(syst->NewFile()) continue;
 
       if(syst->OneSided()){
-	var_in_syst_up = var_name + "_" + syst->Name();
+	var_in_syst_up = (syst->NewDir()) ? syst->Name() + "/" + var_name  : var_name + "_" + syst->Name();
 	var_syst_up = var_name + samp->Suffix() + syst->Name();
 	m_hstMngr->ReadTH1D(var_in_syst_up, infile_nom, var_syst_up );
+
 	m_hstMngr->GetTH1D(var_syst_up)->Add(h_nominal, -1.);
-	QuadraticHistSum(var_up, var_syst_up);
+ 	QuadraticHistSum(var_syst_up, var_up, var_down);
 
 	if(syst->Symmetrisation() != ""){
 	  var_syst_down = var_name + samp->Suffix() + syst->Name() + "_OPP";
 	  m_hstMngr->CloneTH1D(var_syst_down, var_syst_up);
-	  QuadraticHistSum(var_down, var_syst_down);
+	  m_hstMngr->GetTH1D(var_syst_down)->Scale(-1.);
+	  QuadraticHistSum(var_syst_down, var_up, var_down);
 	}
       }
       else{
-	var_in_syst_up = var_name + "_" + syst->NameUp();
+	var_in_syst_up = (syst->NewDir()) ? syst->NameUp() + "/" + var_name : var_name + "_" + syst->NameUp();
 	var_syst_up = var_name + samp->Suffix() + syst->NameUp();
 	m_hstMngr->ReadTH1D(var_in_syst_up, infile_nom, var_syst_up );
 	m_hstMngr->GetTH1D(var_syst_up)->Add(h_nominal, -1.);
-	QuadraticHistSum(var_up, var_syst_up);
+	QuadraticHistSum(var_syst_up, var_up);
 
-	var_in_syst_down = var_name + "_" + syst->NameDown();
+	var_in_syst_down = (syst->NewDir()) ? syst->NameDown() + "/" + var_name : var_name + "_" + syst->NameDown();
 	var_syst_down = var_name + samp->Suffix() + syst->NameDown();
 	m_hstMngr->ReadTH1D(var_in_syst_down, infile_nom, var_syst_down );
 	m_hstMngr->GetTH1D(var_syst_down)->Add(h_nominal, -1.);
-	QuadraticHistSum(var_down, var_syst_down);
+	QuadraticHistSum(var_syst_down, var_down);
       }
 
       //Clear the histograms
@@ -738,6 +876,7 @@ int PlotManager::ReadAllSystematics(FileKeyAttributes* fk_att){
     SystematicsAttributes* syst = syst_pair.second;
     if(!syst->NewFile()) continue;
 
+    std::cout << " syst : " << syst -> Name() << " Onesided : " << syst -> OneSided() << " Symm : " << syst -> Symmetrisation() << std::endl;
     infile_syst_up = NULL;
     infile_syst_down = NULL;
 
@@ -752,8 +891,9 @@ int PlotManager::ReadAllSystematics(FileKeyAttributes* fk_att){
 	continue;
       }
       
-      infile_syst_up = TFile::Open( fk_att->SystFileList()->at(syst->Name()).at(0).c_str(), "READ" );
-
+      std::string sin_syst_up   = m_opt->InputDir() + fk_att->SystFileList()->at(syst->Name()).at(0);
+      infile_syst_up = TFile::Open( sin_syst_up.c_str(), "READ" );
+      sin_syst_up.clear();
     }// One-sided
     else{
 
@@ -775,9 +915,12 @@ int PlotManager::ReadAllSystematics(FileKeyAttributes* fk_att){
 	continue;
       }
       
-      infile_syst_up = TFile::Open( fk_att->SystFileList()->at(syst->NameUp()).at(0).c_str(), "READ" );
-      infile_syst_down = TFile::Open( fk_att->SystFileList()->at(syst->NameDown()).at(0).c_str(), "READ" );
-
+      std::string sin_syst_up   = m_opt->InputDir() + fk_att->SystFileList()->at(syst->NameUp()).at(0);
+      std::string sin_syst_down = m_opt->InputDir() + fk_att->SystFileList()->at(syst->NameDown()).at(0);
+      infile_syst_up = TFile::Open( sin_syst_up.c_str(), "READ" );
+      infile_syst_down = TFile::Open( sin_syst_down.c_str(), "READ" );
+      sin_syst_up.clear();
+      sin_syst_down.clear();
     }//Not one-sided
 
 
@@ -787,35 +930,39 @@ int PlotManager::ReadAllSystematics(FileKeyAttributes* fk_att){
       var_nominal = var_name + samp->Suffix();
       TH1D* h_nom = m_hstMngr->GetTH1D(var_nominal);
 
-      var_up = var_name + samp->Suffix() + "_" + "_SYSUP";
+      var_up = var_name + samp->Suffix() + "_SYSUP";
       m_hstMngr->GetTH1D(var_up);
       //TH1D* h_up = m_hstMngr->GetTH1D(var_up);
       
-      var_down = var_name + samp->Suffix() + "_" + "_SYSDOWN";
+      var_down = var_name + samp->Suffix() + "_SYSDOWN";
       m_hstMngr->GetTH1D(var_down);
       //TH1D* h_down = m_hstMngr->GetTH1D(var_down);
       
       if(syst->OneSided()){
 	var_syst_up = var_name + samp->Suffix() + syst->Name();
-      }
-      else{var_syst_up = var_name + samp->Suffix() + syst->NameUp();}
-      m_hstMngr->ReadTH1D(var_name, infile_syst_up, var_syst_up );
-      m_hstMngr->GetTH1D(var_syst_up)->Add(h_nom, -1.);
-      QuadraticHistSum(var_up, var_syst_up);
+	m_hstMngr->ReadTH1D(m_opt->NominalDir()+var_name, infile_syst_up, var_syst_up );
+	m_hstMngr->GetTH1D(var_syst_up)->Add(h_nom, -1.);
+	QuadraticHistSum(var_syst_up, var_up, var_down);
 
-      if(!syst->OneSided()){
-	var_syst_down = var_name + samp->Suffix() + syst->NameDown();
-	m_hstMngr->ReadTH1D(var_name, infile_syst_down, var_syst_down );
-	m_hstMngr->GetTH1D(var_syst_down)->Add(h_nom, -1.);
-	QuadraticHistSum(var_down, var_syst_down);
-      }//Two-sided
-      else{
 	if(syst->Symmetrisation() != ""){
 	  var_syst_down = var_name + samp->Suffix() + syst->Name() + "_OPP";
 	  m_hstMngr->CloneTH1D(var_syst_down, var_syst_up);
-	  QuadraticHistSum(var_down, var_syst_down);
+	  m_hstMngr->GetTH1D(var_syst_down)->Scale(-1.);
+	  QuadraticHistSum(var_syst_down, var_down);
 	}
-      }//One-sided
+
+      }
+      else{
+	var_syst_up = var_name + samp->Suffix() + syst->NameUp();
+	m_hstMngr->ReadTH1D(m_opt->NominalDir()+var_name, infile_syst_up, var_syst_up );
+	m_hstMngr->GetTH1D(var_syst_up)->Add(h_nom, -1.);
+	QuadraticHistSum(var_syst_up, var_up);
+
+	var_syst_down = var_name + samp->Suffix() + syst->NameDown();
+	m_hstMngr->ReadTH1D(m_opt->NominalDir()+var_name, infile_syst_down, var_syst_down );
+	m_hstMngr->GetTH1D(var_syst_down)->Add(h_nom, -1.);
+	QuadraticHistSum(var_syst_down, var_down);
+      }
 
 
       //Clear the histograms
@@ -847,35 +994,52 @@ int PlotManager::ReadAllSystematics(FileKeyAttributes* fk_att){
 
 }
 
-void PlotManager::QuadraticHistSum(const std::string& h_orig_name, const std::string& h_add_name){
+//ALERTRISHA  - Move to HistTreater
+void PlotManager::QuadraticHistSum(const std::string& h_add_name, const std::string& h_orig_name_up, const std::string& h_orig_name_down){
 
-  TH1D* h_orig = m_hstMngr->GetTH1D(h_orig_name);
-  TH1D* h_add = m_hstMngr->GetTH1D(h_add_name);
-  if( ( h_orig == NULL) || (h_add == NULL) ){ 
-    std::cout << "ERROR: Histogram " << h_orig << " or " << h_add 
+  TH1D* h_add       = m_hstMngr->GetTH1D(h_add_name);
+  TH1D* h_orig_up   = m_hstMngr->GetTH1D(h_orig_name_up);
+  TH1D* h_orig_down = (h_orig_name_down.empty()) ? NULL : m_hstMngr->GetTH1D(h_orig_name_down);
+  if( ( h_orig_up == NULL) || (h_add == NULL) || (!h_orig_name_down.empty() && h_orig_down==NULL) ){ 
+    std::cout << "ERROR: Histogram " << h_orig_name_up << " or " << h_orig_name_down << " or " << h_add_name
 	      << " for quadratic sum not found. " << std::endl;
     return;
   }
 
-  QuadraticHistSum(h_orig, h_add);
+  QuadraticHistSum(h_add, h_orig_up, h_orig_down);
 
   return;
 }
 
-void PlotManager::QuadraticHistSum(TH1D* h_orig, TH1D* h_add){
+//ALERTRISHA  - Move to HistTreater
+void PlotManager::QuadraticHistSum(TH1D* h_add, TH1D* h_orig_up, TH1D* h_orig_down){
 
-  if(h_orig->GetNbinsX() != h_add->GetNbinsX()){
-    std::cout << "ERROR : Different bins for h_orig and h_add" << std::endl;
+  if(h_orig_up->GetNbinsX() != h_add->GetNbinsX()){
+    std::cout << "ERROR : Different bins for h_orig_up and h_add" << std::endl;
     return;
   }
 
-  for( int b = 1; b <= h_orig->GetNbinsX(); b++ ){
+  if( h_orig_down && (h_orig_down->GetNbinsX() != h_add->GetNbinsX()) ){
+    std::cout << "ERROR : Different bins for h_orig_down and h_add" << std::endl;
+    return;
+  }
 
-    double bc_orig = h_orig->GetBinContent(b);
+
+  for( int b = 1; b <= h_orig_up->GetNbinsX(); b++ ){
+
     double bc_add = h_add->GetBinContent(b);
 
-    h_orig -> SetBinContent( b, sqrt(bc_orig*bc_orig + bc_add*bc_add) ); 
-    h_orig -> SetBinError( b, 0. );
+    if(!h_orig_down || bc_add>0){
+      double bc_orig = h_orig_up->GetBinContent(b);
+      h_orig_up -> SetBinContent( b, sqrt(bc_orig*bc_orig + bc_add*bc_add) ); 
+      h_orig_up -> SetBinError( b, 0. );
+    }
+    else{
+      double bc_orig = h_orig_down->GetBinContent(b);
+      h_orig_down -> SetBinContent( b, sqrt(bc_orig*bc_orig + bc_add*bc_add) ); 
+      h_orig_down -> SetBinError( b, 0. );
+    }
+
   }
 
   return;
@@ -903,7 +1067,7 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 
     //============= NOMINAL FILES ========================================= 
     for( ; v_it != (fn_it->second->FileList())->end(); ++v_it){
-      infile = TFile::Open( (*v_it).c_str(), "READ" );
+      infile = TFile::Open( (m_opt->InputDir() + *v_it).c_str(), "READ" );
       if(infile == NULL){ 
 	std::cout<<"ERROR: File "<<(*v_it)<<" can not be found"<<std::endl; 
 	continue;
@@ -937,9 +1101,11 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	TH2D* h2key = NULL;
 	
 	std::string key_seq = Form("%s_%i", var_name.c_str(), fnum);
+
 	if(!b_multiname){
-	  if(dim == 1){ h1key_seq = m_hstMngr->ReadTH1D(var_name, infile, key_seq); }
-	  else if(dim == 2){ h2key_seq = m_hstMngr->ReadTH2D(var_name, infile, key_seq); }
+
+	  if(dim == 1){ h1key_seq = m_hstMngr->ReadTH1D(AnalysisUtils::ReplaceString(var_name,"*",""), infile, key_seq); }
+	  else if(dim == 2){ h2key_seq = m_hstMngr->ReadTH2D(AnalysisUtils::ReplaceString(var_name,"*",""), infile, key_seq); }
 	  if(var_makesum){
 	    std::string keysum = makeSum ? var_name + "_" + m_attr_map["SUM"]->Suffix() : var_name + "_sum";
 	    if(dim == 1){
@@ -972,7 +1138,12 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 
 	    if(dim == 1){
 
-	      if(b_multiname){ h1key_seq_samp = m_hstMngr->ReadTH1D( samp->InPrefix() + var_name + samp->InSuffix(), infile, key_seq_samp); }
+	      if(b_multiname){ 
+		h1key_seq_samp = m_hstMngr->ReadTH1D( samp->InPrefix() 
+						      + AnalysisUtils::ReplaceString(var_name,"*",samp->InPattern()) 
+						      + samp->InSuffix()
+						      , infile, key_seq_samp); 
+	      }
 	      else{ h1key_seq_samp = m_hstMngr->CloneTH1D(key_seq_samp, h1key_seq); }
 
 	      h1key = m_hstMngr->GetTH1D(key);
@@ -986,7 +1157,12 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 
 	    }
 	    else if(dim == 2){
-	      if(b_multiname){ h2key_seq_samp = m_hstMngr->ReadTH2D( samp->InPrefix() + var_name + samp->InSuffix(), infile, key_seq_samp); }
+	      if(b_multiname){ 
+		h2key_seq_samp = m_hstMngr->ReadTH2D( samp->InPrefix() 
+						      + AnalysisUtils::ReplaceString(var_name,"*",samp->InPattern()) 
+						      + samp->InSuffix()
+						      , infile, key_seq_samp); 
+	      }
 	      else{ h2key_seq_samp = m_hstMngr->CloneTH2D(key_seq_samp, h2key_seq); }
 
 	      h2key = m_hstMngr->GetTH2D(key);
@@ -1009,11 +1185,11 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 
 	}//if multi
 	else{
-
 	  const SampleAttributes* samp = (fn_it->second)->SingleSample();
 	  bool b_samp_scale = (samp->DrawScale() != "NONE");
 	  double sc = (fn_it->second)->SingleSampleScales()->at(fnum_int);
 	  std::string key = var_name + "_" + samp->Suffix();
+
 	  if(dim == 1){
 	    h1key = m_hstMngr->GetTH1D(key);
 	    if(h1key == NULL){h1key = m_hstMngr->CloneTH1D(key, h1key_seq, true); }
@@ -1180,8 +1356,9 @@ void PlotManager::ProjectByBin(){
   return;
 }
 
-void PlotManager::ParseRebinEdges(const int nbin, const std::string& bindef, double* xbins_new_ptr){
 
+void PlotManager::ParseRebinEdges(const int nbin, const std::string& bindef, double* xbins_new_ptr){
+  
   //Parse bindef
   std::string parseString = bindef;
   std::string sparse = ""; int nedge = 0;
@@ -1193,8 +1370,9 @@ void PlotManager::ParseRebinEdges(const int nbin, const std::string& bindef, dou
     xbins_new_ptr[nedge] = xedge;
     nedge++;
   } while(pos != std::string::npos); //all edges
-  
+
   if(nedge != nbin+1){
+    std::cerr<<" PlotManager::ParseRebinEdges-->ERROR: nedge = "<<nedge<<" nbin+1 = "<<nbin+1<<std::endl;
     return;
   }
 
@@ -1212,6 +1390,7 @@ TH1D* PlotManager::VariableRebinning(const std::string& histname, int nbin, cons
 TH1D* PlotManager::VariableRebinning(const std::string& histname, TH1D* horig, int nbin, const double* binedges){
 
   std::string histname_temp = histname + "_temp_rebin";
+  histname_temp = AnalysisUtils::ReplaceString(histname_temp, "/", "__");
   horig->Rebin(nbin, histname_temp.c_str(), binedges);
 
   TH1D* hnew = (TH1D*)(gDirectory->Get(histname_temp.c_str()));
@@ -1219,7 +1398,23 @@ TH1D* PlotManager::VariableRebinning(const std::string& histname, TH1D* horig, i
   hnew->SetName(histname.c_str());
 
   histname_temp.clear();
+
   return hnew;
 
 }
 
+TH1D* PlotManager::MakeCumulative(const std::string& histname, TH1D* horig, const std::string& option){
+
+  bool forward = true;
+  if(option == "BACKWARD")    { forward = false; }
+  else if(option != "FORWARD"){ 
+    std::cerr<<"ERROR in PlotManager::MakeCumulative --> Unknown option "<<option<<std::endl;
+    return NULL;
+  }
+  std::string histname_temp = histname + "_temp_cumulative";
+  TH1D* hnew = (TH1D*)horig->GetCumulative( forward );
+  m_hstMngr->ReplaceTH1D(histname, hnew);
+  hnew->SetName(histname.c_str());
+
+  return hnew;
+}
