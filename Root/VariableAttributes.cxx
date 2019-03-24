@@ -67,6 +67,7 @@ VariableAttributes::VariableAttributes(const std::string& name, const std::strin
   m_is_logRes(isLogRes),
   m_rebin(rebin),
   m_rebinedges(rebinedges),
+  m_has_binshift(false),
   m_binshift(binshift),
   m_bin_labels_str(bin_labels_str),
   m_do_width(do_width),

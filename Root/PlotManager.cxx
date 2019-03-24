@@ -314,15 +314,15 @@ void PlotManager::FillHistManager(){
   
     bool var_do_width = varit->second->DoWidth();
 
-    //Get the blinded histogram, clone it to make a blinder
-    TH1D* h_blind_sample = NULL; TH1D* h_blinder = NULL;
+    //Get the key names for the blind sample and the blinder
+    TH1D* h_blinder = NULL;
+    std::string blind_sample_key = "";
     std::string blinder_key = ""; 
+
     if(var_do_blinding){
       blinder_key = makeBlinder ? var_name + "_" + m_attr_map["BLINDER"]->Suffix() : var_name + "_blinder";
       if(g_blind_sample != ""){
-	std::string blind_hist_key = var_name + "_" + m_attr_map[g_blind_sample]->Suffix();
-
-	h_blind_sample = m_hstMngr->GetTH1D( blind_hist_key ); 
+	blind_sample_key = var_name + "_" + m_attr_map[g_blind_sample]->Suffix();
       }
     }
 
@@ -384,6 +384,7 @@ void PlotManager::FillHistManager(){
 
     if(var_do_blind_threshold && (hsum==NULL)){std::cout<<" Cannot find SUM histogram required to calculate blinding threshold. Program will crash"<<std::endl;}
     for(SampleAttributesMap::iterator samit = m_attr_map.begin(); samit != m_attr_map.end(); ++samit){
+
       if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" Sample : "<<samit->first<<std::endl; 
       if(samit->first == "BLINDER"){continue;}
 
@@ -397,7 +398,6 @@ void PlotManager::FillHistManager(){
 
       //ALERTRISHA - GetHistByBinWidth
       if(samit->first != "SUM"){ //bin shifting, rebinning, width normalisation for SUM has already been done 
-
 	//SHIFT BIN EDGES IF NEEDED
 	//ALERTRISHA - Write HistTreater::ShiftBinEdges
 	if(var_has_binshift){
@@ -431,7 +431,6 @@ void PlotManager::FillHistManager(){
 	else{ xmax = hsample->GetXaxis()->GetBinUpEdge(hsample->GetNbinsX()); }
 	hsample -> GetXaxis() -> SetRangeUser(xmin, xmax);
 
-
 	//SET BIN LABELS
 	//Normalise by bin width
 	if(var_do_width){
@@ -446,6 +445,7 @@ void PlotManager::FillHistManager(){
 	  hsample->SetEntries(nentries);
 	}
       }
+
       if( var_do_blinding && (h_blinder==NULL) ){ h_blinder = m_hstMngr->CloneTH1D(blinder_key, hsample, true); }
 
       //ALERTRISHA : HistTreater::Blind
@@ -496,7 +496,8 @@ void PlotManager::FillHistManager(){
 	if(ds_scaleToRef != ""){
 	  SampleAttributesMap::iterator refit = m_attr_map.find(ds_scaleToRef);
 	  if( refit == m_attr_map.end() ){
-	    std::cerr<<"ERROR : Cannot find reference sample "<<ds_scaleToRef<<" to which sample"<<samit->first<<" is to be scaled. Please check"<<std::endl;
+	    std::cerr<<"ERROR : Cannot find reference sample "
+		     <<ds_scaleToRef<<" to which sample"<<samit->first<<" is to be scaled. Please check"<<std::endl;
 	    continue;
 	  }
 	  double intgl_ref = m_hstMngr->GetTH1D( var_name + "_" + refit->second->Suffix() )->Integral();
@@ -513,12 +514,17 @@ void PlotManager::FillHistManager(){
      }
 
       key.clear();
+
     }//sample loop
 
     //Blinding
     if( g_blind_sample != "" ){
+
+      TH1D* h_blind_sample = m_hstMngr->GetTH1D( blind_sample_key );
+
       if(var_do_blind_bin){
 	for( int b = 1; b <= h_blinder->GetNbinsX(); b++ ){
+	  
 	  if(h_blinder->GetBinContent(b) < 1.){continue;}
 	  else{ 
 	    h_blind_sample->SetBinContent(b, 0.); 
@@ -534,7 +540,6 @@ void PlotManager::FillHistManager(){
     if(!makeBlinder && (blinder_key != "")){m_hstMngr->ClearTH1(blinder_key);}
     blinder_key.clear();
     delete var_rebinedges_ptr;
-
   }//variable loop
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotManager::FillHistManager end"<<std::endl; 
