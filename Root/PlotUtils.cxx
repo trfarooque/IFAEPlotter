@@ -544,7 +544,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
       }//if leglabel was not provided, then clearly the sample is not meant to be added to the legend
 
-      if(at_it->first != "BLINDER"){
+      if( (at_it->first != "BLINDER") && (ds_drawopt != "DUMMY") ){
 	if(var_draw_stack && ds_draw_stack){ 
 	  v_hstack_a.push_back(hist_a);
 	}
