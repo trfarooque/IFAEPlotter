@@ -544,13 +544,15 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
       }//if leglabel was not provided, then clearly the sample is not meant to be added to the legend
 
-      if( (at_it->first != "BLINDER") && (ds_drawopt != "DUMMY") ){
-	if(var_draw_stack && ds_draw_stack){ 
-	  v_hstack_a.push_back(hist_a);
+      if(at_it->first != "BLINDER"){
+	if( ds_drawopt != "DUMMY" ){
+	  if(var_draw_stack && ds_draw_stack){ 
+	    v_hstack_a.push_back(hist_a);
+	  }
+	  else{ 
+	    hs_nostack_a->Add(hist_a, ds_drawopt.c_str()); 
+	  }//if this sample is not be be stacked
 	}
-	else{ 
-	  hs_nostack_a->Add(hist_a, ds_drawopt.c_str()); 
-	}//if this sample is not be be stacked
 
 	if(drawRes && ( (ds_res_opt == 0) || ((ds_res_opt == 1) && (var_draw_res_err == "REFBAND")) ) ){
 	  std::string resname_a = var_name + "_" + ds_suffix + "_res_" + s_base_suffix;
