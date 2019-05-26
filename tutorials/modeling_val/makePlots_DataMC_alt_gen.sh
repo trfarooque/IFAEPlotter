@@ -21,7 +21,7 @@ maxxleg=0.85
 declare -a OutFList=("DataMC_alt_gen_test")
 declare -a ConfList=("${PWD}/Shape_DataMC_sample_config_alt_gen.txt")
 
-variableConfig="${PWD}/Variable_config_hbsm_2017-04-19_datamc_alt_gen.txt"
+variableConfig="${PWD}/Variable_config_datamc_fcnc.txt"
 
 arraylength=${#OutFList[@]}
 
