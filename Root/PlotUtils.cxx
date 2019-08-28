@@ -168,9 +168,9 @@ void PlotUtils::OverlayHists(const std::string& projopt){
   double var_ymax = 0.;
   double var_ymax_legrange = 0.;
 
-  //double var_legend_xmin = 0.;
+  double var_legend_xmin = 0.;
   double var_legend_xmax = 0.;
-  //double var_legend_ymin = 0.;
+  double var_legend_ymin = 0.;
   double var_legend_ymax = 0.;
 
   double var_xtitle_size = 0.;
@@ -313,9 +313,9 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     var_ymax = 0.; 
     var_ymax_legrange = 0.; 
 
-    //var_legend_xmin = 0.;
+    var_legend_xmin = 0.;
     var_legend_xmax = 0.;
-    //var_legend_ymin = 0.;
+    var_legend_ymin = 0.;
     var_legend_ymax = 0.;
 
     var_xtitle_size = 0.;

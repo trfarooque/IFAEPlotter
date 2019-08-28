@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <TFile.h>
-#include <TH1.h>
-#include <TChain.h>
+#include "TFile.h"
+#include "TH1.h"
+#include "TChain.h"
 #include "IFAETopFramework/AnalysisUtils.h"
 #include "IFAETopFramework/SampleInfo.h"
 
@@ -606,7 +606,7 @@ double GetXSec(const std::string& dsID){
 
   std::ifstream xsec_file(m_xsec_map_loc.c_str());
   if(!xsec_file){
-    std::cout<<"Error : cross-section file "<<xsec_file<<" not found. Exiting."<<std::endl;
+    std::cout<<"Error : cross-section file "<< m_xsec_map_loc.c_str() <<" not found. Exiting."<<std::endl;
     return -1;
   }
 
@@ -669,7 +669,7 @@ std::string GetSampleIDFromTDP(const std::string& dsID){
   bool foundDSID = false; 
   std::ifstream sampleMap(m_MC15_TDP.c_str());
   if(!sampleMap){
-    std::cout<<"Error : TDP MC15.py file : "<<sampleMap<<" not found. Exiting."<<std::endl;
+    std::cout<<"Error : TDP MC15.py file : "<< m_MC15_TDP.c_str() <<" not found. Exiting."<<std::endl;
     return "";
   }
 
@@ -701,7 +701,7 @@ std::string GetSampleID(const std::string& dsID){
 
   std::ifstream sampleMap(m_ds_map_loc.c_str());
   if(!sampleMap){
-    std::cout<<"Error : sample mapping file "<<sampleMap<<" not found. Exiting."<<std::endl;
+    std::cout<<"Error : sample mapping file "<< m_ds_map_loc.c_str() <<" not found. Exiting."<<std::endl;
     return "";
   }
 
