@@ -258,7 +258,6 @@ void PlotManager::WriteHistogramsToFile(){
 	    var_name = AnalysisUtils::ReplaceString(var_name,"@EFF@","") + "_EFF";
 	    var_name = AnalysisUtils::ReplaceString(var_name,"/","_");
 	  }
-	  std::cout << " var_name = " << var_name << std::endl;
 	  TH1D* hsample = (TH1D*)(m_hstMngr->GetTH1D( var_name + "_" + ds_suffix )->Clone(var_name.c_str()));
 	  hsample->Write();
 	  hsample->SetDirectory(0);
@@ -287,6 +286,7 @@ void PlotManager::FillHistManager(){
 
   for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
     const std::string& var_name = varit->second->Name();
+    const std::string& var_key = AnalysisUtils::ReplaceString(varit->second->Name(),"*","" );
     //--
     int var_rebin = varit->second->Rebin();
     const std::string& var_rebinedges = varit->second->RebinEdges();
@@ -320,15 +320,15 @@ void PlotManager::FillHistManager(){
     std::string blinder_key = ""; 
 
     if(var_do_blinding){
-      blinder_key = makeBlinder ? var_name + "_" + m_attr_map["BLINDER"]->Suffix() : var_name + "_blinder";
+      blinder_key = makeBlinder ? var_key + "_" + m_attr_map["BLINDER"]->Suffix() : var_key + "_blinder";
       if(g_blind_sample != ""){
-	blind_sample_key = var_name + "_" + m_attr_map[g_blind_sample]->Suffix();
+	blind_sample_key = var_key + "_" + m_attr_map[g_blind_sample]->Suffix();
       }
     }
 
     TH1D* hsum = NULL;
     if(makeSum || (b_var_isShape && var_draw_stack) ){
-      std::string keysum = makeSum ? var_name + "_" + m_attr_map["SUM"]->Suffix() : var_name + "_sum";
+      std::string keysum = makeSum ? var_key + "_" + m_attr_map["SUM"]->Suffix() : var_key + "_sum";
       hsum = m_hstMngr->GetTH1D(keysum);
 
       //SHIFT BIN EDGES IF NEEDED
@@ -393,9 +393,8 @@ void PlotManager::FillHistManager(){
       const std::string& ds_drawScale = samit->second->DrawScale(); 
       const std::string& ds_scaleToRef = samit->second->ScaleToRef();
 
-      std::string key = var_name + "_" + ds_suffix;
+      std::string key = var_key + "_" + ds_suffix;
       TH1D* hsample = m_hstMngr->GetTH1D( key ); 
-
       //ALERTRISHA - GetHistByBinWidth
       if(samit->first != "SUM"){ //bin shifting, rebinning, width normalisation for SUM has already been done 
 	//SHIFT BIN EDGES IF NEEDED
@@ -485,33 +484,44 @@ void PlotManager::FillHistManager(){
       }//signal sample for blinding thresh
 
       //Scaling
-      bool doScaling = ( b_var_isShape || (ds_drawScale == "SHAPE") || (!b_var_isShape && (ds_scaleToRef !="")) );
+      //bool doScaling = ( b_var_isShape || (ds_drawScale == "SHAPE") || (!b_var_isShape && (ds_scaleToRef !="")) );
+      bool doScaling = ( b_var_isShape || (ds_drawScale == "SHAPE") || (ds_scaleToRef !="") );
       if( b_var_isShape && !var_draw_stack && samit->second->NoShape() ){doScaling = false;} 
+
       if(doScaling){
+
 	double intgl = hsample->Integral();
 	double sc = 1.; 
-	if(intgl > 0.){
-	  sc = ( b_var_isShape && var_draw_stack && (samit->first != "SUM") && (ds_drawScale == "NORM") ) ? 1./intgl_sum : 1./intgl;
+	if( b_var_isShape && var_draw_stack && (samit->first != "SUM") && (samit->second->DrawStack()) ){
+	  //Scale to the SUM
+	  sc = intgl_sum > 0. ? 1./intgl_sum : 1.;
 	}
-	if(ds_scaleToRef != ""){
+	else{
+	  sc = (intgl > 0.) ? 1./intgl : 1.;
+	}
+
+	if(!b_var_isShape && ds_scaleToRef != ""){
+	  //Scale to the requested sample
 	  SampleAttributesMap::iterator refit = m_attr_map.find(ds_scaleToRef);
 	  if( refit == m_attr_map.end() ){
 	    std::cerr<<"ERROR : Cannot find reference sample "
 		     <<ds_scaleToRef<<" to which sample"<<samit->first<<" is to be scaled. Please check"<<std::endl;
 	    continue;
 	  }
-	  double intgl_ref = m_hstMngr->GetTH1D( var_name + "_" + refit->second->Suffix() )->Integral();
+	  double intgl_ref = m_hstMngr->GetTH1D( var_key + "_" + refit->second->Suffix() )->Integral();
 	  sc *= intgl_ref;
 	}
 
 	hsample->Scale(sc);
+
+
       }//Sample properly scaled
 
       //Convert to cumulative distribution if needed
       if(!var_doCumulative.empty()){
 	hsample = MakeCumulative(key, hsample, var_doCumulative);
 	if(!hsample){ return; }
-     }
+      }
 
       key.clear();
 
@@ -566,23 +576,31 @@ void PlotManager::makeEfficiencyHistograms(){
 	continue;
       }
 
+      const SampleAttributes* samp = fn_it->second->SingleSample();
+
       for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
 	
-	const std::string& var_name = varit->second->Name();
+	std::string var_name = varit->second->Name();
 	var_name_num.clear(); var_name_den.clear();
+
+	std::string var_name_base = samp->InPrefix() 
+	  + AnalysisUtils::ReplaceString(var_name,"*",samp->InPattern())
+	  + samp->InSuffix();
+	var_name = AnalysisUtils::ReplaceString(var_name,"*","");
+
 	if(m_opt->NumPrefix() != ""){ 
-	  var_name_num += m_opt->NumPrefix() + "_";  
+	  var_name_num += m_opt->NumPrefix();// + "_";  
 	}
 	if(m_opt->DenPrefix() != ""){ 
-	  var_name_den += m_opt->DenPrefix() + "_";  
+	  var_name_den += m_opt->DenPrefix();// + "_";  
 	}
-	var_name_num += var_name;
-	var_name_den += var_name;
+	var_name_num += var_name_base;
+	var_name_den += var_name_base;
 	if(m_opt->NumSuffix() != ""){ 
-	  var_name_num += "_" + m_opt->NumSuffix();
+	  var_name_num += m_opt->NumSuffix();
 	}
 	if(m_opt->DenSuffix() != ""){ 
-	  var_name_den += "_" + m_opt->DenSuffix();
+	  var_name_den += m_opt->DenSuffix();
 	}
 	if(m_opt->NumPattern() != ""){
 	  var_name_num = AnalysisUtils::ReplaceString(var_name_num, "@EFF@", m_opt->NumPattern());
@@ -604,7 +622,6 @@ void PlotManager::makeEfficiencyHistograms(){
 	const std::string& samp = fn_it->first;
 	std::string key_num = var_name_num + "_" + m_attr_map[samp]->Suffix();
 	std::string key_den = var_name_den + "_" + m_attr_map[samp]->Suffix();
-
 	hkey_num = m_hstMngr->GetTH1D(key_num);
 	if(hkey_num == NULL){hkey_num = m_hstMngr->CloneTH1D(key_num, hkey_seq_num, true); }
 	hkey_seq_num->Scale( fn_it->second->SingleSampleScales()->at(fnum_int) );
@@ -639,18 +656,18 @@ void PlotManager::makeEfficiencyHistograms(){
     const std::string& var_name = varit->second->Name();
     var_name_num.clear(); var_name_den.clear();
     if(m_opt->NumPrefix() != ""){ 
-      var_name_num += m_opt->NumPrefix() + "_";  
+      var_name_num += m_opt->NumPrefix();// + "_";  
     }
     if(m_opt->DenPrefix() != ""){ 
-      var_name_den += m_opt->DenPrefix() + "_";  
+      var_name_den += m_opt->DenPrefix();// + "_";  
     }
     var_name_num += var_name;
     var_name_den += var_name;
     if(m_opt->NumSuffix() != ""){ 
-      var_name_num += "_" + m_opt->NumSuffix();
+      var_name_num += m_opt->NumSuffix();
     }
     if(m_opt->DenSuffix() != ""){ 
-      var_name_den += "_" + m_opt->DenSuffix();
+      var_name_den += m_opt->DenSuffix();
     }
     if(m_opt->NumPattern() != ""){ 
       var_name_num = AnalysisUtils::ReplaceString(var_name_num, "@EFF@", m_opt->NumPattern());
@@ -662,14 +679,43 @@ void PlotManager::makeEfficiencyHistograms(){
     var_name_eff = AnalysisUtils::ReplaceString(var_name,"@EFF@","") + "_EFF";
     var_name_eff = AnalysisUtils::ReplaceString(var_name_eff,"/","_");
 
+    int var_rebin = varit->second->Rebin();
+    const std::string& var_rebinedges = varit->second->RebinEdges();
+    double* var_rebinedges_ptr = 0;
+    //if( (var_rebin > 0) && (var_rebinedges != "") ){ 
+    if( var_rebinedges != "" ){ 
+      var_rebin = AnalysisUtils::CountSubstring(var_rebinedges, ",");
+      var_rebinedges_ptr = new double[var_rebin+1]();
+      ParseRebinEdges(var_rebin, var_rebinedges, var_rebinedges_ptr);
+    }
+
+
+
     for(SampleAttributesMap::iterator samit = m_attr_map.begin(); samit != m_attr_map.end(); ++samit){
       const std::string& ds_suffix = samit->second->Suffix();
-      std::string key_num = var_name_num + "_" + ds_suffix;
-      std::string key_den = var_name_den + "_" + ds_suffix;
-      std::string key_eff = var_name_eff + "_" + ds_suffix;
+      std::string key_num = AnalysisUtils::ReplaceString(var_name_num + "_" + ds_suffix,"*",samit->second->InPattern());
+      std::string key_den = AnalysisUtils::ReplaceString(var_name_den + "_" + ds_suffix,"*",samit->second->InPattern());
+      std::string key_eff = AnalysisUtils::ReplaceString(var_name_eff + "_" + ds_suffix,"*","");
       TH1D* hsample_num = m_hstMngr->GetTH1D( key_num ); 
       TH1D* hsample_den = m_hstMngr->GetTH1D( key_den ); 
+
+      //REBIN FIRST
+      if(var_rebin > 0){
+	if(var_rebinedges_ptr != NULL){ 
+	  std::cout << " key_num : "<< key_num << " hsample_num : " << hsample_num 
+		    << " var_rebin : " << var_rebin << " var_rebinedges_ptr : " << var_rebinedges_ptr << std::endl;
+	  hsample_num = VariableRebinning(key_num, hsample_num, var_rebin, var_rebinedges_ptr);
+	  hsample_den = VariableRebinning(key_den, hsample_den, var_rebin, var_rebinedges_ptr);
+	}
+	else{ 
+	  hsample_num->Rebin(var_rebin);
+	  hsample_den->Rebin(var_rebin);
+	}
+      }
+
       TH1D* hsample_eff = m_hstMngr->CloneTH1D(key_eff, key_num, true);
+      std::cout << "key_eff : " << key_eff << std::endl;
+
       hsample_eff->Divide(hsample_num, hsample_den, 1, 1, "b");
       key_num.clear(); key_den.clear(); key_eff.clear();
     }//sample loop
@@ -1081,6 +1127,7 @@ int PlotManager::ReadHistogramsFromFile(int dim){
       for( VariableAttributesMap::iterator varit = m_var_map.begin(); varit != m_var_map.end(); ++varit){
 
 	const std::string& var_name = varit->second->Name();
+	const std::string& var_key = AnalysisUtils::ReplaceString(var_name,"*","");
 	const std::string& var_doScale = varit->second->DoScale();
 	if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<" var_name = "<<var_name<<std::endl;
 
@@ -1094,7 +1141,7 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 
 	std::string keysum = "";
 	if(var_makesum){
-	  keysum = makeSum ? var_name + "_" + m_attr_map["SUM"]->Suffix() : var_name + "_sum";
+	  keysum = makeSum ? var_key + "_" + m_attr_map["SUM"]->Suffix() : var_key + "_sum";
 	}
 
 	TH1D* h1key_seq = NULL;
@@ -1105,14 +1152,14 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	TH2D* h2sum = NULL;
 	TH2D* h2key = NULL;
 	
-	std::string key_seq = Form("%s_%i", var_name.c_str(), fnum);
+	std::string key_seq = Form("%s_%i", var_key.c_str(), fnum);
 
 	if(!b_multiname){
 
 	  if(dim == 1){ h1key_seq = m_hstMngr->ReadTH1D(AnalysisUtils::ReplaceString(var_name,"*",""), infile, key_seq); }
 	  else if(dim == 2){ h2key_seq = m_hstMngr->ReadTH2D(AnalysisUtils::ReplaceString(var_name,"*",""), infile, key_seq); }
 	  if(var_makesum){
-	    std::string keysum = makeSum ? var_name + "_" + m_attr_map["SUM"]->Suffix() : var_name + "_sum";
+	    std::string keysum = makeSum ? var_key + "_" + m_attr_map["SUM"]->Suffix() : var_key + "_sum";
 	    if(dim == 1){
 	      h1sum = m_hstMngr->GetTH1D(keysum);
 	      if(h1sum == NULL){h1sum = m_hstMngr->CloneTH1D(keysum, h1key_seq, true); }
@@ -1130,8 +1177,8 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	  for(unsigned int js = 0; js < vsamp->size(); js++){
 	    const SampleAttributes* samp = vsamp->at(js);
 	    bool b_samp_scale = (samp->DrawScale() != "NONE");
-	    std::string key = var_name + "_" + samp->Suffix();
-	    std::string key_seq_samp = Form("%s_%i_%i", var_name.c_str(), fnum, js);
+	    std::string key = var_key + "_" + samp->Suffix();
+	    std::string key_seq_samp = Form("%s_%i_%i", var_key.c_str(), fnum, js);
 	    TH1D* h1key_seq_samp = NULL; 
 	    TH2D* h2key_seq_samp = NULL; 
 	    double sc = 1;
@@ -1145,11 +1192,17 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 
 	      if(b_multiname){ 
 		h1key_seq_samp = m_hstMngr->ReadTH1D( samp->InPrefix() 
-						      + AnalysisUtils::ReplaceString(var_name,"*",samp->InPattern()) 
+						      + AnalysisUtils::ReplaceString(var_name,"*",samp->InPattern())
 						      + samp->InSuffix()
 						      , infile, key_seq_samp); 
 	      }
 	      else{ h1key_seq_samp = m_hstMngr->CloneTH1D(key_seq_samp, h1key_seq); }
+	      if(var_makesum){
+                h1sum = m_hstMngr->GetTH1D(keysum);
+                if(h1sum == NULL){h1sum = m_hstMngr->CloneTH1D(keysum, h1key_seq_samp, true); }
+
+                keysum.clear();
+              }//Sum histogram created      
 
 	      h1key = m_hstMngr->GetTH1D(key);
 	      if(h1key == NULL){h1key = m_hstMngr->CloneTH1D(key, h1key_seq_samp, true); }
@@ -1164,11 +1217,18 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	    else if(dim == 2){
 	      if(b_multiname){ 
 		h2key_seq_samp = m_hstMngr->ReadTH2D( samp->InPrefix() 
-						      + AnalysisUtils::ReplaceString(var_name,"*",samp->InPattern()) 
+						      + AnalysisUtils::ReplaceString(var_name,"*",samp->InPattern())
 						      + samp->InSuffix()
 						      , infile, key_seq_samp); 
 	      }
 	      else{ h2key_seq_samp = m_hstMngr->CloneTH2D(key_seq_samp, h2key_seq); }
+
+	      if(var_makesum){
+                h2sum = m_hstMngr->GetTH2D(keysum);
+                if(h2sum == NULL){h2sum = m_hstMngr->CloneTH2D(keysum, h2key_seq_samp, true); }
+
+                keysum.clear();
+              }//Sum histogram created      
 
 	      h2key = m_hstMngr->GetTH2D(key);
 	      if(h2key == NULL){h2key = m_hstMngr->CloneTH2D(key, h2key_seq_samp, true); }
@@ -1193,7 +1253,7 @@ int PlotManager::ReadHistogramsFromFile(int dim){
 	  const SampleAttributes* samp = (fn_it->second)->SingleSample();
 	  bool b_samp_scale = (samp->DrawScale() != "NONE");
 	  double sc = (fn_it->second)->SingleSampleScales()->at(fnum_int);
-	  std::string key = var_name + "_" + samp->Suffix();
+	  std::string key = var_key + "_" + samp->Suffix();
 
 	  if(dim == 1){
 	    h1key = m_hstMngr->GetTH1D(key);

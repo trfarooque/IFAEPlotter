@@ -231,7 +231,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     bool var_blind_yield = (var_blinding.find("YIELD") != std::string::npos);
     v_hstack_a.clear();
     v_hstack_res_a.clear();
-    std::string var_name       = va_it->second->Name();
+    std::string var_name       = AnalysisUtils::ReplaceString(va_it->second->Name(),"*","");
+    //std::string var_name_orig  = va_it->second->Name();
     if(projopt == "MEAN"){var_name += "_MEAN";}
     else if(projopt == "RMS"){var_name += "_RMS";}
     else if(projopt == "FRACRMS"){var_name += "_FRACRMS";}
@@ -363,10 +364,43 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     bool drawRes = ( (var_draw_res != "") && (var_draw_res != "NONE") );
     if(drawRes && (s_base_name == "") ){std::cout<<"No reference sample specified for residual calculation"<<std::endl;}
 
-    std::string canv_name = "canv_" + AnalysisUtils::ReplaceString(var_name,"*","");
-    TCanvas* canv_a = new TCanvas(canv_name.c_str(), "", 800, 800);
-    SetStyleCanvas( *canv_a, drawRes, var_bottom_margin, var_top_margin, var_left_margin, var_right_margin );
+    bool res_in_canv = drawRes && (!m_opt->SeparateResPanel());
+    std::string canv_name = "canv_" + var_name;
+    TCanvas* canv_a = new TCanvas(canv_name.c_str(), "", 800, (drawRes && m_opt->SeparateResPanel()) ? 505 : 800);
+    SetStyleCanvas( *canv_a, res_in_canv, 
+		    (drawRes && m_opt->SeparateResPanel()) ? 0.001 : var_bottom_margin, 
+		    var_top_margin, var_left_margin, var_right_margin );
  
+    TCanvas* canv_leg_a = NULL;
+    std::string canv_leg_name = "";
+    if(m_opt->SeparateLegend()){
+      canv_leg_name = "canv_" + var_name + "_leg";
+
+      canv_leg_a = (drawRes && !m_opt->SeparateResPanel()) ? (TCanvas*)(canv_a->cd(1)->Clone(canv_leg_name.c_str())) 
+	: (TCanvas*)(canv_a->Clone(canv_leg_name.c_str()));
+      //std::cout << "canv_leg_a : " << canv_leg_a << std::endl;
+	//new TCanvas(canv_leg_name.c_str(), "", 800, drawRes ? 505 : 800);
+     //SetStyleCanvas( *canv_leg_a, res_in_canv, 
+     //(drawRes && m_opt->SeparateResPanel()) ? 0.001 : var_bottom_margin, 
+     //		    var_top_margin, var_left_margin, var_right_margin );
+
+
+
+     //canv_leg_a = new TCanvas(canv_leg_name.c_str(), "", 400, 400);
+     //SetStyleCanvas( *canv_leg_a, false, var_bottom_margin, var_top_margin, var_left_margin, var_right_margin );
+    }
+
+    TCanvas* canv_res_a = NULL;
+    std::string canv_res_name = "";
+    if(drawRes && m_opt->SeparateResPanel()){
+      canv_res_name = "canv_" + var_name + "_res";
+      canv_res_a = new TCanvas(canv_res_name.c_str(), "", 800, 295);
+      SetStyleCanvas( *canv_res_a, false, var_bottom_margin, var_top_margin, var_left_margin, var_right_margin );
+    }
+    //std::cout << "drawRes = " << drawRes 
+    //	      << " m_opt->SeparateResPanel() = " << m_opt->SeparateResPanel() 
+    //	      << "canv_res_a = " << canv_res_a << std::endl;
+
     //NOTE:
     //Eventually, TCanvas and TLegend properties will be defined in the StyleDictionary
     //Make a TCanvas and set its attributes
@@ -379,7 +413,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     THStack* hs_res_nostack_a     = drawRes ? new THStack(hs_res_nostack_name.c_str(), "")       : NULL;
     THStack* hs_res_stack_a       = drawRes && var_draw_stack ? new THStack(hs_res_stack_name.c_str(), "")       : NULL;
     //THStack* hs_res_ref_a = drawRes ? new THStack(hs_res_ref_name.c_str(), "") : NULL;
-    std::string hbasename = var_name + "_" + s_base_suffix;
+
     //TH1D* h_base = drawRes ? m_hstMngr->GetTH1D(hbasename) : NULL;
 
     THStack* hs_nostack_a = new THStack(hs_nostack_name.c_str(), "");
@@ -393,9 +427,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     double leg_textsize=0.;
     if(va_it->second->HasLegendTextSize()){ leg_textsize = va_it->second->LegendTextSize(); }
     else if(m_opt->OptStr().find("LEGENDTEXTSIZE") != std::string::npos){ leg_textsize = m_opt->LegendTextSize(); }
-    else{ 
-      leg_textsize = drawRes ? 0.045 : 0.035;
-    }
+    else if(!m_opt->SeparateLegend() && res_in_canv){ leg_textsize = 0.045; }
+    else { leg_textsize = 0.035; } 
 
     SetStyleLegend(*leg_a, leg_textsize);
     leg_a->Clear();
@@ -427,7 +460,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       if(va_it->second->HasTitleTextSize()){ ttl_textsize = va_it->second->TitleTextSize(); }
       else if(m_opt->OptStr().find("TITLETEXTSIZE") != std::string::npos){ ttl_textsize = m_opt->TitleTextSize(); }
       else{ 
-	ttl_textsize = drawRes ? 0.045 : 0.035;
+	ttl_textsize = (res_in_canv) ? 0.045 : 0.035;
       }
 
       ttlbox = new TPaveText(ttl_xmin, ttl_ymin, ttl_xmax, ttl_ymax, "NBNDC");
@@ -450,6 +483,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     bool firstsample = true;
 
     for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
+
       if( var_isShape ){
 	if( !var_draw_stack && ( (at_it->first == "SUM")  || at_it->second->NoShape() ) ){continue;}
       }
@@ -457,13 +491,14 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       //if( (m_samples_noshape != NULL) && var_isShape && (std::find(m_samples_noshape->begin(), m_samples_noshape->end(), at_it->first) != m_samples_noshape->end()) ){continue;}
       if(at_it->first == "BLINDER" && !var_drawBlinder){continue;}
 
-
       const std::string& ds_name = at_it->second->Name();
       const std::string& ds_suffix = at_it->second->Suffix();
       const std::string& ds_leglabel = at_it->second->LegLabel();
       const std::string& ds_stylekey = at_it->second->StyleKey();
       const std::string& ds_drawopt = at_it->second->DrawOpt();
       const std::string& ds_resdrawopt = at_it->second->ResDrawOpt();
+      const std::string& ds_resref = at_it->second->ResRef();
+
       const std::string& ds_legopt =  at_it->second->LegOpt();
       const std::string& ds_print_format = (at_it->second->PrintFormat() != "") ? at_it->second->PrintFormat() : m_opt->PrintFormat();
       const std::string& ds_print_value = m_opt->ShowYields() ? "YIELD" : 
@@ -546,6 +581,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
       if(at_it->first != "BLINDER"){
 	if( ds_drawopt != "DUMMY" ){
+
 	  if(var_draw_stack && ds_draw_stack){ 
 	    v_hstack_a.push_back(hist_a);
 	  }
@@ -555,8 +591,12 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 	}
 
 	if(drawRes && ( (ds_res_opt == 0) || ((ds_res_opt == 1) && (var_draw_res_err == "REFBAND")) ) ){
-	  std::string resname_a = var_name + "_" + ds_suffix + "_res_" + s_base_suffix;
-	  TH1D* hist_res_a = makeResidual(resname_a, hist_name, hbasename, var_draw_res, ds_res_erropt);
+	  std::string ds_base_name = ds_resref.empty() ? s_base_name : ds_resref;
+	  std::string ds_base_suffix = ds_resref.empty() ? s_base_suffix : m_attrbt_map[ds_resref]->Suffix();
+	  std::string ds_hbasename = var_name + "_" + ds_base_suffix;
+
+	  std::string resname_a = var_name + "_" + ds_suffix + "_res_" + ds_base_suffix;
+	  TH1D* hist_res_a = makeResidual(resname_a, hist_name, ds_hbasename, var_draw_res, ds_res_erropt);
 	  string resdrawopt = ""; 
 	  if(ds_resdrawopt != ""){ resdrawopt = ds_resdrawopt; }
 	  else if( (ds_res_opt != 1) && (var_resdrawopt != "") ){ resdrawopt = var_resdrawopt; }
@@ -647,6 +687,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
       if(var_hasYScale){stretch_max = va_it->second->YScale();}
       else if(opt_hasYScale){stretch_max = m_opt->YScale();}
+      else if(m_opt->SeparateLegend()){ stretch_max = 1.25; }
       else{ 
 	stretch_max = 1.35; 
 	double stretch_max_leg = ( leg_a->GetY1NDC() > 0. ) ? 1./leg_a->GetY1NDC() : 1.35;
@@ -682,7 +723,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
 	}//if legend extent is more than default stretch factor
 
-      } //if stretch factor is not provided
+      } //if stretch factor is not provided **and** if legend is drawn on same canvas
 
       if(var_isLogY){ var_ymax = pow(var_ymax, stretch_max)/pow(var_ymin, stretch_max -1.); }
       else{ var_ymax = stretch_max*var_ymax - (1. - stretch_max)*var_ymin; }
@@ -697,7 +738,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(var_hasXTitleSize){ var_xtitle_size = va_it->second->XTitleSize(); }
     else if(opt_hasXTitleSize){ var_xtitle_size = m_opt->XTitleSize(); }
-    else{ var_xtitle_size = drawRes? 0.1 : 0.04; }
+    else{ var_xtitle_size = drawRes ? 0.1 : 0.04; }
 
     if(var_hasXTitleOffset){ var_xtitle_offset = va_it->second->XTitleOffset(); }
     else if(opt_hasXTitleOffset){ var_xtitle_offset = m_opt->XTitleOffset(); }
@@ -705,7 +746,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(var_hasXLabelSize){ var_xlabel_size = va_it->second->XLabelSize(); }
     else if(opt_hasXLabelSize){ var_xlabel_size = m_opt->XLabelSize(); }
-    else{ var_xlabel_size = drawRes? 0.09 : 0.04; }
+    else{ var_xlabel_size = drawRes ? 0.09 : 0.04; }
 
     if(var_hasXLabelOffset){ var_xlabel_offset = va_it->second->XLabelOffset(); }
     else if(opt_hasXLabelOffset){ var_xlabel_offset = m_opt->XLabelOffset(); }
@@ -713,7 +754,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
     if(var_hasYTitleSize){ var_ytitle_size = va_it->second->YTitleSize(); }
     else if(opt_hasYTitleSize){ var_ytitle_size = m_opt->YTitleSize(); }
-    else{ var_ytitle_size = drawRes ? 0.07 : 0.04; }
+    else{ var_ytitle_size = res_in_canv ? 0.07 : 0.04; }
 
     if(var_hasYTitleOffset){ var_ytitle_offset = va_it->second->YTitleOffset(); }
     else if(opt_hasYTitleOffset){ var_ytitle_offset = m_opt->YTitleOffset(); }
@@ -725,16 +766,16 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       else if(var_ymax <=0.1 || var_ymax > 1000.){ndig = 4; }
       else {ndig = 3; }
 
-      if( ndig<=3 ){ var_ytitle_offset = drawRes ? 0.7 : 1.2; }
-      else if( ndig>3 && ndig<6 ){ var_ytitle_offset = drawRes? 1.0 : 1.4; }
-      else if( ndig==6 ){ var_ytitle_offset = drawRes ? 1.2 : 1.6; }
-      else{ var_ytitle_offset = drawRes ? 1.5 : 1.8; }
+      if( ndig<=3 ){ var_ytitle_offset = res_in_canv ? 0.7 : 1.2; }
+      else if( ndig>3 && ndig<6 ){ var_ytitle_offset = res_in_canv ? 1.0 : 1.4; }
+      else if( ndig==6 ){ var_ytitle_offset = res_in_canv ? 1.2 : 1.6; }
+      else{ var_ytitle_offset = res_in_canv ? 1.5 : 1.8; }
 
     }
 
     if(var_hasYLabelSize){ var_ylabel_size = va_it->second->YLabelSize(); }
     else if(opt_hasYLabelSize){ var_ylabel_size = m_opt->YLabelSize(); }
-    else{ var_ylabel_size = drawRes ? 0.05 : 0.04; }
+    else{ var_ylabel_size = res_in_canv ? 0.05 : 0.04; }
 
     if(var_hasYLabelOffset){ var_ylabel_offset = va_it->second->YLabelOffset(); }
     else if(opt_hasYLabelOffset){ var_ylabel_offset = m_opt->YLabelOffset(); }
@@ -789,7 +830,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       hs_stack_a->GetHistogram()->GetYaxis()->SetLabelOffset(var_ylabel_offset);
       hs_stack_a->GetHistogram()->GetYaxis()->SetLabelSize(var_ylabel_size);
 
-      if(!drawRes){      
+      if(!res_in_canv){      
 	if(var_label != ""){ hs_stack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
 	else{ hs_stack_a->GetHistogram()->GetXaxis()->SetTitle( ((TH1D*)(hs_stack_a->GetStack()->First()))->GetXaxis()->GetTitle() ) ; }
 
@@ -832,7 +873,7 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       hs_nostack_a->GetHistogram()->GetYaxis()->SetLabelOffset(var_ylabel_offset);
       hs_nostack_a->GetHistogram()->GetYaxis()->SetLabelSize(var_ylabel_size);
 
-      if(!drawRes){      
+      if(!res_in_canv){      
 	if(var_label != ""){ hs_nostack_a->GetHistogram()->GetXaxis()->SetTitle(var_label.c_str()); }
 	else{ hs_nostack_a->GetHistogram()->GetXaxis()->SetTitle( ((TH1D*)(hs_nostack_a->GetStack()->First()))->GetXaxis()->GetTitle() ) ; }
 
@@ -866,15 +907,16 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     if(ttlbox){ ttlbox->Draw(); } 
     curpad->RedrawAxis();
 
-    leg_a->Draw();
-    if(leg_text){ leg_text->Draw(); }
-
+    if(!m_opt->SeparateLegend()){
+      leg_a->Draw();
+      if(leg_text){ leg_text->Draw(); }
+    }
     curpad->Update();
     curpad->Modified();
     //====================================================== Top panel completed ===============================================
 
     if(drawRes){
-      curpad = (TPad*)(canv_a->cd(2));
+      curpad = res_in_canv ? (TPad*)(canv_a->cd(2)) : (TPad*)(canv_res_a->cd());
       if(var_isLogRes){curpad->SetLogy();}
       if(var_isLogX){curpad->SetLogx();}
 
@@ -989,56 +1031,88 @@ void PlotUtils::OverlayHists(const std::string& projopt){
       curpad->Modified();
 
       delete lnref;
-    }
+    }//done with lower panel
 
+    if(m_opt->SeparateLegend()){
+      curpad = (TPad*)(canv_leg_a->cd());
+      leg_a->Draw();
+      if(leg_text){ 
+	leg_text->Draw(); 
+      }
+
+      curpad->Update();
+      curpad->Modified();
+    }
+    /*
+    if(m_opt->SeparateLegend()){
+      curpad = (TPad*)(canv_leg_a->cd());
+      leg_a->Draw();
+      if(leg_text){ leg_text->Draw(); }
+
+      curpad->Update();
+      curpad->Modified();
+    }
+    */
 
     //============================================= Bottom panel done ===========================================
 
     //Write to output file/ print to a png
     std::string var_outdir = va_it->second->OutputFolder();
     if (m_opt->MsgLevel() == Debug::DEBUG){ std::cout<< " Printing "<<canv_name << std::endl; }
-    if(m_opt->OutputFormat().find("PNG") != std::string::npos){ 
+
+    //std::vector<std::string> list_formats = {};
+    std::string output_format = m_opt->OutputFormat();
+   
+    std::string::size_type pos = 0;
+    do{ 
+      std::string format; format.clear();
+      pos = AnalysisUtils::ParseString(output_format, format, ",");
+
+      std::string suffix = "";
+      if(format == "PNG"){ suffix = "png"; }
+      else if(format == "PDF"){ suffix = "pdf"; }
+      else if(format == "EPS"){ suffix = "eps"; }
+
 
       if(var_outdir != ""){
 	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
-	gSystem->mkdir(Form("IFP_PNG/%s/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+	gSystem->mkdir(Form("IFP_%s/%s/%s", format.c_str() ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
       }
 
-      canv_a->SaveAs(Form("IFP_PNG/%s/%s%s.png" ,m_output_dir.c_str(), var_outdir.c_str() ,canv_name.c_str())); 
-      if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".png"<<std::endl;
-    }
-    if(m_opt->OutputFormat().find("EPS") != std::string::npos){ 
+      if(format != "ROOT"){
+	canv_a->SaveAs(Form("IFP_%s/%s/%s%s.%s", format.c_str() ,m_output_dir.c_str()
+			    , var_outdir.c_str() ,canv_name.c_str(), suffix.c_str())); 
+	if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<"."<<std::endl;
 
-      if(var_outdir != ""){
-	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
-	gSystem->mkdir(Form("IFP_EPS/%s/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+	if(m_opt->SeparateLegend()){
+	  canv_leg_a->SaveAs(Form("IFP_%s/%s/%s%s.%s", format.c_str() ,m_output_dir.c_str()
+			      , var_outdir.c_str() ,canv_leg_name.c_str(), suffix.c_str())); 
+	  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<"."<<std::endl;
+	}
+
+	if(m_opt->SeparateResPanel()){
+	  canv_res_a->SaveAs(Form("IFP_%s/%s/%s%s.%s", format.c_str() ,m_output_dir.c_str()
+			      , var_outdir.c_str() ,canv_res_name.c_str(), suffix.c_str())); 
+	  if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<"."<<std::endl;
+	}
+
       }
-
-      canv_a->SaveAs(Form("IFP_EPS/%s/%s%s.eps" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));  
-      if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".eps"<<std::endl;
-   }
-    if(m_opt->OutputFormat().find("PDF") != std::string::npos){
-      if(var_outdir != ""){
-	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
-	gSystem->mkdir(Form("IFP_PDF/%s/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+      else{
+	m_outfile->cd(); canv_a->Write();
+	if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists writing "<<canv_name<<" into ROOT file"<<std::endl;
       }
+     }while(pos != std::string::npos);
 
-      canv_a->SaveAs(Form("IFP_PDF/%s/%s%s.pdf" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));
-      if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".pdf"<<std::endl;
-    }
-    if(m_opt->OutputFormat().find("CPP") != std::string::npos){
-      if(var_outdir != ""){
-	if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
-	gSystem->mkdir(Form("IFP_CPP/%s/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
-      }
 
-      canv_a->SaveAs(Form("IFP_CPP/%s/%s%s.C" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));
-      if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists writing "<<canv_name<<".C"<<std::endl;
-    }
-    if(m_opt->OutputFormat().find("ROOT") != std::string::npos){ 
-      m_outfile->cd(); canv_a->Write();
-      if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists writing "<<canv_name<<" into ROOT file"<<std::endl;
-    }
+    //if(m_opt->OutputFormat().find("PDF") != std::string::npos){
+    //  if(var_outdir != ""){
+    //if(var_outdir.substr(var_outdir.size()-1) != "/"){var_outdir += "/";}
+    //gSystem->mkdir(Form("IFP_PDF/%s/%s" ,m_output_dir.c_str(), var_outdir.c_str()), "TRUE");
+    //}
+
+    //canv_a->SaveAs(Form("IFP_PDF/%s/%s%s.pdf" ,m_output_dir.c_str() ,var_outdir.c_str() ,canv_name.c_str()));
+    //if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists printing "<<canv_name<<".pdf"<<std::endl;
+    //}
     var_outdir.clear();
 
     //Delete objects
@@ -1061,7 +1135,6 @@ void PlotUtils::OverlayHists(const std::string& projopt){
     hs_res_stack_name.clear();
     hs_res_nostack_name.clear();
     hname_sum.clear();
-    hbasename.clear();
   }//variables loop
 
   if(m_opt->MsgLevel() == Debug::DEBUG) std::cout<<"PlotUtils::OverlayHists end"<<std::endl; 
@@ -1073,6 +1146,8 @@ void PlotUtils::OverlayHists(const std::string& projopt){
 
 //========================================================= 
 void PlotUtils::MakeTableFromHists (const bool opt_bin){
+
+  //IMPLEMENT DS_RESREF
 
   //Draw stack now has no meaning or purpose, since the SUM histogram will have already been created
   //Better to use the DoSum option for a sample to determine the order in which it should appear
@@ -1165,6 +1240,7 @@ void PlotUtils::MakeTableFromHists (const bool opt_bin){
     //---------------------------------------------------------
 
     for(SampleAttributesMap::iterator at_it = m_attrbt_map.begin(); at_it != m_attrbt_map.end(); ++at_it){
+
       if( var_isShape ){
 	if( !var_draw_stack && ( (at_it->first == "SUM")  || at_it->second->NoShape() ) ){continue;}
       }
@@ -1199,6 +1275,7 @@ void PlotUtils::MakeTableFromHists (const bool opt_bin){
 	}
 	else{ ds_print_text += MakeMomentsTableRow(hist_a, ds_moments_list, ds_print_format, var_do_width); }
       }
+
       
       ds_print_text = (line_start) ? ds_leglabel + "  &  " + ds_print_text : "  &  " + ds_print_text;
       std::cout << " ds_print_text = " << ds_print_text << std::endl;
@@ -1416,11 +1493,15 @@ int PlotUtils::SetStyleHist(std::string hname, std::string style_key){
 int PlotUtils::SetStyleLegend(TLegend &leg, double textsize, int textfont, double margin){
   leg.SetFillColor(0);
   leg.SetFillStyle(0);
-  leg.SetLineColor(0);
-  leg.SetLineStyle(0);
-  leg.SetLineWidth(0);
+  leg.SetLineColor(1);
+  leg.SetLineStyle(1);
+  leg.SetLineWidth(1);
+  leg.SetBorderSize(1);
+  //leg.SetLineColor(0);
+  //leg.SetLineStyle(0);
+  //leg.SetLineWidth(0);
   leg.SetMargin(margin);
-  leg.SetBorderSize(0);
+  //leg.SetBorderSize(0);
   leg.SetTextSize(textsize);
   leg.SetTextFont(textfont);
   leg.SetShadowColor(0);

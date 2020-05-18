@@ -29,6 +29,7 @@ class SampleAttributes{
   std::string m_stylekey;
   std::string m_drawopt;
   std::string m_res_drawopt;
+  std::string m_res_ref;
   std::string m_drawscale;
   std::string m_scale_to_ref;
   std::string m_legopt; 
@@ -52,6 +53,7 @@ class SampleAttributes{
   void SetStyleKey(const std::string& stylekey){ m_stylekey = stylekey; }
   void SetDrawOpt(const std::string& drawopt){ m_drawopt = drawopt; }
   void SetResDrawOpt(const std::string& resdrawopt){ m_res_drawopt = resdrawopt; }
+  void SetResRef(const std::string& res_ref){ m_res_ref = res_ref; }
   void SetDrawScale(const std::string& drawscale){ m_drawscale = drawscale; }
   void SetScaleToRef(const std::string& scale_to_ref){ m_scale_to_ref = scale_to_ref; }
   void SetLegLabel(const std::string& leglabel){ m_leglabel = leglabel; }
@@ -77,6 +79,7 @@ class SampleAttributes{
   const std::string& StyleKey() const{ return m_stylekey; }
   const std::string& DrawOpt() const{ return m_drawopt; }
   const std::string& ResDrawOpt() const{ return m_res_drawopt; }
+  const std::string& ResRef() const{ return m_res_ref; }
   const std::string& DrawScale() const{ return m_drawscale; }
   const std::string& ScaleToRef() const{ return m_scale_to_ref; }
   const std::string& Blinding() const{ return m_blinding; }

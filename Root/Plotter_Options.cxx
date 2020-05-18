@@ -49,6 +49,8 @@ Plotter_Options::Plotter_Options():
   m_doProjections(false),
   m_doEff(false),
   m_doSystematics(false),
+  m_separate_legend(false),
+  m_separate_respanel(false),
   m_make_bins_table(false),
   m_make_moments_table(false),
   m_show_yields(false),
@@ -142,6 +144,8 @@ OptionsBase(q)
   m_doProjections        = q.m_doProjections;
   m_doEff                = q.m_doEff;
   m_doSystematics        = q.m_doSystematics;
+  m_separate_legend      = q.m_separate_legend;
+  m_separate_respanel    = q.m_separate_respanel;
   m_make_bins_table      = q.m_make_bins_table;
   m_make_moments_table   = q.m_make_moments_table;
   m_show_yields          = q.m_show_yields;
@@ -323,6 +327,12 @@ bool Plotter_Options::IdentifyOption ( const std::string &argument, const std::s
     else if( temp_arg.find("--DOSYSTEMATICS") != std::string::npos ){
       m_doSystematics = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
+    else if( temp_arg.find("--SEPARATELEGEND") != std::string::npos ){
+      m_separate_legend = AnalysisUtils::BoolValue(temp_val, temp_arg);
+    } 
+    else if( temp_arg.find("--SEPARATERESPANEL") != std::string::npos ){
+      m_separate_respanel = AnalysisUtils::BoolValue(temp_val, temp_arg);
+    } 
     else if( temp_arg.find("--MAKEBINSTABLE") != std::string::npos ){
       m_make_bins_table = AnalysisUtils::BoolValue(temp_val, temp_arg);
     } 
@@ -503,6 +513,8 @@ void Plotter_Options::PrintOptions(){
     std::cout << " m_doProjections          = " << m_doProjections        << std::endl;
     std::cout << " m_doEff                  = " << m_doEff                << std::endl;
     std::cout << " m_doSystematics          = " << m_doSystematics        << std::endl;
+    std::cout << " m_separate_legend        = " << m_separate_legend      << std::endl;
+    std::cout << " m_separate_respanel      = " << m_separate_respanel    << std::endl;
     std::cout << " m_make_bins_table        = " << m_make_bins_table      << std::endl;
     std::cout << " m_make_moments_table     = " << m_make_moments_table   << std::endl;
     std::cout << " m_show_yields            = " << m_show_yields          << std::endl;

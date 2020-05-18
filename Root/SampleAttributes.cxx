@@ -18,6 +18,7 @@ SampleAttributes::SampleAttributes(const std::string& name, const std::string& s
   m_stylekey(stylekey),
   m_drawopt(drawopt),
   m_res_drawopt(resdrawopt),
+  m_res_ref(""),
   m_drawscale(drawscale),
   m_scale_to_ref(scale_to_ref),
   m_legopt(legopt),
@@ -45,6 +46,7 @@ SampleAttributes::SampleAttributes(SampleAttributes& q){
   m_stylekey         = q.m_stylekey;
   m_drawopt          = q.m_drawopt;
   m_res_drawopt      = q.m_res_drawopt;
+  m_res_ref          = q.m_res_ref;
   m_drawscale        = q.m_drawscale;
   m_scale_to_ref     = q.m_scale_to_ref;
   m_legopt           = q.m_legopt;
@@ -105,6 +107,7 @@ SampleAttributesMap SampleAttributes::ParseSampleConfig( Plotter_Options* opt ){
     if( keymap.find("STYLEKEY") != keymap.end() ){ sampleObj->SetStyleKey(keymap["STYLEKEY"]); }
     if( keymap.find("DRAWOPT") != keymap.end() ){ sampleObj->SetDrawOpt(keymap["DRAWOPT"]); }
     if( keymap.find("RESDRAWOPT") != keymap.end() ){ sampleObj->SetResDrawOpt(keymap["RESDRAWOPT"]); }
+    if( keymap.find("RESREF") != keymap.end() ){ sampleObj->SetResRef(keymap["RESREF"]); }
     if( keymap.find("LEGOPT") != keymap.end() ){ sampleObj->SetLegOpt(keymap["LEGOPT"]); }
     if( keymap.find("DRAWSCALE") != keymap.end() ){ sampleObj->SetDrawScale(keymap["DRAWSCALE"]); }
     if( keymap.find("SCALETOREF") != keymap.end() ){ sampleObj->SetScaleToRef(keymap["SCALETOREF"]); }

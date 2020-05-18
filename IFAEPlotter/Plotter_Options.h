@@ -63,6 +63,8 @@ public:
     inline bool DoProjections() const { return m_doProjections; }
     inline bool DoEff() const { return m_doEff; }
     inline bool DoSystematics() const { return m_doSystematics; }
+    inline bool SeparateLegend() const { return m_separate_legend; }
+    inline bool SeparateResPanel() const { return m_separate_respanel; } 
     inline bool MakeBinsTable() const { return m_make_bins_table; }
     inline bool MakeMomentsTable() const { return m_make_moments_table; }
     inline double TitleXMin() const { return m_titlexmin; }
@@ -145,6 +147,8 @@ private:
     bool m_doProjections;
     bool m_doEff;
     bool m_doSystematics;
+    bool m_separate_legend;
+    bool m_separate_respanel;
     bool m_make_bins_table;
     bool m_make_moments_table;
     bool m_show_yields;
